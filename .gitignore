@@ -1,0 +1,14 @@
+.DS_Store
+.vim/dein
+config/QtProject
+vim_mac/dein
+vim_win/dein
+vim_wsl/dein
+vim_mac/config/dein
+vim_win/config/dein
+vim_wsl/config/dein
+CodeUser
+
+.config/*
+!karabiner
+!nvim

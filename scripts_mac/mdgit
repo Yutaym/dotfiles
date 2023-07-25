@@ -1,0 +1,25 @@
+#!/bin/bash
+currentdir=${PWD}
+dirname=${1%/*}
+filename=${1##*/}
+if [ $dirname = $filename ]; then
+    dirname=$currentdir
+fi
+
+gitdir="/Volumes/GoogleDrive/マイドライブ/GitRepository"
+
+cd $gitdir
+if [ -d $filename ];then
+    echo "This name is already used."
+    cd $currentdir
+else
+    mkdir $filename
+    cd $filename
+    git init --bare --share
+
+    cd $dirname
+    git clone "${gitdir}/$filename"
+    cd $filename
+    echo ".DS_Store" >.gitignore
+    git add .gitignore
+fi
