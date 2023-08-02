@@ -24,8 +24,31 @@
 # export PATH="${NODENV_ROOT}/bin:$PATH"
 # eval "$(nodenv init -)"
 #
+# prompt
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/yuta-yamamoto/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/yuta-yamamoto/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/yuta-yamamoto/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/yuta-yamamoto/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+#
 
 export PATH=/home/yuta/scripts:$PATH
+
+export PATH=~/texlive/2022/bin/win32:$PATH
+export PATH=~/miniconda3:$PATH
+# export PATH=~/miniconda3/bin:$PATH
+export PATH=~/miniconda3/Scripts:$PATH
+export PATH=~/miniconda3/envs:$PATH
+export PATH=~/miniconda3/condabin:$PATH
 
 if [ -e /usr/local/share/zsh-completions ]; then
     fpath=(/usr/local/share/zsh-completions $fpath)
@@ -48,6 +71,8 @@ autoload -Uz colors
 colors
 
 # aliases
+# executive files
+
 # git
 alias g='git'
 alias gs='git status'
@@ -182,7 +207,7 @@ select-word-style default
 zstyle ':zle:*' word-chars "_-./;@"
 zstyle ':zle:*' word-style unspecified
 
-# prompt
+
 autoload -Uz vcs_info
 setopt prompt_subst
 zstyle ':vcs_info:git:*' check-for-changes true
@@ -201,21 +226,7 @@ if (which zprof > /dev/null 2>&1) ;then
   zprof
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/Users/yuta/opt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-#    eval "$__conda_setup"
-#else
-#    if [ -f "/Users/yuta/opt/miniconda3/etc/profile.d/conda.sh" ]; then
-#        . "/Users/yuta/opt/miniconida3/etc/profile.d/conda.sh"
-#    fi
-#fi
-#
-#if [ -f '/mnt/c/Users/yutay/miniconda3/Scripts/conda.exe' ]; then
-#    eval "$('/mnt/c/Users/yutay/miniconda3/Scripts/conda.exe' 'shell.zsh', 'hook')"
-#fi
-# <<< conda initialize <<<
-#
 LOCAL_IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 export DISPLAY=$LOCAL_IP:0i
+
+conda activate base

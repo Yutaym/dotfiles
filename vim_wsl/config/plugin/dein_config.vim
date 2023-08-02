@@ -11,9 +11,9 @@ endif
 if dein#load_state(s:dein_dir)
   call dein#begin(s:dein_dir)
 
-  source ~/.vim/vim_wsl/config/install_plugin.vim
+  source ~/.vim/config/install_plugin.vim
 
- let s:toml_dir  = '~/.vim/vim_wsl/config/toml'
+ let s:toml_dir  = '~/.vim/config/toml'
  let s:toml      = s:toml_dir . '/dein.toml'
  let s:lazy_toml = s:toml_dir . '/dein_lazy.toml'
  " TOML を読み込み、キャッシュしておく
