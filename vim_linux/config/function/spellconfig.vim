@@ -1,0 +1,2 @@
+set spelllang+=cjk
+
