@@ -35,9 +35,6 @@ repo = 'itchyny/calendar.vim'
 repo = 'tyru/open-browser.vim'
 
 [[plugins]]
-repo = 'yuratomo/w3m.vim'
-
-[[plugins]]
 repo = 'Shougo/deoplete.nvim'
 
 [[plugins]]

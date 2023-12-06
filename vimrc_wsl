@@ -32,7 +32,6 @@ source ~/.vim/config/plugin/calendar_config.vim
 source ~/.vim/config/plugin/openbrowser_config.vim
 source ~/.vim/config/plugin/cleverf_config.vim
 source ~/.vim/config/plugin/easymotion_config.vim
-source ~/.vim/config/plugin/w3m_config.vim
 
 source ~/.vim/config/function/dictionarytranslate.vim
 source ~/.vim/config/function/japaneseconfig.vim
