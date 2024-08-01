@@ -26,7 +26,7 @@ set hlsearch
 " 表示設定
 set noerrorbells
 set shellslash
-set showmatch 
+set showmatch
 set matchtime=1
 set cinoptions+=:0
 set cmdheight=1

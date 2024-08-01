@@ -13,5 +13,3 @@ nnoremap <silent> <Space>ub :Denite buffer<CR>
 nnoremap <silent> <Space>uf :Denite  -buffer-name=file file<CR>
 nnoremap <silent> <Space>uc :Denite file_old<CR>
 nnoremap <silent> <Space>ud :Denite file_rec<CR>
-
-
