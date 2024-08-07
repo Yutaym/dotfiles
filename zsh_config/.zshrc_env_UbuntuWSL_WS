@@ -1,0 +1,25 @@
+# prompt
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/yuta-yamamoto/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/yuta-yamamoto/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/yuta-yamamoto/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/yuta-yamamoto/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+#
+export PATH=~/scripts:$PATH
+export PATH=/mnt/c/Users/yutay/AppData/Local/Programs/Microsoft\ VS\ Code/bin:$PATH
+
+export PATH=~/texlive/2022/bin/win32:$PATH
+# export PATH=~/miniconda3:$PATH
+# # export PATH=~/miniconda3/bin:$PATH
+# export PATH=~/miniconda3/Scripts:$PATH
+# export PATH=~/miniconda3/envs:$PATH
+# export PATH=~/miniconda3/condabin:$PATH
