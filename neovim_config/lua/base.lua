@@ -1,6 +1,7 @@
 vim.o.clipboard = vim.o.clipboard .. "unnamed"
 
 vim.o.number=true
+vim.o.relativenumber=true
 vim.o.fenc='utf-8'
 
 vim.o.autoread=true
