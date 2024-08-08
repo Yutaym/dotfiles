@@ -9,8 +9,6 @@ vim.o.hidden=true
 vim.o.writebackup=false
 vim.o.backup=false
 vim.o.ambiwidth='double'
-vim.o.widmenu=true
-vim.o.widmode='longest:full,full'
 vim.o.visualbell=true
 vim.o.virtualedit='onemore'
 
@@ -23,7 +21,6 @@ vim.o.hlsearch=true
 --vim.o.backspase={"indent","eol","start"}
 
 vim.o.errorbells = false
-vim.o.shellslash = true
 vim.o.showmatch = true
 vim.o.matchtime = 1
 vim.o.cinoptions = vim.o.cinoptions .. ":0"
@@ -57,3 +54,22 @@ vim.o.conceallevel = 0
 
 vim.o.foldmethod = "marker"
 vim.o.updatetime = 300
+
+function try_catch(what)
+  local status, result = pcall(what.try)
+  if not status then
+    what.catch(result)
+  end
+  return result
+end
+
+
+try_catch{
+    try=function()
+        vim.o.widmenu=true
+        vim.o.widmode='longest:full,full'
+        vim.o.shellslash = true
+    end,
+    catch=function()
+    end
+}

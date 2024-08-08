@@ -1,6 +1,8 @@
 vim.keymap.set('i', 'jj', '<ESC>', {noremap = true})
-vim.keymap.set('n', ';', ':', {noremap = true})
-vim.keymap.set('n', ':', ';', {noremap = true})
+vim.keymap.set({'n', 'v'}, ';', ':', {noremap = true})
+vim.keymap.set({'n', 'v'}, ':', ',', {noremap = true})
+vim.keymap.set({'n', 'v'}, ',', ';', {noremap = true})
+
 vim.keymap.set({'n', 'v'}, 'gl', '$', {noremap = true, silent = true})
 vim.keymap.set({'n', 'v'}, 'gh', '^', {noremap = true, silent = true})
 vim.keymap.set({'n', 'v'}, 'j', 'gj', {noremap = true, silent = true})
