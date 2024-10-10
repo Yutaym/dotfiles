@@ -103,5 +103,8 @@ else
     vim.keymap.set('n', 'sbq', ':<C-u>bd<CR>', {noremap = true})
     vim.keymap.set('n', 'sbd', ':<C-u>bd<CR>', {noremap = true})
     vim.keymap.set('n', 'sbp', ':<C-u>bp<CR>', {noremap = true})
-    vim.keymap.set('n', 'sbn', ':<C-u>bn<CR>', {noremap = true})
+
+    vim.keymap.set('i', '(', '()<Left>', {noremap = true})
+    vim.keymap.set('i', '[', '[]<Left>', {noremap = true})
+    vim.keymap.set('i', '{', '{}<Left>', {noremap = true})
 end
