@@ -24,5 +24,8 @@ return {
     {
         'vim-scripts/ReplaceWithRegister',
     },
+    {
+        'vim-scripts/camelcasemotion',
+    },
 
 }
