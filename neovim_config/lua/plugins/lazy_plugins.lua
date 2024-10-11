@@ -27,5 +27,23 @@ return {
     {
         'vim-scripts/camelcasemotion',
     },
-
+    {
+        'rhysd/clever-f.vim'
+    },
+    {
+        'wellle/targets.vim'
+    },
+    {
+        'monaqa/dial.nvim'
+    },
+    {
+        'haya14busa/vim-edgemotion'
+    },
+    {
+        'rapan931/lasterisk.nvim'
+    },
+    {
+        'kevinhwang91/nvim-hlslens'
+    },
 }
+

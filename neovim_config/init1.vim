@@ -30,7 +30,7 @@ endif
 "     source c:/Users/yutay/AppData/Local/nvim/.vim/config/plugin/fzf_preview_config.vim
 "     source c:/Users/yutay/AppData/Local/nvim/.vim/config/plugin/fern_config.vim
 " endif
-
+"
 if !exists('g:vscode')
     source c:/Users/yutay/AppData/Local/nvim/.vim/config/plugin/nerdtree_config.vim
     source c:/Users/yutay/AppData/Local/nvim/.vim/config/plugin/vimproc_config.vim

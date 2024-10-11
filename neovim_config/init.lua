@@ -3,7 +3,9 @@ require('mapping')
 require("config.lazy")
 
 require("config.toggleterm")
-require("config.replace")
 require("config.comment")
+require("config.plugins")
+
+require("function.toggleMotion")
 
 -- require('Comment').setup()
