@@ -4,6 +4,8 @@ vim.keymap.set('n', '<Space>rr', '<Plug>ReplaceWithRegisterLine', {noremap = tru
 vim.keymap.set({'v', 'x'}, '<Space>r', '<Plug>ReplaceWithRegisterVisual', {noremap = true, silent = true})
 
 -- clever-f config
+vim.keymap.set({'n', 'v'}, ',', '<Plug>(clever-f-repeat-forward)', {noremap = true, silent = true})
+vim.keymap.set({'n', 'v'}, ':', '<Plug>(clever-f-repeat-back)', {noremap = true, silent = true})
 -- edgemotion
 vim.keymap.set({'n', 'v'}, 'gj', '<Plug>(edgemotion-j)', {noremap = true, silent = true})
 vim.keymap.set({'n', 'v'}, 'gk', '<Plug>(edgemotion-k)', {noremap = true, silent = true})
@@ -28,3 +30,4 @@ vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], 
 vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
 vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
 vim.api.nvim_set_keymap('n', '<Leader>l', '<Cmd>noh<CR>', kopts)
+

@@ -20,8 +20,6 @@ table.insert(pluginlist, {'numToStr/Comment.nvim' -- opts = {
 -- }
 })
 table.insert(pluginlist, {'vim-scripts/ReplaceWithRegister'})
-table.insert(pluginlist, {'vim-scripts/ReplaceWithRegister'})
-table.insert(pluginlist, {'vim-scripts/camelcasemotion'})
 table.insert(pluginlist, {'vim-scripts/camelcasemotion'})
 table.insert(pluginlist, {'rhysd/clever-f.vim'})
 table.insert(pluginlist, {'wellle/targets.vim'})
@@ -38,7 +36,11 @@ if (vim.g.vscode == nil) then
         'nvim-lualine/lualine.nvim',
         version = "*"
     })
-    table.insert(pluginlist, {'neoclide/coc.nvim'})
+    table.insert(pluginlist, {
+        'neoclide/coc.nvim',
+        branch = 'master',
+        build = 'npm ci'
+    })
     table.insert(pluginlist, {'yuki-yano/fzf-preview.vim'})
 end
 return pluginlist
