@@ -32,15 +32,27 @@ table.insert(pluginlist, {'kevinhwang91/nvim-hlslens'})
 -- table.insert(pluginlist,{
 --     })
 if (vim.g.vscode == nil) then
-    table.insert(pluginlist, {
-        'nvim-lualine/lualine.nvim',
-        version = "*"
-    })
-    table.insert(pluginlist, {
-        'neoclide/coc.nvim',
-        branch = 'master',
-        build = 'npm ci'
-    })
+    -- table.insert(pluginlist, {
+    --     'nvim-lualine/lualine.nvim',
+    --     version = "*"
+    -- })
+    -- table.insert(pluginlist, {
+    --     'neoclide/coc.nvim',
+    --     branch = 'master',
+    --     build = 'npm ci'
+    -- })
+    table.insert(pluginlist, {'neovim/nvim-lspconfig'})
+    table.insert(pluginlist, {'williamboman/mason.nvim'})
+    table.insert(pluginlist, {'williamboman/mason-lspconfig.nvim'})
+    table.insert(pluginlist, {'hrsh7th/nvim-cmp'})
+    table.insert(pluginlist, {'hrsh7th/cmp-nvim-lsp'})
+    table.insert(pluginlist, {'hrsh7th/cmp-buffer'})
+    table.insert(pluginlist, {'hrsh7th/cmp-path'})
+    table.insert(pluginlist, {'hrsh7th/cmp-cmdline'})
+    table.insert(pluginlist, {'hrsh7th/cmp-vsnip'})
+    table.insert(pluginlist, {'hrsh7th/vim-vsnip'})
+
+    table.insert(pluginlist, {'onsails/lspkind.nvim'})
     table.insert(pluginlist, {'yuki-yano/fzf-preview.vim'})
 end
 return pluginlist
