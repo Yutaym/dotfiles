@@ -1,0 +1,276 @@
+{
+	"$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+	"CreationDate": "2024-10-21T17:33:51.498-00:00",
+	"Sources": [
+		{
+			"Packages": [
+				{
+					"PackageIdentifier": "7zip.7zip"
+				},
+				{
+					"PackageIdentifier": "Autodesk.AutodeskAccess"
+				},
+				{
+					"PackageIdentifier": "Docker.DockerDesktop"
+				},
+				{
+					"PackageIdentifier": "Git.Git"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VSTOR"
+				},
+				{
+					"PackageIdentifier": "Mozilla.Firefox"
+				},
+				{
+					"PackageIdentifier": "Notepad++.Notepad++"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Office"
+				},
+				{
+					"PackageIdentifier": "Microsoft.OneDrive"
+				},
+				{
+					"PackageIdentifier": "TeamViewer.TeamViewer"
+				},
+				{
+					"PackageIdentifier": "marha.VcXsrv"
+				},
+				{
+					"PackageIdentifier": "AntibodySoftware.WizTree"
+				},
+				{
+					"PackageIdentifier": "Kitware.CMake"
+				},
+				{
+					"PackageIdentifier": "Microsoft.msodbcsql.17"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2010.x64"
+				},
+				{
+					"PackageIdentifier": "Oracle.JavaRuntimeEnvironment"
+				},
+				{
+					"PackageIdentifier": "Neovim.Neovim"
+				},
+				{
+					"PackageIdentifier": "Cisco.Webex"
+				},
+				{
+					"PackageIdentifier": "BlenderFoundation.Blender"
+				},
+				{
+					"PackageIdentifier": "Oracle.VirtualBox"
+				},
+				{
+					"PackageIdentifier": "OpenJS.NodeJS.LTS"
+				},
+				{
+					"PackageIdentifier": "Google.GoogleDrive"
+				},
+				{
+					"PackageIdentifier": "JohnMacFarlane.Pandoc"
+				},
+				{
+					"PackageIdentifier": "Microsoft.WebDeploy"
+				},
+				{
+					"PackageIdentifier": "Logitech.OptionsPlus"
+				},
+				{
+					"PackageIdentifier": "Nvidia.GeForceExperience"
+				},
+				{
+					"PackageIdentifier": "TortoiseGit.TortoiseGit"
+				},
+				{
+					"PackageIdentifier": "PuTTY.PuTTY"
+				},
+				{
+					"PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+				},
+				{
+					"PackageIdentifier": "lencx.ChatGPT"
+				},
+				{
+					"PackageIdentifier": "Unity.UnityHub"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VisualStudio.2022.Community"
+				},
+				{
+					"PackageIdentifier": "angryziber.AngryIPScanner"
+				},
+				{
+					"PackageIdentifier": "Google.Chrome.EXE"
+				},
+				{
+					"PackageIdentifier": "Graphviz.Graphviz"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Edge"
+				},
+				{
+					"PackageIdentifier": "Microsoft.EdgeWebView2Runtime"
+				},
+				{
+					"PackageIdentifier": "OBSProject.OBSStudio"
+				},
+				{
+					"PackageIdentifier": "JetBrains.PyCharm.Community"
+				},
+				{
+					"PackageIdentifier": "TeraTermProject.teraterm"
+				},
+				{
+					"PackageIdentifier": "DigitalScholar.Zotero"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2013.x64"
+				},
+				{
+					"PackageIdentifier": "Microsoft.PowerToys"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2012.x86"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2015+.x86"
+				},
+				{
+					"PackageIdentifier": "Microsoft.DotNet.Runtime.3_1"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2015+.x64"
+				},
+				{
+					"PackageIdentifier": "Microsoft.PowerShell"
+				},
+				{
+					"PackageIdentifier": "Microsoft.WindowsSDK.10.0.20348"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Teams.Classic"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2013.x86"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2010.x86"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCRedist.2012.x64"
+				},
+				{
+					"PackageIdentifier": "Microsoft.WindowsSDK.10.0.22000"
+				},
+				{
+					"PackageIdentifier": "Readdle.Spark"
+				},
+				{
+					"PackageIdentifier": "ArduinoSA.IDE.stable"
+				},
+				{
+					"PackageIdentifier": "Notion.Notion"
+				},
+				{
+					"PackageIdentifier": "Amazon.Kindle"
+				},
+				{
+					"PackageIdentifier": "DenoLand.Deno"
+				},
+				{
+					"PackageIdentifier": "FreeCAD.FreeCAD"
+				},
+				{
+					"PackageIdentifier": "GitHub.GitHubDesktop"
+				},
+				{
+					"PackageIdentifier": "Grammarly.Grammarly"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Sysinternals.Sigcheck"
+				},
+				{
+					"PackageIdentifier": "Anaconda.Miniconda3"
+				},
+				{
+					"PackageIdentifier": "JanDeDobbeleer.OhMyPosh"
+				},
+				{
+					"PackageIdentifier": "RaspberryPiFoundation.RaspberryPiImager"
+				},
+				{
+					"PackageIdentifier": "ZeroInstall.ZeroInstall"
+				},
+				{
+					"PackageIdentifier": "Zoom.Zoom.EXE"
+				},
+				{
+					"PackageIdentifier": "boostio.boostnote"
+				},
+				{
+					"PackageIdentifier": "DeepL.DeepL"
+				},
+				{
+					"PackageIdentifier": "junegunn.fzf"
+				},
+				{
+					"PackageIdentifier": "Ollama.Ollama"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VisualStudioCode"
+				},
+				{
+					"PackageIdentifier": "Canonical.Ubuntu"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Teams"
+				},
+				{
+					"PackageIdentifier": "Microsoft.AppInstaller"
+				},
+				{
+					"PackageIdentifier": "Microsoft.UI.Xaml.2.7"
+				},
+				{
+					"PackageIdentifier": "Microsoft.UI.Xaml.2.8"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VCLibs.Desktop.14"
+				},
+				{
+					"PackageIdentifier": "Microsoft.DevHome"
+				},
+				{
+					"PackageIdentifier": "Microsoft.WindowsTerminal"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Teams.Free"
+				}
+			],
+			"SourceDetails": {
+				"Argument": "https://cdn.winget.microsoft.com/cache",
+				"Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
+				"Name": "winget",
+				"Type": "Microsoft.PreIndexed.Package"
+			}
+		},
+		{
+			"Packages": [
+				{
+					"PackageIdentifier": "9NS88QSQK1PW"
+				}
+			],
+			"SourceDetails": {
+				"Argument": "https://storeedgefd.dsx.mp.microsoft.com/v9.0",
+				"Identifier": "StoreEdgeFD",
+				"Name": "msstore",
+				"Type": "Microsoft.Rest"
+			}
+		}
+	],
+	"WinGetVersion": "1.8.1911"
+}
