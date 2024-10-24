@@ -10,7 +10,7 @@ vim_win/config/dein
 vim_wsl/config/dein
 vim_linux/config/dein
 CodeUser
-
+Powertoys/
 .config/*
 !karabiner
 !nvim
