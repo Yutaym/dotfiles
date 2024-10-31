@@ -14,3 +14,4 @@ Powertoys/
 .config/*
 !karabiner
 !nvim
+scripts/scripts_WSL/nvim.appimage
