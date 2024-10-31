@@ -7,8 +7,8 @@ require("config.comment")
 require("config.plugins")
 
 if (vim.g.vscode == nil) then
-require("config.lspconfig")
-require("config.cmpconfig")
+    require("config.lspconfig")
+    require("config.cmpconfig")
 end
 
 require("function.toggleMotion")
