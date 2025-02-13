@@ -32,22 +32,24 @@ vim.keymap.set({'n', 'v'}, 'gk', '<Plug>(edgemotion-k)', {
 })
 
 -- dial increment
-vim.keymap.set({'n', 'v'}, '<C-a>', '<Plug>(dial-increment)', {
+vim.keymap.set({'n', 'v', 'x'}, '<C-a>', '<Plug>(dial-increment)', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, '<C-d>', '<Plug>(dial-decrement)', {
+vim.keymap.set({'n', 'v', 'x'}, '<C-x>', '<Plug>(dial-decrement)', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, 'g<C-a>', 'g<Plug>(dial-increment)', {
+vim.keymap.set({'n', 'v', 'x'}, 'g<C-a>', 'g<Plug>(dial-increment)', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, 'g<C-a>', 'g<Plug>(dial-decrement)', {
+vim.keymap.set({'n', 'v', 'x'}, 'g<C-x>', 'g<Plug>(dial-decrement)', {
     noremap = true,
     silent = true
 })
+vim.g.dps_dial.augends = {'decimal', 'hex', 'date-slash'}
+vim.g.dps_dial.augends = {'decimal', 'hex', 'date-slash'}
 
 -- hlslens
 require('hlslens').setup()

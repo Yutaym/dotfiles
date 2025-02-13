@@ -81,6 +81,15 @@ vim.keymap.set('n', 'U', '<C-r>', {
     silent = true
 })
 
+vim.keymap.set('n', 'gW', 'gw', {
+    noremap = true,
+    silent = true
+})
+-- vim.keymap.set('n', '<C-w>', ',w', {
+--     noremap = true,
+--     silent = true
+-- })
+
 vim.keymap.set('i', '<C-u>', '<ESC>ui', {
     noremap = true,
     silent = true
@@ -236,6 +245,10 @@ if (vim.g.vscode) then
 
 else
     print('mode: not vscode')
+    vim.keymap.set('n', 'gw', '<C-w>', {
+        noremap = true,
+        silent = true
+    })
     vim.keymap.set('n', 's', '<Nop>', {
         noremap = true,
         silent = true
