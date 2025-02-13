@@ -48,8 +48,8 @@ vim.keymap.set({'n', 'v', 'x'}, 'g<C-x>', 'g<Plug>(dial-decrement)', {
     noremap = true,
     silent = true
 })
-vim.g.dps_dial.augends = {'decimal', 'hex', 'date-slash'}
-vim.g.dps_dial.augends = {'decimal', 'hex', 'date-slash'}
+-- vim.g.dps_dial.augends = {'decimal', 'hex', 'date-slash'}
+-- vim.g.dps_dial.augends = {'decimal', 'hex', 'date-slash'}
 
 -- hlslens
 require('hlslens').setup()
