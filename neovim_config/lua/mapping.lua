@@ -1,7 +1,7 @@
 vim.keymap.set('i', 'jj', '<ESC>', {
     noremap = true
 })
-vim.keymap.set({'n', 'v'}, ';', ':', {
+vim.keymap.set({'n', 'x'}, ';', ':', {
     noremap = true
 })
 -- vim.keymap.set({'n', 'v'}, ':', ',', {noremap = true})
@@ -11,7 +11,7 @@ vim.keymap.set({'n'}, 'gl', '$', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'v'}, 'gl', '$h', {
+vim.keymap.set({'x'}, 'gl', '$h', {
     noremap = true,
     silent = true
 })
@@ -19,7 +19,7 @@ vim.keymap.set({'n'}, 'gh', '^', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'v'}, 'gh', '^', {
+vim.keymap.set({'x'}, 'gh', '^', {
     noremap = true,
     silent = true
 })
@@ -27,32 +27,32 @@ vim.keymap.set({'v'}, 'gh', '^', {
 -- vim.keymap.set({'n', 'v'}, 'k', 'gk', {noremap = true, silent = true})
 -- vim.keymap.set({'n', 'v'}, 'gj', '10j', {noremap = true, silent = true})
 -- vim.keymap.set({'n', 'v'}, 'gk', '10k', {noremap = true, silent = true})
-vim.keymap.set({'n', 'v'}, '<Down>', 'g<Down>', {
+vim.keymap.set({'n', 'x'}, '<Down>', 'g<Down>', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, '<Up>', 'g<Up>', {
+vim.keymap.set({'n', 'x'}, '<Up>', 'g<Up>', {
     noremap = true,
     silent = true
 })
 
-vim.keymap.set({'n', 'v'}, 'H', '10h', {
+vim.keymap.set({'n', 'x'}, 'H', '10h', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, 'J', '10j', {
+vim.keymap.set({'n', 'x'}, 'J', '10j', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, 'K', '10k', {
+vim.keymap.set({'n', 'x'}, 'K', '10k', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'n', 'v'}, 'L', '10l', {
+vim.keymap.set({'n', 'x'}, 'L', '10l', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'i', 'v', 'c'}, '<Ctrl-C>', '<ESC>', {
+vim.keymap.set({'i', 'x', 'c'}, '<Ctrl-C>', '<ESC>', {
     noremap = true
 })
 
@@ -118,12 +118,13 @@ vim.keymap.set({'i', 'c'}, '<C-p>', '<Up>', {
     silent = true
 })
 
-vim.keymap.set('v', '<C-a>', '<ESC>ggVG', {
+-- vim.keymap.set('v', '<C-a>', '<ESC>ggVG', {
+--     noremap = true
+-- })
+vim.keymap.set('v', 'sa', '<ESC>ggVG', {
     noremap = true
 })
-vim.keymap.set('v', 'aa', '<ESC>ggVG', {
-    noremap = true
-})
+-- vim.keymap.set("n", "sw", 'yiw:%s/<C-r><C-r>"//g<Left><Left>')
 
 vim.keymap.set('n', '<Space>', '<Leader>', {
     noremap = true,
@@ -141,6 +142,7 @@ if (vim.g.vscode) then
     vim.keymap.set('n', 'ss', '/', {
         noremap = true
     })
+    vim.keymap.set("x", "ss", 'y:%s/<C-V>//g<Left><Left>')
     vim.keymap.set('n', 'sr', ':s/', {
         noremap = true
     })
@@ -242,6 +244,7 @@ else
         noremap = true,
         silent = true
     })
+    vim.keymap.set("x", "ss", 'y:%s/<C-r><C-r>"//g<Left><Left>')
     vim.keymap.set('n', 'sr', ':s/', {
         noremap = true,
         silent = true

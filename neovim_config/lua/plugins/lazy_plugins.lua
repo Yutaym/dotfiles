@@ -51,8 +51,12 @@ if (vim.g.vscode == nil) then
     table.insert(pluginlist, {'hrsh7th/cmp-cmdline'})
     table.insert(pluginlist, {'hrsh7th/cmp-vsnip'})
     table.insert(pluginlist, {'hrsh7th/vim-vsnip'})
-
     table.insert(pluginlist, {'onsails/lspkind.nvim'})
     table.insert(pluginlist, {'yuki-yano/fzf-preview.vim'})
+    table.insert(pluginlist, {
+        'voldikss/vim-translator',
+        cmd = {"TranslateW", "TranslateW --target_lang=en"}
+    })
+
 end
 return pluginlist
