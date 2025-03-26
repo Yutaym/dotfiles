@@ -283,6 +283,13 @@ table.insert(pluginlist, {
         })
     end
 })
+table.insert(pluginlist, {
+    "kbwo/vim-shareedit",
+    dependencies = {"vim-denops/denops.vim" -- 🔑 Denops の依存
+    },
+    cmd = {"ShareEditStartServer", "ShareEditConnect"},
+    event = {"BufReadPre", "BufNewFile"}
+})
 -- table.insert(pluginlist,{
 --     })
 -- table.insert(pluginlist,{

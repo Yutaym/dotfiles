@@ -27,7 +27,23 @@ vim.o.cmdheight = 1
 vim.o.laststatus = 2
 vim.o.showcmd = true
 vim.o.display = "lastline"
+
 vim.o.cursorline = true
+vim.api.nvim_create_autocmd({"InsertEnter"}, {
+    callback = function()
+        vim.opt.cursorline = false
+    end
+})
+vim.api.nvim_create_autocmd({"InsertLeave"}, {
+    callback = function()
+        vim.opt.cursorline = true
+    end
+
+})
+vim.opt.scrolloff = 3
+vim.opt.lazyredraw = true
+vim.opt.foldmethod = "manual"
+
 vim.o.list = true
 vim.o.listchars = "tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%"
 vim.o.history = 100
