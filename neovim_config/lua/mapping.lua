@@ -25,8 +25,54 @@ vim.keymap.set({'x'}, 'gh', '^', {
 })
 -- vim.keymap.set({'n', 'v'}, 'j', 'gj', {noremap = true, silent = true})
 -- vim.keymap.set({'n', 'v'}, 'k', 'gk', {noremap = true, silent = true})
--- vim.keymap.set({'n', 'v'}, 'gj', '10j', {noremap = true, silent = true})
--- vim.keymap.set({'n', 'v'}, 'gk', '10k', {noremap = true, silent = true})
+
+-- 一時的なリマップを適用する関数
+-- local function enable_gj_mode()
+--     -- `j` を `gj` にリマップ
+--     vim.keymap.set("n", "j", "gj", {
+--         noremap = true,
+--         silent = true,
+--         buffer = true
+--     })
+--     -- `k` を `gk` にリマップ
+--     vim.keymap.set("n", "k", "gk", {
+--         noremap = true,
+--         silent = true,
+--         buffer = true
+--     })
+--     -- 他のキーを押したら元に戻す
+--     vim.defer_fn(function()
+--         pcall(vim.keymap.del, "n", "j", {
+--             buffer = true
+--         }) -- 一時リマップを削除
+--         pcall(vim.keymap.del, "n", "k", {
+--             buffer = true
+--         })
+--     end, 1000) -- 1秒後にリセット
+-- end
+
+-- -- `gj` の動作 + 一時的なリマップ
+-- local function gj_with_auto_repeat()
+--     vim.cmd("normal! gj") -- `gj` を実行
+--     enable_gj_mode() -- `j` を `gj` にする
+-- end
+
+-- -- `gk` の動作 + 一時的なリマップ
+-- local function gk_with_auto_repeat()
+--     vim.cmd("normal! gk") -- `gk` を実行
+--     enable_gj_mode() -- `k` を `gk` にする
+-- end
+
+-- -- `gj` と `gk` のキー設定
+-- vim.keymap.set("n", "gj", gj_with_auto_repeat, {
+--     noremap = true,
+--     silent = true
+-- })
+-- vim.keymap.set("n", "gk", gk_with_auto_repeat, {
+--     noremap = true,
+--     silent = true
+-- })
+
 vim.keymap.set({'n', 'x'}, '<Down>', 'g<Down>', {
     noremap = true,
     silent = true
@@ -131,6 +177,9 @@ vim.keymap.set({'i', 'c'}, '<C-p>', '<Up>', {
 --     noremap = true
 -- })
 vim.keymap.set('v', 'sa', '<ESC>ggVG', {
+    noremap = true
+})
+vim.keymap.set({'v', 'x'}, 'ga', '<ESC>ggVG', {
     noremap = true
 })
 -- vim.keymap.set("n", "sw", 'yiw:%s/<C-r><C-r>"//g<Left><Left>')

@@ -31,6 +31,8 @@ vim.o.cursorline = true
 vim.o.list = true
 vim.o.listchars = "tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%"
 vim.o.history = 100
+vim.o.wildmenu = true
+vim.o.wildmode = "list:longest,full"
 
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
