@@ -37,7 +37,7 @@ vim.o.virtualedit = 'onemore'
 
 vim.o.ignorecase = true
 vim.o.smartcase = true
-vim.o.wrapscan = true
+vim.o.wrapscan = false
 vim.o.incsearch = true
 vim.o.hlsearch = true
 -- vim.o.backspase={"indent","eol","start"}
