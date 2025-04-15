@@ -4,9 +4,7 @@ table.insert(pluginlist, {
     event = "VeryLazy",
     config = function()
         local nvim_surround = require("nvim-surround")
-
         nvim_surround.setup({}) -- デフォルトのまま初期化
-
         -- ファイルタイプごとの設定
         vim.api.nvim_create_autocmd("FileType", {
             pattern = {"html", "xml", "markdown", "tex", "plaintex"},
@@ -60,12 +58,12 @@ table.insert(pluginlist, {
         end
     }},
     event = {"BufReadPre", "BufNewFile"},
+    -- event = "VeryLazy",
     config = function()
         -- ts-context-commentstring の設定
         require("ts_context_commentstring").setup({
             enable_autocmd = false
         })
-
         -- Comment.nvim 本体設定
         require("Comment").setup({
             padding = true,
@@ -90,8 +88,8 @@ table.insert(pluginlist, {
 })
 
 table.insert(pluginlist, {
-    'vim-scripts/ReplaceWithRegister',
-    event = {"BufReadPre", "BufNewFile"},
+    "vim-scripts/ReplaceWithRegister",
+    -- event = {"BufReadPre", "BufNewFile"},
     init = function()
         -- vim.keymap.set('n', '<Space>r', '<Plug>ReplaceWithRegisterOperator', {
         --     noremap = true,
@@ -109,8 +107,33 @@ table.insert(pluginlist, {
 })
 table.insert(pluginlist, {
     "vim-scripts/camelcasemotion",
-    event = {"BufReadPre", "BufNewFile"},
+    -- event = {"BufReadPre", "BufNewFile"},
     init = function()
+        vim.keymap.set({"n", "v"}, "sw", "<Plug>CamelCaseMotion_w", {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set({"n", "v"}, "se", "<Plug>CamelCaseMotion_e", {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set({"n", "v"}, "sb", "<Plug>CamelCaseMotion_b", {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set({"o", "v"}, "isw", "<Plug>CamelCaseMotion_iw", {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set({"o", "v"}, "ise", "<Plug>CamelCaseMotion_ie", {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set({"o", "v"}, "isb", "<Plug>CamelCaseMotion_ib", {
+            noremap = true,
+            silent = true
+        })
+
         vim.keymap.set({"n", "v"}, "<C-w>", "<Plug>CamelCaseMotion_w", {
             noremap = true,
             silent = true
@@ -139,7 +162,7 @@ table.insert(pluginlist, {
 })
 table.insert(pluginlist, {
     "rhysd/clever-f.vim",
-    event = {"BufReadPre", "BufNewFile"},
+    -- event = {"BufReadPre", "BufNewFile"},
     init = function()
         -- clever-f の繰り返し操作にカスタムキーを割り当て
         vim.keymap.set({"n", "v"}, ",", "<Plug>(clever-f-repeat-forward)", {
@@ -150,6 +173,7 @@ table.insert(pluginlist, {
             noremap = true,
             silent = true
         })
+
     end
 })
 table.insert(pluginlist, {
@@ -290,8 +314,23 @@ table.insert(pluginlist, {
     cmd = {"ShareEditStartServer", "ShareEditConnect"},
     event = {"BufReadPre", "BufNewFile"}
 })
--- table.insert(pluginlist,{
---     })
+table.insert(pluginlist, {'jghauser/mkdir.nvim'})
+table.insert(pluginlist, {
+    'nacro90/numb.nvim',
+    config = function()
+        require('numb').setup()
+    end
+})
+table.insert(pluginlist, {
+    "ysmb-wtsg/in-and-out.nvim",
+    keys = {{
+        "<C-CR>",
+        function()
+            require("in-and-out").in_and_out()
+        end,
+        mode = "i"
+    }}
+})
 -- table.insert(pluginlist,{
 --     })
 return pluginlist

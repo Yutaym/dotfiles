@@ -42,17 +42,6 @@ if (vim.g.vscode == nil) then
             vim.cmd("colorscheme github_dark_default")
         end
     })
-    -- table.insert(pluginlist, {'neovim/nvim-lspconfig'})
-    -- table.insert(pluginlist, {'williamboman/mason.nvim'})
-    -- table.insert(pluginlist, {'williamboman/mason-lspconfig.nvim'})
-    -- table.insert(pluginlist, {'hrsh7th/nvim-cmp'})
-    -- table.insert(pluginlist, {'hrsh7th/cmp-nvim-lsp'})
-    -- table.insert(pluginlist, {'hrsh7th/cmp-buffer'})
-    -- table.insert(pluginlist, {'hrsh7th/cmp-path'})
-    -- table.insert(pluginlist, {'hrsh7th/cmp-cmdline'})
-    -- table.insert(pluginlist, {'hrsh7th/cmp-vsnip'})
-    -- table.insert(pluginlist, {'hrsh7th/vim-vsnip'})
-    -- table.insert(pluginlist, {'onsails/lspkind.nvim'})
     table.insert(pluginlist, {
         "yuki-yano/fzf-preview.vim",
         dependencies = {"junegunn/fzf", -- FZF バイナリ本体

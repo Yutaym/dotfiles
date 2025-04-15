@@ -201,17 +201,21 @@ if (vim.g.vscode) then
         noremap = true
     })
     vim.keymap.set("x", "ss", 'y:%s/<C-V>//g<Left><Left>')
+    vim.keymap.set("v", "ss", 'y:%s/<C-V>//g<Left><Left>')
     vim.keymap.set('n', 'sr', ':s/', {
         noremap = true
     })
-    -- vim.keymap.set('n', 'sa', ':%s/', {noremap = true, silent = true})
-
-    vim.keymap.set('n', 'sa', function()
-        vim.cmd('call VSCodeNotify("editor.action.startFindReplaceAction")')
-    end, {
+    vim.keymap.set('n', 'sa', ':%s/', {
         noremap = true,
         silent = true
     })
+
+    -- vim.keymap.set('n', 'sa', function()
+    --     vim.cmd('call VSCodeNotify("editor.action.startFindReplaceAction")')
+    -- end, {
+    --     noremap = true,
+    --     silent = true
+    -- })
     vim.keymap.set('n', 'sd', function()
         vim.cmd('call VSCodeNotify("workbench.action.splitEditorUp")')
     end, {
@@ -307,6 +311,7 @@ else
         silent = true
     })
     vim.keymap.set("x", "ss", 'y:%s/<C-r><C-r>"//g<Left><Left>')
+    vim.keymap.set("v", "ss", 'y:%s/<C-r><C-r>"//g<Left><Left>')
     vim.keymap.set('n', 'sr', ':s/', {
         noremap = true,
         silent = true
