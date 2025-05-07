@@ -189,14 +189,13 @@ vim.keymap.set('n', '<Space>', '<Leader>', {
     silent = true
 })
 
+vim.keymap.set({'n', 'v'}, 's', '<Nop>', {
+noremap = true,
+    silent = true
+})
 -- print(vim.env.vscode == nil)
 if (vim.g.vscode) then
     print('mode: vscode')
-    vim.keymap.set({'n', 'v'}, 's', '<Nop>', {
-        noremap = true,
-        silent = true
-    })
-
     vim.keymap.set('n', 'ss', '/', {
         noremap = true
     })
