@@ -14,8 +14,5 @@ Powertoys/
 .config/*
 !karabiner
 !nvim
-<<<<<<< HEAD
-test.txt
-=======
 scripts/scripts_WSL/nvim.appimage
->>>>>>> f6619fc419292d69acff69c3bfa75f0f7408ddb7
+test.txt

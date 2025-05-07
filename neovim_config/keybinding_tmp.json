@@ -7,12 +7,12 @@
   {
     "command": "workbench.action.quickOpen",
     "key": "Space Space",
-    "when": "editorTextFocus && (neovim.mode == normal ||neovim.mode == visual)",
+    "when": "editorTextFocus && (neovim.mode == normal ||neovim.mode == visual)"
   },
   {
     "command": "editor.action.commentLine",
     "key": "Space c",
-    "when": "editorTextFocus && (neovim.mode == normal || neovim.mode == visual)",
+    "when": "editorTextFocus && (neovim.mode == normal || neovim.mode == visual)"
   },
   {
     "command": "vscode-neovim.send",
@@ -86,14 +86,12 @@
     "when": "editorTextFocus && neovim.mode == normal",
     "args": "<Space>bb"
   },
-
   {
     "command": "vscode-neovim.send",
     "key": "Space f",
     "when": "editorTextFocus && neovim.mode == visual",
     "args": "<Space>f"
   },
-
   {
     "command": "vscode-neovim.send",
     "key": "s s",
@@ -184,7 +182,6 @@
     "when": "editorTextFocus && neovim.mode == normal",
     "args": "st"
   },
-
   {
     "key": "ctrl+]",
     "command": "workbench.action.nextSideBarView",
@@ -192,6 +189,16 @@
   },
   {
     "key": "ctrl+[",
+    "command": "workbench.action.previousSideBarView",
+    "when": "sideBarFocus"
+  },
+  {
+    "key": "ctrl+shift+n",
+    "command": "workbench.action.nextSideBarView",
+    "when": "sideBarFocus"
+  },
+  {
+    "key": "ctrl+shift+p",
     "command": "workbench.action.previousSideBarView",
     "when": "sideBarFocus"
   },
@@ -232,7 +239,6 @@
     "command": "workbench.action.focusFirstEditorGroup",
     "when": "sideBarFocus || panelFocus"
   },
-
   //markdown config
   {
     "key": "cmd+k cmd+v",
@@ -383,9 +389,9 @@
     "when": "editorFocus && findWidgetVisible && replaceInputFocussed"
   },
   {
-  "key": "ctrl+enter",
-  "command": "search.action.replaceAllInFolder",
-  "when": "folderMatchFocus && isEditableItem && replaceActive && searchViewletVisible"
+    "key": "ctrl+enter",
+    "command": "search.action.replaceAllInFolder",
+    "when": "folderMatchFocus && isEditableItem && replaceActive && searchViewletVisible"
   },
   {
     "key": "ctrl+q",
