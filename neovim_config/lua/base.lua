@@ -23,7 +23,7 @@ else
     vim.o.clipboard = vim.o.clipboard .. "unnamed"
 end
 
-vim.o.number = true
+vim.o.number = trued
 vim.o.relativenumber = true
 vim.o.fenc = 'utf-8'
 
