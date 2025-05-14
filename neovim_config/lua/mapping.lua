@@ -190,15 +190,24 @@ vim.keymap.set('n', '<Space>', '<Leader>', {
 })
 
 vim.keymap.set({'n', 'v'}, 's', '<Nop>', {
-noremap = true,
+    noremap = true,
     silent = true
 })
 -- print(vim.env.vscode == nil)
 if (vim.g.vscode) then
     print('mode: vscode')
+
     vim.keymap.set('n', 'ss', '/', {
         noremap = true
     })
+
+    vim.keymap.set('n', 'cd', function()
+        vim.cmd('call VSCodeNotify("editor.action.rename")')
+    end, {
+        noremap = true,
+        silent = true
+    })
+
     vim.keymap.set("x", "ss", 'y:%s/<C-V>//g<Left><Left>')
     vim.keymap.set("v", "ss", 'y:%s/<C-V>//g<Left><Left>')
     vim.keymap.set('n', 'sr', ':s/', {
