@@ -1,5 +1,5 @@
 
-source ~/.config/zsh/.zshrc_env
-source ~/.config/zsh/.zshrc_main
-source ~/.config/zsh/.zshrc_alias
-source ~/.config/zsh/.zshrc_prompt
+source ~/.config/zsh/zshrc_env.sh
+source ~/.config/zsh/zshrc_main.sh
+source ~/.config/zsh/zshrc_alias.sh
+source ~/.config/zsh/zshrc_prompt.sh
