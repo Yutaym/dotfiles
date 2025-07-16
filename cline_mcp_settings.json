@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "github.com/ahujasid/blender-mcp": {
+      "command": "uvx",
+      "args": [
+        "blender-mcp"
+      ],
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
