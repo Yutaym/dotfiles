@@ -3,6 +3,7 @@
 if [ -e /usr/local/share/zsh-completions ]; then
     fpath=(/usr/local/share/zsh-completions $fpath)
 fi
+export PATH="$HOME/.local/bin:$PATH"
 autoload -U compinit
 compinit -u
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
