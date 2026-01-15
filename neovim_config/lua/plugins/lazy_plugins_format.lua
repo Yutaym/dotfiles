@@ -36,10 +36,10 @@ if vim.g.vscode == nil then
                 end
             })
 
-            require("mason-null-ls").setup({
-                ensure_installed = {"black"},
-                automatic_installation = true
-            })
+            -- require("mason-null-ls").setup({
+            --     ensure_installed = {"black"},
+            --     automatic_installation = true
+            -- })
         end
     }
 else

@@ -45,7 +45,7 @@ table.insert(pluginlist, {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter.configs").setup({
+            require("nvim-treesitter").setup({
                 ensure_installed = {"javascript", "typescript", "tsx", "html", "css", "vue", "lua", "python", "bash",
                                     "json"},
                 highlight = {
@@ -182,63 +182,68 @@ table.insert(pluginlist, {
 })
 table.insert(pluginlist, {
     "monaqa/dial.nvim",
-    event = {"BufReadPre", "BufNewFile"},
-    init = function()
-        local dial = require("dial.map")
-        -- キーマップ設定（<Plug> を使用）
-        vim.keymap.set({"n", "v", "x"}, "<C-a>", "<Plug>(dial-increment)", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v", "x"}, "<C-x>", "<Plug>(dial-decrement)", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v", "x"}, "g<C-a>", "g<Plug>(dial-increment)", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v", "x"}, "g<C-x>", "g<Plug>(dial-decrement)", {
-            noremap = true,
-            silent = true
-        })
-    end,
+    lazy = true,  -- ⭐ 自動読み込みを無効化
+    keys = {
+        { "<C-a>", mode = { "n", "v", "x" } },
+        { "<C-x>", mode = { "n", "v", "x" } },
+        { "g<C-a>", mode = { "n", "v", "x" } },
+        { "g<C-x>", mode = { "n", "v", "x" } },
+    },
     config = function()
         local augend = require("dial.augend")
 
         require("dial.config").augends:register_group({
-            default = { -- true <-> false
-            augend.constant.new({
-                elements = {"and", "or"},
-                word = true,
-                cyclic = true
-            }), augend.constant.new({
-                elements = {"yes", "no"},
-                word = true,
-                cyclic = true
-            }), augend.constant.new({
-                elements = {"on", "off"},
-                word = true,
-                cyclic = true
-            }), augend.constant.new({
-                elements = {"public", "private", "protected"},
-                word = true,
-                cyclic = true
-            }), augend.constant.new({
-                elements = {"DEBUG", "INFO", "WARN", "ERROR"},
-                word = true,
-                cyclic = true
-            }), augend.constant.new({
-                elements = {"debug", "info", "warn", "error"},
-                word = true,
-                cyclic = true
-            }), -- 日付: YYYY/MM/DD
-            augend.date.new({
-                pattern = "%Y/%m/%d",
-                default_kind = "day"
-            }), -- 通常の整数
-            augend.integer.alias.decimal}
+            default = {
+                augend.constant.new({
+                    elements = {"and", "or"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.constant.new({
+                    elements = {"yes", "no"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.constant.new({
+                    elements = {"on", "off"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.constant.new({
+                    elements = {"public", "private", "protected"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.constant.new({
+                    elements = {"DEBUG", "INFO", "WARN", "ERROR"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.constant.new({
+                    elements = {"debug", "info", "warn", "error"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.date.new({
+                    pattern = "%Y/%m/%d",
+                    default_kind = "day"
+                }),
+                augend.integer.alias.decimal,
+            }
         })
+
+        -- ⭐ キーマップ設定
+        local map = vim.keymap.set
+        local dial_map = require("dial.map")
+
+        map("n", "<C-a>", dial_map.inc_normal(), { noremap = true, silent = true })
+        map("n", "<C-x>", dial_map.dec_normal(), { noremap = true, silent = true })
+        map("v", "<C-a>", dial_map.inc_visual(), { noremap = true, silent = true })
+        map("v", "<C-x>", dial_map.dec_visual(), { noremap = true, silent = true })
+        map("v", "g<C-a>", dial_map.inc_gvisual(), { noremap = true, silent = true })
+        map("v", "g<C-x>", dial_map.dec_gvisual(), { noremap = true, silent = true })
+        map("n", "g<C-a>", dial_map.inc_gnormal(), { noremap = true, silent = true })
+        map("n", "g<C-x>", dial_map.dec_gnormal(), { noremap = true, silent = true })
     end
 })
 table.insert(pluginlist, {
@@ -273,7 +278,10 @@ table.insert(pluginlist, {
     "kevinhwang91/nvim-hlslens",
     event = {"BufReadPre", "BufNewFile"},
     config = function()
-        require("hlslens").setup()
+        require("hlslens").setup({
+            calm_down = true,
+            nearest_only = true,
+        })
         local kopts = {
             noremap = true,
             silent = true
@@ -307,16 +315,16 @@ table.insert(pluginlist, {
         })
     end
 })
-table.insert(pluginlist, {
-    "kbwo/vim-shareedit",
-    dependencies = {"vim-denops/denops.vim" -- 🔑 Denops の依存
-    },
-    cmd = {"ShareEditStartServer", "ShareEditConnect"},
-    event = {"BufReadPre", "BufNewFile"}
-})
 table.insert(pluginlist, {'jghauser/mkdir.nvim'})
 table.insert(pluginlist, {
     'nacro90/numb.nvim',
+    opts = {
+        show_numbers = true,
+        show_cursorline = true,
+        hide_relativenumbers = true,
+        number_only = false,
+        centered_peeking = true,
+    },
     config = function()
         require('numb').setup()
     end
@@ -330,6 +338,12 @@ table.insert(pluginlist, {
         end,
         mode = "i"
     }}
+})
+table.insert(pluginlist, {
+  'nacro90/numb.nvim',
+  config = function()
+    require('numb').setup()
+  end,
 })
 -- table.insert(pluginlist,{
 --     })

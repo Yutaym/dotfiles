@@ -189,6 +189,12 @@ vim.keymap.set('n', '<Space>', '<Leader>', {
     silent = true
 })
 
+
+vim.keymap.set({'o', 'x'}, 'i<space>', 'iw', {
+    noremap = true,
+    silent = true
+})
+
 vim.keymap.set({'n', 'v'}, 's', '<Nop>', {
     noremap = true,
     silent = true

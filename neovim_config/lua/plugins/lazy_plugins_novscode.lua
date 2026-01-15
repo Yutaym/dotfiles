@@ -74,6 +74,9 @@ if (vim.g.vscode == nil) then
         'voldikss/vim-translator',
         cmd = {"TranslateW", "TranslateW --target_lang=en"}
     })
+    table.insert(pluginlist, {
+        'jghauser/mkdir.nvim',
+    })
     -- table.insert(pluginlist, {
     --     'nvimdev/dashboard-nvim',
     --     event = 'VimEnter',
