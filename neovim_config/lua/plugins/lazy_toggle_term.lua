@@ -1,12 +1,12 @@
-if (vim.g.vscode == nil) then
-    return {
-        'akinsho/toggleterm.nvim',
-        version = "*",
-        keys = {{
-            "<Space>t",
-            desc = "Toggle Terminal"
-        }},
-        cmd = {"ToggleTerm"},
+return {
+    'akinsho/toggleterm.nvim',
+    cond = function() return vim.g.vscode == nil end,
+    version = "*",
+    keys = {{
+        "<Space>t",
+        desc = "Toggle Terminal"
+    }},
+    cmd = {"ToggleTerm"},
         config = function()
             require("toggleterm").setup {
                 size = 20,
@@ -31,6 +31,4 @@ if (vim.g.vscode == nil) then
                 desc = "Exit terminal mode"
             })
         end
-    }
-end
-return {}
+}

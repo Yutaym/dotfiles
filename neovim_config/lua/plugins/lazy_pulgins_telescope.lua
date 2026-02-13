@@ -1,19 +1,19 @@
-if vim.g.vscode == nil then
-    return {
-        "nvim-telescope/telescope.nvim",
-        tag = "0.1.6",
-        dependencies = {"nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons",
+return {
+    "nvim-telescope/telescope.nvim",
+    cond = function() return vim.g.vscode == nil end,
+    tag = "0.1.6",
+    dependencies = {"nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons",
 
-        -- 🔍 高速検索エンジン fzf-native
-                        {
-            "nvim-telescope/telescope-fzf-native.nvim",
-            build = "make",
-            cond = function()
-                return vim.fn.executable("make") == 1
-            end
-        }, -- 📜 Undo 履歴表示
-        "debugloop/telescope-undo.nvim"},
-        cmd = "Telescope",
+    -- 🔍 高速検索エンジン fzf-native
+                    {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        cond = function()
+            return vim.fn.executable("make") == 1
+        end
+    }, -- 📜 Undo 履歴表示
+    "debugloop/telescope-undo.nvim"},
+    cmd = "Telescope",
         keys = {{
             "<leader>ff",
             "<cmd>Telescope find_files<CR>",
@@ -90,7 +90,4 @@ if vim.g.vscode == nil then
             telescope.load_extension("fzf")
             telescope.load_extension("undo")
         end
-    }
-else
-    return {}
-end
+}

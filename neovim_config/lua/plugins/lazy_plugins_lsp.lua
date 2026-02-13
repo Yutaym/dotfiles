@@ -1,6 +1,7 @@
 return {
   {
     "williamboman/mason.nvim",
+    cond = function() return vim.g.vscode == nil end,
     lazy = false,
     config = function()
       require("mason").setup()
@@ -10,6 +11,7 @@ return {
   -- nvim-lspconfig は削除して、Neovim のネイティブ LSP を使用
   {
     "hrsh7th/cmp-nvim-lsp",
+    cond = function() return vim.g.vscode == nil end,
     lazy = false,
     config = function()
       -- LSP サーバーの設定
@@ -75,6 +77,7 @@ return {
 
   {
     "nvimdev/lspsaga.nvim",
+    cond = function() return vim.g.vscode == nil end,
     event = "LspAttach",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",

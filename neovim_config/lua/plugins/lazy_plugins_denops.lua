@@ -17,9 +17,8 @@ return {
   {
     "lambdalisue/vim-kensaku",
     dependencies = { "vim-denops/denops.vim" },
-    lazy = false,
+    event = "CmdlineEnter",
     config = function()
-      -- この部分を削除または以下に変更
       vim.keymap.set("c", "<CR>", "<Plug>(kensaku-search-replace)<CR>", { noremap = true, silent = true })
     end,
   },
@@ -31,20 +30,18 @@ return {
   {
     "yuki-yano/fuzzy-motion.vim",
     dependencies = { "vim-denops/denops.vim" },
-    event = "VeryLazy",
-    init = function()
-      vim.keymap.set("n", "<Space>m", "<Plug>(fuzzy-motion)", { noremap = false })
-    end,
+    keys = {
+      {"<Space>m", "<Plug>(fuzzy-motion)", mode = "n", desc = "Fuzzy Motion"},
+    },
   },
   {
     "kbwo/vim-shareedit",
-    dependencies = {"vim-denops/denops.vim" -- 🔑 Denops の依存
-    },
+    dependencies = { "vim-denops/denops.vim" },
     cmd = {"ShareEditStartServer", "ShareEditConnect"},
-    event = {"BufReadPre", "BufNewFile"}
   },
   {
     "lambdalisue/gin.vim",
+    cond = function() return vim.g.vscode == nil end,
     dependencies = { "vim-denops/denops.vim" },
     cmd = { "Gin", "GinBuffer", "GinBranch", "GinStatus" },
   }

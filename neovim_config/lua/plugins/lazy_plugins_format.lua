@@ -1,8 +1,8 @@
-if vim.g.vscode == nil then
-    return {
-        "nvimtools/none-ls.nvim",
-        dependencies = {"williamboman/mason.nvim", "jay-babu/mason-null-ls.nvim", "nvim-lua/plenary.nvim"},
-        event = {"BufReadPre", "BufNewFile"},
+return {
+    "nvimtools/none-ls.nvim",
+    cond = function() return vim.g.vscode == nil end,
+    dependencies = {"williamboman/mason.nvim", "jay-babu/mason-null-ls.nvim", "nvim-lua/plenary.nvim"},
+    event = {"BufReadPre", "BufNewFile"},
         config = function()
             local null_ls = require("null-ls")
 
@@ -41,7 +41,4 @@ if vim.g.vscode == nil then
             --     automatic_installation = true
             -- })
         end
-    }
-else
-    return {}
-end
+}

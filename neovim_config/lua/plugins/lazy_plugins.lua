@@ -1,7 +1,7 @@
-local pluginlist = {}
-table.insert(pluginlist, {
+return {
+{
     "kylechui/nvim-surround",
-    event = "VeryLazy",
+    event = {"BufReadPre", "BufNewFile"},
     config = function()
         local nvim_surround = require("nvim-surround")
         nvim_surround.setup({}) -- デフォルトのまま初期化
@@ -38,9 +38,10 @@ table.insert(pluginlist, {
             end
         })
     end
-})
-table.insert(pluginlist, {
+},
+{
     "numToStr/Comment.nvim",
+    cond = function() return vim.g.vscode == nil end,
     dependencies = {"JoosepAlviste/nvim-ts-context-commentstring", {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
@@ -85,11 +86,12 @@ table.insert(pluginlist, {
             pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook()
         })
     end
-})
+},
 
-table.insert(pluginlist, {
+{
     "vim-scripts/ReplaceWithRegister",
-    -- event = {"BufReadPre", "BufNewFile"},
+    enabled = false,  -- ⭐ キーマップがコメントアウトされているため無効化
+    -- 再度使用する場合はenabled = trueにして、keysで遅延読み込み設定を追加
     init = function()
         -- vim.keymap.set('n', '<Space>r', '<Plug>ReplaceWithRegisterOperator', {
         --     noremap = true,
@@ -104,66 +106,49 @@ table.insert(pluginlist, {
         --     silent = true
         -- })
     end
-})
-table.insert(pluginlist, {
+},
+{
     "vim-scripts/camelcasemotion",
-    -- event = {"BufReadPre", "BufNewFile"},
-    init = function()
-        vim.keymap.set({"n", "v"}, "sw", "<Plug>CamelCaseMotion_w", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v"}, "se", "<Plug>CamelCaseMotion_e", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v"}, "sb", "<Plug>CamelCaseMotion_b", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"o", "v"}, "isw", "<Plug>CamelCaseMotion_iw", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"o", "v"}, "ise", "<Plug>CamelCaseMotion_ie", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"o", "v"}, "isb", "<Plug>CamelCaseMotion_ib", {
-            noremap = true,
-            silent = true
-        })
-
-        vim.keymap.set({"n", "v"}, "<C-w>", "<Plug>CamelCaseMotion_w", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v"}, "<C-e>", "<Plug>CamelCaseMotion_e", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"n", "v"}, "<C-b>", "<Plug>CamelCaseMotion_b", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"o", "v"}, "i<C-w>", "<Plug>CamelCaseMotion_iw", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"o", "v"}, "i<C-e>", "<Plug>CamelCaseMotion_ie", {
-            noremap = true,
-            silent = true
-        })
-        vim.keymap.set({"o", "v"}, "i<C-b>", "<Plug>CamelCaseMotion_ib", {
-            noremap = true,
-            silent = true
-        })
+    keys = {
+        {"sw", mode = {"n", "v"}},
+        {"se", mode = {"n", "v"}},
+        {"sb", mode = {"n", "v"}},
+        {"isw", mode = {"o", "v"}},
+        {"ise", mode = {"o", "v"}},
+        {"isb", mode = {"o", "v"}},
+        {"<C-w>", mode = {"n", "v"}},
+        {"<C-e>", mode = {"n", "v"}},
+        {"<C-b>", mode = {"n", "v"}},
+        {"i<C-w>", mode = {"o", "v"}},
+        {"i<C-e>", mode = {"o", "v"}},
+        {"i<C-b>", mode = {"o", "v"}},
+    },
+    config = function()
+        vim.keymap.set({"n", "v"}, "sw", "<Plug>CamelCaseMotion_w", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "se", "<Plug>CamelCaseMotion_e", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "sb", "<Plug>CamelCaseMotion_b", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "isw", "<Plug>CamelCaseMotion_iw", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "ise", "<Plug>CamelCaseMotion_ie", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "isb", "<Plug>CamelCaseMotion_ib", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "<C-w>", "<Plug>CamelCaseMotion_w", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "<C-e>", "<Plug>CamelCaseMotion_e", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "<C-b>", "<Plug>CamelCaseMotion_b", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "i<C-w>", "<Plug>CamelCaseMotion_iw", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "i<C-e>", "<Plug>CamelCaseMotion_ie", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "i<C-b>", "<Plug>CamelCaseMotion_ib", {noremap = true, silent = true})
     end
-})
-table.insert(pluginlist, {
+},
+{
     "rhysd/clever-f.vim",
-    -- event = {"BufReadPre", "BufNewFile"},
-    init = function()
+    keys = {
+        {"f", mode = {"n", "v", "o"}},
+        {"F", mode = {"n", "v", "o"}},
+        {"t", mode = {"n", "v", "o"}},
+        {"T", mode = {"n", "v", "o"}},
+        {",", mode = {"n", "v"}},
+        {":", mode = {"n", "v"}},
+    },
+    config = function()
         -- clever-f の繰り返し操作にカスタムキーを割り当て
         vim.keymap.set({"n", "v"}, ",", "<Plug>(clever-f-repeat-forward)", {
             noremap = true,
@@ -175,12 +160,12 @@ table.insert(pluginlist, {
         })
 
     end
-})
-table.insert(pluginlist, {
+},
+{
     'wellle/targets.vim',
     event = {"BufReadPre", "BufNewFile"}
-})
-table.insert(pluginlist, {
+},
+{
     "monaqa/dial.nvim",
     lazy = true,  -- ⭐ 自動読み込みを無効化
     keys = {
@@ -245,8 +230,8 @@ table.insert(pluginlist, {
         map("n", "g<C-a>", dial_map.inc_gnormal(), { noremap = true, silent = true })
         map("n", "g<C-x>", dial_map.dec_gnormal(), { noremap = true, silent = true })
     end
-})
-table.insert(pluginlist, {
+},
+{
     "haya14busa/vim-edgemotion",
     event = {"BufReadPre", "BufNewFile"},
     init = function()
@@ -260,9 +245,9 @@ table.insert(pluginlist, {
         })
     end
 
-})
+},
 
-table.insert(pluginlist, {
+{
     "rapan931/lasterisk.nvim",
     event = {"BufReadPre", "BufNewFile"},
     config = function()
@@ -272,9 +257,9 @@ table.insert(pluginlist, {
         -- vim.keymap.set({"n", "x"}, "g*", lasterisk.nvim_search_forward_curpos)
         -- vim.keymap.set({"n", "x"}, "g#", lasterisk.nvim_search_backward_curpos)
     end
-})
+},
 
-table.insert(pluginlist, {
+{
     "kevinhwang91/nvim-hlslens",
     event = {"BufReadPre", "BufNewFile"},
     config = function()
@@ -314,22 +299,25 @@ table.insert(pluginlist, {
             silent = true
         })
     end
-})
-table.insert(pluginlist, {'jghauser/mkdir.nvim'})
-table.insert(pluginlist, {
+},
+{
+    'jghauser/mkdir.nvim',
+    event = "BufWritePre",
+},
+{
     'nacro90/numb.nvim',
-    opts = {
-        show_numbers = true,
-        show_cursorline = true,
-        hide_relativenumbers = true,
-        number_only = false,
-        centered_peeking = true,
-    },
+    event = "CmdlineEnter",
     config = function()
-        require('numb').setup()
+        require('numb').setup({
+            show_numbers = true,
+            show_cursorline = true,
+            hide_relativenumbers = true,
+            number_only = false,
+            centered_peeking = true,
+        })
     end
-})
-table.insert(pluginlist, {
+},
+{
     "ysmb-wtsg/in-and-out.nvim",
     keys = {{
         "<C-CR>",
@@ -338,13 +326,5 @@ table.insert(pluginlist, {
         end,
         mode = "i"
     }}
-})
-table.insert(pluginlist, {
-  'nacro90/numb.nvim',
-  config = function()
-    require('numb').setup()
-  end,
-})
--- table.insert(pluginlist,{
---     })
-return pluginlist
+}
+}
