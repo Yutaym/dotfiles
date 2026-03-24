@@ -3,7 +3,7 @@ return {
     cond = function() return vim.g.vscode == nil end,
     version = "*",
     keys = {{
-        "<Space>t",
+        "<lleader>t",
         desc = "Toggle Terminal"
     }},
     cmd = {"ToggleTerm"},
@@ -21,7 +21,7 @@ return {
                 close_on_exit = true,
                 shell = vim.o.shell
             }
-            vim.keymap.set("n", "<Space>t", "<cmd>ToggleTerm<CR>", {
+            vim.keymap.set("n", "<leader>t", "<cmd>ToggleTerm<CR>", {
                 desc = "Toggle Terminal"
             })
             vim.keymap.set("t", "jj", [[<C-\><C-n><cmd>ToggleTerm<CR>]], {

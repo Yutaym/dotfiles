@@ -1,8 +1,8 @@
 -- 起動時間計測開始
 local start_time = vim.loop.hrtime()
 
-require('base')
-require('mapping')
+require("base")
+require("mapping")
 require("config.lazy")
 
 -- require("config.toggleterm")

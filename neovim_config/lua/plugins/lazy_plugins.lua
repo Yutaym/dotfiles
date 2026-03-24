@@ -78,7 +78,7 @@ return {
                 line = "gcc",
                 block = "gbc"
             },
-            opleader = {
+           opleader = {
                 line = "gc",
                 block = "gb"
             },
@@ -90,18 +90,29 @@ return {
 
 {
     "vim-scripts/ReplaceWithRegister",
-    enabled = false,  -- ⭐ キーマップがコメントアウトされているため無効化
     -- 再度使用する場合はenabled = trueにして、keysで遅延読み込み設定を追加
     init = function()
-        -- vim.keymap.set('n', '<Space>r', '<Plug>ReplaceWithRegisterOperator', {
+        vim.keymap.set('n', 'gr', '<Plug>ReplaceWithRegisterOperator', {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set('n', 'grr', '<Plug>ReplaceWithRegisterLine', {
+            noremap = true,
+            silent = true
+        })
+        vim.keymap.set({'v', 'x'}, 'gr', '<Plug>ReplaceWithRegisterVisual', {
+            noremap = true,
+            silent = true
+        })
+        -- vim.keymap.set('n', '<leader>r', '<Plug>ReplaceWithRegisterOperator', {
         --     noremap = true,
         --     silent = true
         -- })
-        -- vim.keymap.set('n', '<Space>rr', '<Plug>ReplaceWithRegisterLine', {
+        -- vim.keymap.set('n', '<leader>rr', '<Plug>ReplaceWithRegisterLine', {
         --     noremap = true,
         --     silent = true
         -- })
-        -- vim.keymap.set({'v', 'x'}, '<Space>r', '<Plug>ReplaceWithRegisterVisual', {
+        -- vim.keymap.set({'v', 'x'}, '<leader>r', '<Plug>ReplaceWithRegisterVisual', {
         --     noremap = true,
         --     silent = true
         -- })
@@ -181,6 +192,11 @@ return {
             default = {
                 augend.constant.new({
                     elements = {"and", "or"},
+                    word = true,
+                    cyclic = true
+                }),
+                augend.constant.new({
+                    elements = {"&&", "||"},
                     word = true,
                     cyclic = true
                 }),

@@ -1,3 +1,5 @@
+vim.g.mapleader = " "
+
 vim.keymap.set('i', 'jj', '<ESC>', {
     noremap = true
 })
@@ -184,10 +186,10 @@ vim.keymap.set({'v', 'x'}, 'ga', '<ESC>ggVG', {
 })
 -- vim.keymap.set("n", "sw", 'yiw:%s/<C-r><C-r>"//g<Left><Left>')
 
-vim.keymap.set('n', '<Space>', '<Leader>', {
-    noremap = true,
-    silent = true
-})
+-- vim.keymap.set('n', '<Space>', '<Leader>', {
+--     noremap = true,
+--     silent = true
+-- })
 
 
 vim.keymap.set({'o', 'x'}, 'i<space>', 'iw', {
@@ -199,92 +201,95 @@ vim.keymap.set({'n', 'v'}, 's', '<Nop>', {
     noremap = true,
     silent = true
 })
--- print(vim.env.vscode == nil)
-if (vim.g.vscode) then
-    print('mode: vscode')
 
-    vim.keymap.set('n', 'ss', '/', {
-        noremap = true
-    })
+-- 共通マッピング
+vim.keymap.set('n', 'ss', '/', {
+    noremap = true
+})
+vim.keymap.set("x", "ss", vim.g.vscode and 'y:%s/<C-V>//g<Left><Left>' or 'y:%s/<C-r><C-r>"//g<Left><Left>')
+vim.keymap.set("v", "ss", vim.g.vscode and 'y:%s/<C-V>//g<Left><Left>' or 'y:%s/<C-r><C-r>"//g<Left><Left>')
+vim.keymap.set('n', 'sr', ':s/', {
+    noremap = true
+})
+vim.keymap.set('n', 'sa', ':%s/', {
+    noremap = true,
+    silent = true
+})
 
-    vim.keymap.set('n', 'cd', function()
-        vim.cmd('call VSCodeNotify("editor.action.rename")')
-    end, {
-        noremap = true,
-        silent = true
-    })
+-- ---------------------------------------------------
+-- VSCode/Vim 条件分岐マッピング
+vim.keymap.set('n', 'cd', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("editor.action.rename")')
+end or function()
+    -- VSCode環境では使用しない
+end, {
+    noremap = true,
+    silent = true
+})
 
-    vim.keymap.set("x", "ss", 'y:%s/<C-V>//g<Left><Left>')
-    vim.keymap.set("v", "ss", 'y:%s/<C-V>//g<Left><Left>')
-    vim.keymap.set('n', 'sr', ':s/', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sa', ':%s/', {
-        noremap = true,
-        silent = true
-    })
+vim.keymap.set('n', 'gw', vim.g.vscode and '<Nop>' or '<C-w>', {
+    noremap = true,
+    silent = true
+})
 
-    -- vim.keymap.set('n', 'sa', function()
-    --     vim.cmd('call VSCodeNotify("editor.action.startFindReplaceAction")')
-    -- end, {
-    --     noremap = true,
-    --     silent = true
-    -- })
-    vim.keymap.set('n', 'sd', function()
-        vim.cmd('call VSCodeNotify("workbench.action.splitEditorUp")')
-    end, {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'sv', function()
-        vim.cmd('call VSCodeNotify("workbench.action.splitEditorRight")')
-    end, {
-        noremap = true,
-        silent = true
-    })
+vim.keymap.set('n', 'sd', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.splitEditorUp")')
+end or ':split<CR>', {
+    noremap = true,
+    silent = true
+})
 
-    vim.keymap.set('n', 'sw', function()
-        vim.cmd('call VSCodeNotify("workbench.action.focusNextGroup")')
-    end, {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'sh', function()
-        vim.cmd('call VSCodeNotify("workbench.action.navigateLeft")')
-    end, {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'sj', function()
-        vim.cmd('call VSCodeNotify("workbench.action.navigateDown")')
-    end, {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'sk', function()
-        vim.cmd('call VSCodeNotify("workbench.action.navigateUp")')
-    end, {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'sl', function()
-        vim.cmd('call VSCodeNotify("workbench.action.navigateRight")')
-    end, {
-        noremap = true,
-        silent = true
-    })
-    -- vim.keymap.set('n', 'sw', '<C-w>w', {noremap = true})
-    -- vim.keymap.set('n', 'sh', '<C-w>h', {noremap = true})
-    -- vim.keymap.set('n', 'sj', '<C-w>j', {noremap = true})
-    -- vim.keymap.set('n', 'sk', '<C-w>k', {noremap = true})
-    -- vim.keymap.set('n', 'sl', '<C-w>l', {noremap = true})
+vim.keymap.set('n', 'sv', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.splitEditorRight")')
+end or ':vsplit<CR>', {
+    noremap = true,
+    silent = true
+})
 
-    vim.keymap.set('n', 'so', function()
-        vim.cmd('call VSCodeNotify("workbench.action.toggleMaximizeEditorGroup")')
-    end, {
-        noremap = true,
-        silent = true
-    })
+vim.keymap.set('n', 'sw', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.focusNextGroup")')
+end or '<C-w>w', {
+    noremap = true,
+    silent = true
+})
+
+vim.keymap.set('n', 'sh', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.navigateLeft")')
+end or '<C-w>h', {
+    noremap = true,
+    silent = true
+})
+
+vim.keymap.set('n', 'sj', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.navigateDown")')
+end or '<C-w>j', {
+    noremap = true,
+    silent = true
+})
+
+vim.keymap.set('n', 'sk', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.navigateUp")')
+end or '<C-w>k', {
+    noremap = true,
+    silent = true
+})
+
+vim.keymap.set('n', 'sl', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.navigateRight")')
+end or '<C-w>l', {
+    noremap = true,
+    silent = true
+})
+
+vim.keymap.set('n', 'so', vim.g.vscode and function()
+    vim.cmd('call VSCodeNotify("workbench.action.toggleMaximizeEditorGroup")')
+end or '<C-w>_<C-w>|', {
+    noremap = true,
+    silent = true
+})
+
+-- VSCode専用
+if vim.g.vscode then
     vim.keymap.set('n', 'sq', function()
         vim.cmd('call VSCodeNotify("workbench.action.closeActiveEditor")')
     end, {
@@ -309,58 +314,8 @@ if (vim.g.vscode) then
         noremap = true,
         silent = true
     })
-
 else
-    print('mode: not vscode')
-    vim.keymap.set('n', 'gw', '<C-w>', {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 's', '<Nop>', {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'ss', '/', {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set("x", "ss", 'y:%s/<C-r><C-r>"//g<Left><Left>')
-    vim.keymap.set("v", "ss", 'y:%s/<C-r><C-r>"//g<Left><Left>')
-    vim.keymap.set('n', 'sr', ':s/', {
-        noremap = true,
-        silent = true
-    })
-    vim.keymap.set('n', 'sa', ':%s/', {
-        noremap = true,
-        silent = true
-    })
-
-    -- vim.keymap.set('n', 'sd', function() vim.cmd('split') end, {noremap = true})
-    -- vim.keymap.set('n', 'sv', vim.cmd('vsplit'), {noremap = true})
-    vim.keymap.set('n', 'sd', ':split<CR>', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sv', ':vsplit<CR>', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sw', '<C-w>w', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sh', '<C-w>h', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sj', '<C-w>j', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sk', '<C-w>k', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'sl', '<C-w>l', {
-        noremap = true
-    })
-    vim.keymap.set('n', 'so', '<C-w>_<C-w>|', {
-        noremap = true
-    })
+    -- Vim専用
     vim.keymap.set('n', 's=', '<C-w>=', {
         noremap = true
     })
@@ -408,4 +363,15 @@ else
     vim.keymap.set('i', '{', '{}<Left>', {
         noremap = true
     })
+
+    -- ターミナルモードでのマッピング
+    vim.keymap.set('t', '<C-[>', '<C-\\><C-n>', {
+        noremap = true
+    })
 end
+
+-- ---------------------------------------------------
+vim.keymap.set('n', '<leader>q', 'atest<Esc>', {
+    noremap = true,
+    silent = true
+})

@@ -38,6 +38,20 @@ return {
                 specs = {},
                 groups = {}
             })
+
+            -- コンパイル済みテーマファイルの存在確認（Temp削除対策）
+            local config = require("github-theme.config")
+            local util = require("github-theme.util")
+            local theme_name = "github_dark_default"
+            local compiled_path = util.join_paths(
+                config.options.compile_path,
+                theme_name .. config.options.compile_file_suffix
+            )
+
+            if not util.exists(compiled_path) then
+                require("github-theme").compile(true)
+            end
+
             -- カラースキーム選択
             vim.cmd("colorscheme github_dark_default")
         end

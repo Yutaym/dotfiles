@@ -31,7 +31,7 @@ vim.o.autoread = true
 vim.o.hidden = true
 vim.o.writebackup = false
 vim.o.backup = false
-vim.o.ambiwidth = 'double'
+vim.o.ambiwidth = 'single'
 vim.o.visualbell = true
 vim.o.virtualedit = 'onemore'
 
