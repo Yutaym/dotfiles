@@ -150,9 +150,9 @@ Set-PSReadLineOption -Colors @{
 
 #region conda initialize
 #!! Contents within this block are managed by 'conda init' !!
-If (Test-Path "C:\Users\yutay\miniconda3\Scripts\conda.exe") {
-    (& "C:\Users\yutay\miniconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ? { $_ } | Invoke-Expression
-}
+# If (Test-Path "C:\Users\yutay\miniconda3\Scripts\conda.exe") {
+#     (& "C:\Users\yutay\miniconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ? { $_ } | Invoke-Expression
+# }
 #$conda_hook = & "C:\Users\yutay\miniconda3\Scripts\conda.exe" "shell.powershell" "hook"
 #if ($conda_hook -ne "") {
 #    $conda_hook | Out-String | Invoke-Expression
