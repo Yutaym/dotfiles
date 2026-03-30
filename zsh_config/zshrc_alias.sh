@@ -41,6 +41,7 @@ alias ls='ls -G'
 alias la='ls -a'
 alias ll='ls -lh'
 alias lla='ls -alh'
+alias lal='ls -alh'
 alias lsgr='ls -a | grep -E'
 
 #one commands
