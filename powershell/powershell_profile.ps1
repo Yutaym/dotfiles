@@ -13,18 +13,20 @@ function prompt {
     $colorUnstaged = "Red"
 
     # 仮想環境名を検出（conda or venv）
-
+    # $env:VIRTUAL_ENV_PROMPT
+    $env:VIRTUAL_ENV_PROMPT_NAME = ""
     if ($env:VIRTUAL_ENV) {
         # $env:VIRTUAL_ENV = Split-Path -Path $env:VIRTUAL_ENV -Leaf
         # $env:VIRTUAL_ENV = Split-Path -Path $env:VIRTUAL_ENV -Leaf
+        $promptenv = Split-Path -Path $env:VIRTUAL_ENV -Leaf
+        $env:VIRTUAL_ENV_PROMPT_NAME = "venv:$env:VIRTUAL_ENV_PROMPT"
     }
     elseif ($env:CONDA_DEFAULT_ENV) {
         $env:VIRTUAL_ENV = $env:CONDA_DEFAULT_ENV
-        $env:VIRTUAL_ENV_PROMPT = $env:CONDA_DEFAULT_ENV
+        $env:VIRTUAL_ENV_PROMPT_NAME = "conda:$env:CONDA_DEFAULT_ENV"
     }
     else {
         $env:VIRTUAL_ENV = ""
-        $env:VIRTUAL_ENV_PROMPT = ""
     }
     $env:VIRTUAL_ENV_DISABLE_PROMPT = $true
 
@@ -65,9 +67,9 @@ function prompt {
 
     # 仮想環境表示
     #$env:VIRTUAL_ENV_PROMPT
-    if ($env:VIRTUAL_ENV) {
+    if ($env:VIRTUAL_ENV_PROMPT_NAME) {
         Write-Host -NoNewline "(" -ForegroundColor $colorArrow
-        Write-Host -NoNewline "$env:VIRTUAL_ENV_PROMPT" -ForegroundColor $colorEnv
+        Write-Host -NoNewline "$env:VIRTUAL_ENV_PROMPT_NAME" -ForegroundColor $colorEnv
         Write-Host -NoNewline ") " -ForegroundColor $colorArrow
     }
 

@@ -8,6 +8,15 @@ zstyle ':vcs_info:*' formats "%F{2}%c%u[%b]%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 precmd () { vcs_info }
 
+# venv/conda/uv 環境表示関数（uv優先）
+function _python_env_info() {
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    echo "%F{5}($(basename $VIRTUAL_ENV))%f "   # uv/venv → マゼンタ
+  elif [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+    echo "%F{3}(conda:$CONDA_DEFAULT_ENV)%f "   # conda → 黄色
+  fi
+}
+
 PROMPT='%B%F{2}%n@%m%f%b %F{4}[%D %*]%f ${vcs_info_msg_0_}%B%F{7}%~%f%b
 %F{4}->%f '
 
