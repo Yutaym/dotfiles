@@ -19,14 +19,19 @@ Set-PSReadLineKeyHandler -Key Ctrl+g -ScriptBlock {
 }
 
 ## input History Plugin
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-Set-PSReadLineOption -PredictionViewStyle ListView
-# Set-PSReadLineOption -Colors @{ InLinePrediction = [ConsoleColor]::Cyan }
-Set-PSReadLineOption -Colors @{
-    InLinePrediction = [ConsoleColor]::DarkGray
-    ListPrediction   = [ConsoleColor]::Cyan
+$psReadLineModule = Get-Module PSReadLine -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+
+if ($psReadLineModule -and $psReadLineModule.Version -ge [version]'2.1.0') {
+    Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+    Set-PSReadLineOption -PredictionViewStyle ListView
+    Set-PSReadLineOption -Colors @{
+        InLinePrediction = [ConsoleColor]::DarkGray
+        ListPrediction   = [ConsoleColor]::Cyan
+    }
 }
 
 
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
-Invoke-Expression -Command (gh completion -s powershell | Out-String)
+if (Get-Command gh -ErrorAction SilentlyContinue) {
+    Invoke-Expression -Command (gh completion -s powershell | Out-String)
+}
