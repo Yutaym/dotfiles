@@ -44,6 +44,10 @@ alias lla='ls -alh --color=auto'
 alias lal='ls -alh --color=auto'
 alias lsgr='ls -a  --color=auto | grep -E'
 
+alias lsc='eza --icons --group-directories-first'
+alias llc='eza -la --icons --group-directories-first --git'
+alias ltc='eza --tree --level=2 --icons'
+
 #one commands
 alias c='clear'
 alias h='history'
