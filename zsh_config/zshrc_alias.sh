@@ -37,12 +37,12 @@ alias codef='code ./'
 alias co='code ./'
 
 #ls
-alias ls='ls -G'
-alias la='ls -a'
-alias ll='ls -lh'
-alias lla='ls -alh'
-alias lal='ls -alh'
-alias lsgr='ls -a | grep -E'
+alias ls='ls -G --color=auto'
+alias la='ls -a --color=auto'
+alias ll='ls -lh --color=auto'
+alias lla='ls -alh --color=auto'
+alias lal='ls -alh --color=auto'
+alias lsgr='ls -a  --color=auto | grep -E'
 
 #one commands
 alias c='clear'
