@@ -2,6 +2,7 @@
 set-alias vi 'C:\Program Files\Vim\vim90\vim.exe'
 set-alias vim 'C:\Program Files\Neovim\bin\nvim.exe'
 function ghcs {
+    [CmdletBinding()]
     # Debug support provided by common PowerShell function parameters, which is natively aliased as -d or -db
     # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_commonparameters?view=powershell-7.4#-debug
     param(
@@ -15,15 +16,14 @@ function ghcs {
         [Parameter(Position = 0, ValueFromRemainingArguments)]
         [string]$Prompt
     )
-    begin {
-        # Create temporary file to store potential command user wants to execute when exiting
-        $executeCommandFile = New-TemporaryFile
+    # Create temporary file to store potential command user wants to execute when exiting
+    $executeCommandFile = New-TemporaryFile
 
-        # Store original value of GH_* environment variable
-        $envGhDebug = $Env:GH_DEBUG
-        $envGhHost = $Env:GH_HOST
-    }
-    process {
+    # Store original value of GH_* environment variables
+    $envGhDebug = $Env:GH_DEBUG
+    $envGhHost = $Env:GH_HOST
+
+    try {
         if ($PSBoundParameters['Debug']) {
             $Env:GH_DEBUG = 'api'
         }
@@ -31,8 +31,7 @@ function ghcs {
         $Env:GH_HOST = $Hostname
 
         gh copilot suggest -t $Target -s "$executeCommandFile" $Prompt
-    }
-    end {
+
         # Execute command contained within temporary file if it is not empty
         if ($executeCommandFile.Length -gt 0) {
             # Extract command to execute from temporary file
@@ -56,16 +55,18 @@ function ghcs {
             Invoke-Expression $executeCommand
         }
     }
-    clean {
+    finally {
         # Clean up temporary file used to store potential command user wants to execute when exiting
         Remove-Item -Path $executeCommandFile
 
         # Restore GH_* environment variables to their original value
         $Env:GH_DEBUG = $envGhDebug
+        $Env:GH_HOST = $envGhHost
     }
 }
 
 function ghce {
+    [CmdletBinding()]
     # Debug support provided by common PowerShell function parameters, which is natively aliased as -d or -db
     # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_commonparameters?view=powershell-7.4#-debug
     param(
@@ -75,12 +76,11 @@ function ghce {
         [Parameter(Position = 0, ValueFromRemainingArguments)]
         [string[]]$Prompt
     )
-    begin {
-        # Store original value of GH_* environment variables
-        $envGhDebug = $Env:GH_DEBUG
-        $envGhHost = $Env:GH_HOST
-    }
-    process {
+    # Store original value of GH_* environment variables
+    $envGhDebug = $Env:GH_DEBUG
+    $envGhHost = $Env:GH_HOST
+
+    try {
         if ($PSBoundParameters['Debug']) {
             $Env:GH_DEBUG = 'api'
         }
@@ -89,7 +89,7 @@ function ghce {
 
         gh copilot explain $Prompt
     }
-    clean {
+    finally {
         # Restore GH_* environment variables to their original value
         $Env:GH_DEBUG = $envGhDebug
         $Env:GH_HOST = $envGhHost
