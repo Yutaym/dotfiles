@@ -209,4 +209,4 @@ fi
 LOCAL_IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
 export DISPLAY=$LOCAL_IP:0i
 
-conda activate base
+conda activate base >/dev/null 2>&1
