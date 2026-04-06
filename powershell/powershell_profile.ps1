@@ -1,116 +1,143 @@
-function prompt {
-    $branch = ""
-    $gitStatusSymbols = ""
-    $cwd = Get-Location
-    $isGit = $false
+# ================================================================
+# PowerShell Prompt  (Microsoft.PowerShell_profile.ps1)
+# ================================================================
 
-    # 色の設定
-    $colorEnv = "Green"
-    $colorBranch = "Yellow"
-    $colorPath = "Cyan"
-    $colorArrow = "Gray"
-    $colorStaged = "Green"
-    $colorUnstaged = "Red"
+if ($PSVersionTable.PSVersion.Major -ge 6) {
+    $ESC = "`e"
+} else {
+    $ESC = [char]27
+}
 
-    # 仮想環境名を検出（conda or venv）
-    # $env:VIRTUAL_ENV_PROMPT
-    $env:VIRTUAL_ENV_PROMPT_NAME = ""
-    if ($env:VIRTUAL_ENV) {
-        # $env:VIRTUAL_ENV = Split-Path -Path $env:VIRTUAL_ENV -Leaf
-        # $env:VIRTUAL_ENV = Split-Path -Path $env:VIRTUAL_ENV -Leaf
-        $promptenv = Split-Path -Path $env:VIRTUAL_ENV -Leaf
-        $env:VIRTUAL_ENV_PROMPT_NAME = "venv:$env:VIRTUAL_ENV_PROMPT"
-    }
-    elseif ($env:CONDA_DEFAULT_ENV) {
-        $env:VIRTUAL_ENV = $env:CONDA_DEFAULT_ENV
-        $env:VIRTUAL_ENV_PROMPT_NAME = "conda:$env:CONDA_DEFAULT_ENV"
-    }
-    else {
-        $env:VIRTUAL_ENV = ""
-    }
-    $env:VIRTUAL_ENV_DISABLE_PROMPT = $true
+$RESET = "${ESC}[0m"
+$BOLD  = "${ESC}[1m"
+$F1    = "${ESC}[31m"
+$F2    = "${ESC}[32m"
+$F3    = "${ESC}[33m"
+$F4    = "${ESC}[34m"
+$F6    = "${ESC}[36m"
+$F7    = "${ESC}[37m"
 
-
-    # Git チェック
+function Get-GitInfo {
     try {
-        git rev-parse --is-inside-work-tree 2>$null | Out-Null
-        if ($LASTEXITCODE -eq 0) {
-            $isGit = $true
-            $branch = (git rev-parse --abbrev-ref HEAD).Trim()
+        $branch = git rev-parse --abbrev-ref HEAD 2>$null
+        if (-not $branch) { return "" }
 
-            $statusLines = git status --porcelain | Where-Object { $_.Length -ge 2 }
+        $status   = git status --porcelain 2>$null
+        $staged   = ($status | Where-Object { $_ -match "^[MADRC]" })
+        $unstaged = ($status | Where-Object { $_ -match "^.[MADRC?]" })
 
-            $hasStaged = $false
-            $hasUnstaged = $false
+        $indicator = ""
+        if ($staged)   { $indicator += "${F3}!" }
+        if ($unstaged) { $indicator += "${F1}+" }
 
-            foreach ($line in $statusLines) {
-                $indexStatus = $line.Substring(0, 1)
-                $workTreeStatus = $line.Substring(1, 1)
-
-                if ($indexStatus -notmatch ' ' -and $indexStatus -ne '?') {
-                    $hasStaged = $true
-                }
-                if ($workTreeStatus -notmatch ' ' -and $workTreeStatus -ne '?') {
-                    $hasUnstaged = $true
-                }
-            }
-
-            if ($hasStaged) {
-                $gitStatusSymbols += "+"
-            }
-            if ($hasUnstaged) {
-                $gitStatusSymbols += "*"
-            }
+        if ($branch -eq "HEAD") {
+            $branch = git rev-parse --short HEAD 2>$null
+            return "[${F1}detached:${branch}${indicator}${F2}]${RESET}"
         }
+        return "[${F2}${branch}${indicator}${F2}]${RESET}"
+    } catch {
+        return ""
     }
-    catch {}
+}
 
-    # 仮想環境表示
-    #$env:VIRTUAL_ENV_PROMPT
-    if ($env:VIRTUAL_ENV_PROMPT_NAME) {
-        Write-Host -NoNewline "(" -ForegroundColor $colorArrow
-        Write-Host -NoNewline "$env:VIRTUAL_ENV_PROMPT_NAME" -ForegroundColor $colorEnv
-        Write-Host -NoNewline ") " -ForegroundColor $colorArrow
+function Get-PythonEnvInfo {
+    if ($env:VIRTUAL_ENV) {
+        $name = Split-Path $env:VIRTUAL_ENV -Leaf
+        return "(${F2}venv:${name}${RESET})"
+    } elseif ($env:CONDA_DEFAULT_ENV) {
+        return "(${F2}conda:$($env:CONDA_DEFAULT_ENV)${RESET})"
+    }
+    return ""
+}
+
+$script:_cmdStartTime = $null
+
+if (Get-Module -Name PSReadLine -ErrorAction SilentlyContinue) {
+    Set-PSReadLineOption -AddToHistoryHandler {
+        param([string]$command)
+        $script:_cmdStartTime = [System.Diagnostics.Stopwatch]::StartNew()
+        return $true
+    }
+}
+
+function prompt {
+    # ★ 絶対最初：$? と $LASTEXITCODE を退避
+    $lastSuccess = $?
+    $lastCode    = $LASTEXITCODE
+
+    # 実行時間
+    $elapsed = 0
+    if ($script:_cmdStartTime -ne $null -and $script:_cmdStartTime.IsRunning) {
+        $script:_cmdStartTime.Stop()
+        $elapsed = [int]$script:_cmdStartTime.Elapsed.TotalSeconds
+        $script:_cmdStartTime = $null
     }
 
-    # Git ブランチとステータス
-    if ($branch) {
-        Write-Host -NoNewline "[" -ForegroundColor $colorArrow
-        Write-Host -NoNewline "$branch" -ForegroundColor $colorBranch
-        if ($gitStatusSymbols.Contains("+")) {
-            Write-Host -NoNewline "+" -ForegroundColor $colorStaged
+    # ── ステータス判定 ─────────────────────────────────────────
+    # $? を主軸にして判定
+    # ┌─────────────────────┬──────────────────────────────────────┐
+    # │ 成功                 │ $? = true  かつ $LASTEXITCODE = 0   │
+    # │ 外部コマンド失敗     │ $? = false かつ $LASTEXITCODE != 0  │
+    # │ 内部/NotFound失敗   │ $? = false かつ $LASTEXITCODE = 0   │
+    # └─────────────────────┴──────────────────────────────────────┘
+    if ($lastSuccess) {
+        # 成功
+        $isSuccess   = $true
+        $displayCode = ""
+    } elseif ($lastCode -ne 0) {
+        # 外部コマンド失敗：具体的なコードを表示
+        $isSuccess   = $false
+        $displayCode = "$lastCode"
+    } else {
+        # コマンドが見つからない / PowerShell内部エラー：コード不明
+        $isSuccess   = $false
+        $displayCode = "!"
+    }
+
+    # ステータス文字列（zsh と同じロジック）
+    if ($isSuccess) {
+        if ($elapsed -ge 3) {
+            $statusStr = "${F2}${elapsed}s${RESET} "
+        } else {
+            $statusStr = "${F2}${RESET}"
         }
-        if ($gitStatusSymbols.Contains("*")) {
-            Write-Host -NoNewline "*" -ForegroundColor $colorUnstaged
-        }
-        Write-Host -NoNewline "] " -ForegroundColor $colorArrow
+    } else {
+        $statusStr = "${F1}E${displayCode}|${elapsed}s${RESET} "
     }
 
-    # パスとプロンプト
-    Write-Host -NoNewline "$cwd" -ForegroundColor $colorPath
-    Write-Host -NoNewline " >>> " -ForegroundColor $colorArrow
+    # 右端に日時
+    $datetime    = "[$(Get-Date -Format 'yyyy/MM/dd HH:mm:ss')]"
+    $windowWidth = $Host.UI.RawUI.WindowSize.Width
+    $rightCol    = $windowWidth - $datetime.Length + 1
+    Write-Host "${ESC}[s${ESC}[${rightCol}G${F2}${datetime}${RESET}${ESC}[u" -NoNewline
+
+    # 1行目
+    Write-Host "${F4}PS:${RESET}" -NoNewline
+
+    $pyEnv = Get-PythonEnvInfo
+    if ($pyEnv) {
+        Write-Host " ${pyEnv}" -NoNewline
+    }
+
+    Write-Host " ${BOLD}${F3}$env:USERNAME@$env:COMPUTERNAME${RESET}" -NoNewline
+
+    $git = Get-GitInfo   # ← ここで $LASTEXITCODE が汚染されるが退避済みなので問題なし
+    if ($git) {
+        Write-Host " ${git}" -NoNewline
+    }
+
+    $path = (Get-Location).Path.Replace($env:USERPROFILE, "~")
+    Write-Host " ${BOLD}${F6}${path}${RESET}" -NoNewline
+
+    Write-Host " ${statusStr}"
+
+    # 2行目
+    Write-Host "${F7}->${RESET}" -NoNewline
+
+    # ★ 絶対最後：次回のために $LASTEXITCODE をリセット
+    $global:LASTEXITCODE = 0
 
     return " "
-
-    # if ($env_name) {
-    #     if ($isGit) {
-    #         (git branch | select-string "^\*").ToString() | set-variable -name branch
-    #         $branch = $branch.trim() -replace "^\* *", ""
-    #         "($env_name) [$branch] $(get-location) >>> "
-    #     }
-    #     else {
-    #         "($env_name) $(get-location) >>> "
-    #     }
-
-    # }
-    # else {
-    #     if (git branch) {
-    #         (git branch | select-string "^\*").ToString() | set-variable -name branch
-    #         $branch = $branch.trim() -replace "^\* *", ""
-    #         "[$branch] $(get-location) >>> "
-    #     }
-    #     else {
-    #         " $(get-location) >>> "
-    #     }
-    # }
 }
+
+$global:LASTEXITCODE = 0
