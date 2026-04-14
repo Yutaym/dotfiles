@@ -58,5 +58,6 @@ zstyle ':zle:*' word-style unspecified
 
 export EDITOR="vim"
 
+source ${SCRIPT_DIR}/zshrc_function.sh
 source ${SCRIPT_DIR}/zshrc_alias.sh
 source ${SCRIPT_DIR}/zshrc_prompt.sh

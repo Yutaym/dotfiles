@@ -19,3 +19,18 @@ Register-ArgumentCompleter -CommandName MyCommand -ParameterName Name -ScriptBlo
         [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
     }
 }
+
+# $PROFILE に追加
+function Use-ClaudeAnthropic {
+    Remove-Item Env:ANTHROPIC_AUTH_TOKEN -ErrorAction SilentlyContinue
+    Remove-Item Env:ANTHROPIC_BASE_URL -ErrorAction SilentlyContinue
+    # $env:ANTHROPIC_API_KEY = "your-actual-api-key"
+    Write-Host "-> Anthropic API mode"
+}
+
+function Use-ClaudeOllama {
+    $env:ANTHROPIC_AUTH_TOKEN = "ollama"
+    # $env:ANTHROPIC_API_KEY = ""
+    $env:ANTHROPIC_BASE_URL = "http://yutapc:11434"
+    Write-Host "-> Ollama mode"
+}

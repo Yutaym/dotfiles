@@ -8,6 +8,10 @@ If (Test-Path $condaPath) {
     (& $condaPath "shell.powershell" "hook") | Out-String | ? { $_ } | Invoke-Expression
 }
 
+# Remove-Item Env:ANTHROPIC_AUTH_TOKEN  -ErrorAction SilentlyContinue
+# Remove-Item Env:ANTHROPIC_BASE_URL    -ErrorAction SilentlyContinue
+# Write-Host "[Claude] Backend: Anthropic API (default)" -ForegroundColor Cyan
+
 $powershellProfile = Join-Path $PSScriptRoot "powershell_profile.ps1"
 $powershellAlias = Join-Path $PSScriptRoot "powershell_alias.ps1"
 $powershellComplete = Join-Path $PSScriptRoot "powershell_complete.ps1"
