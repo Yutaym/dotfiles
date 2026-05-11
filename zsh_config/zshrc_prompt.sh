@@ -27,6 +27,20 @@ function _python_env_info() {
     fi
 }
 
+function _shell_env_label() {
+    if [[ "$OSTYPE" == darwin* ]]; then
+        echo "mac"
+    elif [[ "$OSTYPE" == linux* ]]; then
+        if [[ -r /proc/version ]] && grep -qi microsoft /proc/version 2>/dev/null; then
+            echo "WSL"
+        else
+            echo "ubuntu"
+        fi
+    else
+        echo "$OSTYPE"
+    fi
+}
+
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # 実行時間計測
@@ -63,7 +77,7 @@ precmd() {
 }
 
 # PROMPT は変数参照のみ（関数呼び出しで $? が乱れない）
-PROMPT='%F{4}WSL:%f $(_python_env_info) %B%F{3}%n@%m%f%b ${vcs_info_msg_0_} %B%F{6}%~%f%b ${_status_display}
+PROMPT='%F{4}$(_shell_env_label):%f $(_python_env_info) %B%F{3}%n@%m%f%b ${vcs_info_msg_0_} %B%F{6}%~%f%b ${_status_display}
 %F{7}->%f '
 
 RPROMPT='%F{2}[%D{%Y/%m/%d %H:%M:%S}]%f'
