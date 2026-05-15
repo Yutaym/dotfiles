@@ -1,4 +1,5 @@
 local has_lazygit = vim.fn.executable("lazygit") == 1
+local is_windows = vim.fn.has("win32") == 1  -- Windows判定を追加
 
 local function notify_lazygit_missing()
     vim.notify("lazygit が見つかりません。インストールして PATH を通してください。", vim.log.levels.WARN)
@@ -36,11 +37,27 @@ return {
                 enabled = has_lazygit,
             },
 
+            -- 画像プレビュー（Windows以外のみ有効）
+            image = {
+                enabled = not is_windows,
+            },
+
+            -- 入力ダイアログ改善
+            input = {
+                enabled = true,
+            },
+
             -- 通知システム
             -- notifier = {
             --     enabled = true,
             --     timeout = 3000,
             -- },
+
+            -- ファジーファインダー
+            picker = {
+                enabled = true,
+            },
+
             -- クイックファイル
             quickfile = { enabled = true },
             -- ステータスカラム
@@ -113,6 +130,14 @@ return {
             -- Zenモード
             { "<leader>z", function() Snacks.zen() end, desc = "Zenモード切り替え" },
             { "<leader>Z", function() Snacks.zen.zoom() end, desc = "ウィンドウズーム切り替え" },
+
+            -- Picker
+            { "<leader><space>", function() Snacks.picker.smart() end, desc = "ファイル検索（スマート）" },
+            { "<leader>ff",      function() Snacks.picker.files() end, desc = "ファイル検索" },
+            { "<leader>fg",      function() Snacks.picker.grep() end, desc = "Grep検索" },
+            { "<leader>fb",      function() Snacks.picker.buffers() end, desc = "バッファ一覧" },
+            { "<leader>fr",      function() Snacks.picker.recent() end, desc = "最近のファイル" },
+            { "<leader>fh",      function() Snacks.picker.help() end, desc = "ヘルプ検索" },
         },
         init = function()
             vim.api.nvim_create_autocmd("User", {

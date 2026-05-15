@@ -102,14 +102,31 @@ return {
 
       vim.opt.signcolumn = "yes"
 
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { border = "rounded", max_width = 60, max_height = 20 }
-      )
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { border = "rounded", max_width = 60, max_height = 10 }
-      )
+      -- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+      --   vim.lsp.handlers.hover,
+      --   { border = "rounded", max_width = 60, max_height = 20 }
+      -- )
+      -- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+      --   vim.lsp.handlers.signature_help,
+      --   { border = "rounded", max_width = 60, max_height = 10 }
+      -- )
+      local _hover = vim.lsp.buf.hover
+      vim.lsp.buf.hover = function(opts)
+        return _hover(vim.tbl_extend("force", {
+          border = "rounded",
+          max_width = 60,
+          max_height = 20,
+        }, opts or {}))
+      end
+
+      local _sig = vim.lsp.buf.signature_help
+      vim.lsp.buf.signature_help = function(opts)
+        return _sig(vim.tbl_extend("force", {
+          border = "rounded",
+          max_width = 60,
+          max_height = 10,
+        }, opts or {}))
+      end
 
       local keymap = vim.keymap.set
       keymap("n", "gv", "<cmd>Lspsaga hover_doc<CR>", { desc = "Hover Doc" })

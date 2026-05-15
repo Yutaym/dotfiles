@@ -1,6 +1,7 @@
 # ================================================================
 # PowerShell Prompt  (Microsoft.PowerShell_profile.ps1)
 # ================================================================
+$env:VIRTUAL_ENV_DISABLE_PROMPT = 0
 
 if ($PSVersionTable.PSVersion.Major -ge 6) {
     $ESC = "`e"
@@ -40,10 +41,11 @@ function Get-GitInfo {
     }
 }
 
-function Get-PythonEnvInfo {
+function Get-PythonEnvInfo{
     if ($env:VIRTUAL_ENV) {
-        $name = Split-Path $env:VIRTUAL_ENV -Leaf
-        return "(${F2}venv:${name}${RESET})"
+        $venvPath = $env:VIRTUAL_ENV
+        $projectName = Split-Path (Split-Path $venvPath -Parent) -Leaf
+        return "(${F2}venv:${projectName}${RESET})"
     } elseif ($env:CONDA_DEFAULT_ENV) {
         return "(${F2}conda:$($env:CONDA_DEFAULT_ENV)${RESET})"
     }
@@ -137,7 +139,7 @@ function prompt {
     # ★ 絶対最後：次回のために $LASTEXITCODE をリセット
     $global:LASTEXITCODE = 0
 
-    return " "
+    return ""
 }
 
 $global:LASTEXITCODE = 0

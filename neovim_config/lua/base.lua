@@ -95,6 +95,9 @@ vim.o.conceallevel = 0
 vim.o.foldmethod = "marker"
 vim.o.updatetime = 300
 
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+
 function try_catch(what)
     local status, result = pcall(what.try)
     if not status then
