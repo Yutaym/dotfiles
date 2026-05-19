@@ -66,3 +66,5 @@ alias chx='chmod +x'
 #zsh
 alias vzsh='nvim ~/.zshrc'
 alias szsh='source ~/.zshrc'
+
+alias memodir='cd ~/documents/memo'
