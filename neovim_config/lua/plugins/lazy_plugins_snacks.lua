@@ -8,6 +8,7 @@ end
 return {
     {
         "folke/snacks.nvim",
+        cond = function() return vim.g.vscode == nil end,
         priority = 1000,
         lazy = false,
         opts = {
@@ -132,7 +133,7 @@ return {
             { "<leader>Z", function() Snacks.zen.zoom() end, desc = "ウィンドウズーム切り替え" },
 
             -- Picker
-            { "<leader><space>", function() Snacks.picker.smart() end, desc = "ファイル検索（スマート）" },
+            { "<leader>fa", function() Snacks.picker.smart() end, desc = "ファイル検索（スマート）" },
             { "<leader>ff",      function() Snacks.picker.files() end, desc = "ファイル検索" },
             { "<leader>fg",      function() Snacks.picker.grep() end, desc = "Grep検索" },
             { "<leader>fb",      function() Snacks.picker.buffers() end, desc = "バッファ一覧" },

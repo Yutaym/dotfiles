@@ -48,7 +48,7 @@ return {
         config = function()
             require("nvim-treesitter").setup({
                 ensure_installed = {"javascript", "typescript", "tsx", "html", "css", "vue", "lua", "python", "bash",
-                                    "json"},
+                                    "json", "markdown", "markdown_inline"},
                 highlight = {
                     enable = true
                 },
@@ -78,7 +78,7 @@ return {
                 line = "gcc",
                 block = "gbc"
             },
-           opleader = {
+            opleader = {
                 line = "gc",
                 block = "gb"
             },
@@ -87,7 +87,6 @@ return {
         })
     end
 },
-
 {
     "vim-scripts/ReplaceWithRegister",
     -- 再度使用する場合はenabled = trueにして、keysで遅延読み込み設定を追加

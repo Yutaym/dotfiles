@@ -16,3 +16,11 @@ if (Test-Path $sourceProfilePath) {
 } else {
     Write-Host "元ファイルが見つかりません: $sourceProfilePath" -ForegroundColor Red
 }
+
+# 未インストールのプログラム・モジュールを自動インストール
+$autoInstallPath = Join-Path $PSScriptRoot "powershell_auto_install.ps1"
+if (Test-Path $autoInstallPath) {
+    . $autoInstallPath
+} else {
+    Write-Host "自動インストールスクリプトが見つかりません: $autoInstallPath" -ForegroundColor Red
+}

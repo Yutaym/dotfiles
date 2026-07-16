@@ -5,6 +5,12 @@ require("base")
 require("mapping")
 require("config.lazy")
 
+-- Neovim 0.11+ のデフォルト gr* LSP キーマップを削除し、ReplaceWithRegister との競合を解消
+for _, key in ipairs({ "gri", "grr", "grn", "gra" }) do
+  pcall(vim.keymap.del, "n", key)
+end
+pcall(vim.keymap.del, "x", "gra")
+
 -- require("config.toggleterm")
 require("config.comment")
 require("config.plugins")

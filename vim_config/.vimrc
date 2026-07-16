@@ -113,7 +113,7 @@ nnoremap X "_X
 nnoremap Y y$
 
 nnoremap s <Nop>
-nnoremap ss :split<CR>
+nnoremap sd :split<CR>
 nnoremap sv :vsplit<CR>
 nnoremap sw <C-w>w
 nnoremap sh <C-w>h

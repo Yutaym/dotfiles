@@ -24,6 +24,11 @@ return {
         bufmap("n", "gr", vim.lsp.buf.references, "References")
         bufmap("n", "<Space>r", vim.lsp.buf.rename, "Rename")
         bufmap("n", "<Space>a", vim.lsp.buf.code_action, "Code Action")
+        -- gr* デフォルトを gx プレフィックスで再実装
+        bufmap("n", "gxi", vim.lsp.buf.implementation, "Go to Implementation")
+        bufmap("n", "gxr", vim.lsp.buf.references, "References")
+        bufmap("n", "gxn", vim.lsp.buf.rename, "Rename")
+        bufmap({"n", "x"}, "gxa", vim.lsp.buf.code_action, "Code Action")
       end
 
       local capabilities = vim.tbl_deep_extend(

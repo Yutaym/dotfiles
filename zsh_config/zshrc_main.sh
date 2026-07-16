@@ -1,14 +1,17 @@
 export PATH="$HOME/.local/bin:$PATH"
 
 local SCRIPT_DIR=$(cd $(dirname $0) ; pwd)/
-source ${SCRIPT_DIR}/zshrc_ohmyzsh.sh
 
 #competition
+# fpathの追加はoh-my-zsh読み込み(内部でcompinitを実行する)より前に行う必要がある
 if [ -e /usr/local/share/zsh-completions ]; then
     fpath=(/usr/local/share/zsh-completions $fpath)
 fi
-autoload -U compinit
-compinit -u
+
+source ${SCRIPT_DIR}/zshrc_ohmyzsh.sh
+
+# compinitはoh-my-zsh側(oh-my-zsh.sh)で既に実行済みのため、ここで再実行しない。
+# 二重に実行すると、nvmプラグインがbashcompinit経由で登録した補完が失われる。
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select=1
 zstyle ':completion:*:default' menu select=1
