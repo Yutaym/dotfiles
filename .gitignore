@@ -18,3 +18,4 @@ scripts/scripts_WSL/nvim.appimage
 test.txt
 .serena
 .claude/settings.local.json
+.claude/settings.json

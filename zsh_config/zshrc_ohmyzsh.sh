@@ -4,6 +4,15 @@ export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
 export ZSH_THEME=""
 # ZSH_THEME="robbyrussell"
 
+# compaudit(fpath内の各ディレクトリの権限チェック)を無効化して起動を高速化する。
+# WSLのマウント越しだと特に遅く、実測で1秒以上かかっていたため。
+ZSH_DISABLE_COMPFIX="true"
+
+# nvmプラグインの初期化(nvm.sh読み込み + .nvmrc自動切り替え)を起動時ではなく、
+# 実際に nvm/node/npm/npx 等を初めて使ったタイミングまで遅延させる。
+# (未設定だと起動のたびに数秒かかる)
+zstyle ':omz:plugins:nvm' lazy yes
+
 # oh-my-zsh plugins
 plugins=(
     aliases
@@ -30,11 +39,7 @@ plugins=(
     sudo
     universalarchive
     thefuck
-    fasd
-    jump
-    pj
-    scd
-	z
+    z
     zsh-navigation-tools
     zsh-interactive-cd
 	git

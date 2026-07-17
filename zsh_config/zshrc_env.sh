@@ -1,100 +1,91 @@
+# conda初期化はdotfiles(zshrc_main.sh)の遅延ロードに一本化。ここでは何もしない。
+# compinitはoh-my-zsh側(zshrc_main.sh -> zshrc_ohmyzsh.sh)で実行されるため、ここでは呼ばない。
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-# Path to your oh-my-zsh installation.
-#export ZSH="/Users/yuta/.oh-my-zsh"
+export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
+export PATH=$PATH:$JAVA_HOME/bin
+export PATH=$HOME/bin:$PATH
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-#ZSH_THEME="candy"
+# WindowsのPATHを丸ごと引き継ぐと(/etc/wsl.confのappendWindowsPath)、遅い9pマウント越しの
+# ディレクトリが大量にPATHへ入り、存在しないコマンドの探索のたびに数百ms〜1秒かかっていた。
+# appendWindowsPath=falseにした上で、現時点で必要なものだけを明示的に追加する。
+# 追加したいものが増えたらここに1行足す。
+# WSL上で実行している場合にのみ追加する(WSL_DISTRO_NAME/WSL_INTEROPはWSLが自動設定する
+# 環境変数でサブプロセス不要、念のため/proc/versionのmicrosoft文字列もフォールバックで見る)
+if [[ -n "$WSL_DISTRO_NAME" ]] || [[ -n "$WSL_INTEROP" ]] || grep -qi microsoft /proc/version 2>/dev/null; then
+    export PATH="$PATH:/mnt/c/Windows:/mnt/c/Windows/System32"                         # explorer.exe, clip.exe など
+    export PATH="$PATH:/mnt/c/Users/yutay/AppData/Local/Programs/Microsoft VS Code/bin" # `code` コマンド
+fi
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# nvmでグローバルインストールしたautoenvを読み込む。
+# ユーザー名・nodeバージョンが環境ごとに異なっても動くよう、
+# nvmが入っていなければ何もせず、バージョンは可能な限りnvmのdefaultエイリアスから解決する。
+# (nvm.sh自体はここでは読み込まない。npm/node同様のlazy-load方式を崩さないため)
+_load_nvm_autoenv() {
+    local nvm_dir="${NVM_DIR:-$HOME/.nvm}"
+    [[ -s "$nvm_dir/nvm.sh" ]] || return 0
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+    local default_version script=""
+    if [[ -f "$nvm_dir/alias/default" ]]; then
+        default_version=$(<"$nvm_dir/alias/default")
+        script="$nvm_dir/versions/node/$default_version/lib/node_modules/@hyperupcall/autoenv/activate.sh"
+        [[ -f "$script" ]] || script=""
+    fi
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+    # defaultエイリアスが "node"/"stable"/"lts/*" のような間接指定で
+    # 直接パスを解決できない場合は、インストール済みバージョンの中から
+    # autoenvが入っているものを更新日時が新しい順に探す。
+    if [[ -z "$script" ]]; then
+        script=$(ls -t "$nvm_dir"/versions/node/*/lib/node_modules/@hyperupcall/autoenv/activate.sh 2>/dev/null | head -n1)
+    fi
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+    [[ -n "$script" && -f "$script" ]] && source "$script"
+}
+_load_nvm_autoenv
+unset -f _load_nvm_autoenv
 
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+## condaの遅延ロード
+## `conda shell.zsh hook`の生成はPython起動を伴い数百ms〜1秒程度かかるため、
+## シェル起動時ではなく実際に`conda`コマンドを初めて呼んだタイミングまで遅延させる。
+## macOS/Ubuntu(WSL含む)などインストール先が環境によって異なるため、よくある場所を順に探す。
+_find_conda_exe() {
+    local candidates=(
+        "$HOME/miniconda3/bin/conda"
+        "$HOME/anaconda3/bin/conda"
+        "$HOME/miniforge3/bin/conda"
+        "$HOME/mambaforge/bin/conda"
+        "/opt/miniconda3/bin/conda"
+        "/opt/anaconda3/bin/conda"
+        "/opt/homebrew/Caskroom/miniconda/base/bin/conda"
+        "/usr/local/miniconda3/bin/conda"
+    )
+    local c
+    for c in "${candidates[@]}"; do
+        if [ -x "$c" ]; then
+            echo "$c"
+            return 0
+        fi
+    done
+    command -v conda 2>/dev/null
+}
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
+_CONDA_EXE_LAZY="$(_find_conda_exe)"
+unset -f _find_conda_exe
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-#plugins=(git)
-
-#source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-#
+if [ -n "$_CONDA_EXE_LAZY" ]; then
+    conda() {
+        unset -f conda
+        local __conda_setup
+        __conda_setup="$("$_CONDA_EXE_LAZY" 'shell.zsh' 'hook' 2> /dev/null)"
+        if [ $? -eq 0 ]; then
+            eval "$__conda_setup"
+        elif [ -f "$(dirname "$(dirname "$_CONDA_EXE_LAZY")")/etc/profile.d/conda.sh" ]; then
+            . "$(dirname "$(dirname "$_CONDA_EXE_LAZY")")/etc/profile.d/conda.sh"
+        else
+            export PATH="$(dirname "$_CONDA_EXE_LAZY"):$PATH"
+        fi
+        unset __conda_setup
+        conda "$@"
+    }
+fi
+unset _CONDA_EXE_LAZY

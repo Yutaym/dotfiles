@@ -1,18 +1,6 @@
 # prompt
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/yuta-yamamoto/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/yuta-yamamoto/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/yuta-yamamoto/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/yuta-yamamoto/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# conda遅延初期化は zshrc_main.sh の _find_conda_exe / conda() に一本化済み(環境非依存)。
+# このファイルでは何もしない。
 #
 export PATH=~/scripts:$PATH
 export PATH=/mnt/c/Users/yutay/AppData/Local/Programs/Microsoft\ VS\ Code/bin:$PATH

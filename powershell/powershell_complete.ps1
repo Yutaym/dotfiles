@@ -14,7 +14,9 @@ Set-PSReadLineKeyHandler -Key "Alt+b" -Function BackwardWord
 Set-PSReadLineKeyHandler -Key "Ctrl+p" -Function PreviousHistory
 Set-PSReadLineKeyHandler -Key "Ctrl+n" -Function NextHistory
 Set-PSReadLineKeyHandler -Key Ctrl+g -ScriptBlock {
-    $line = [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState().InputLine
+    $line = $null
+    $cursor = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
     Invoke-CopilotSuggest $line
 }
 
@@ -32,30 +34,50 @@ if ($psReadLineModule -and $psReadLineModule.Version -ge [version]'2.1.0') {
 
 
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+## 各補完は powershell_main.ps1 で定義した Import-CachedCompletion でキャッシュ経由で読み込む
+## (外部コマンドを毎回起動すると起動が遅くなるため)
 if (Get-Command gh -ErrorAction SilentlyContinue) {
-    Invoke-Expression -Command (gh completion -s powershell | Out-String)
+    Import-CachedCompletion -Name "gh" -Generator { gh completion -s powershell }
 }
 if (Get-Command docker -ErrorAction SilentlyContinue) {
-    Invoke-Expression -Command (docker completion powershell | Out-String)
+    Import-CachedCompletion -Name "docker" -Generator { docker completion powershell }
 }
 if (Get-Command kubectl -ErrorAction SilentlyContinue) {
-    Invoke-Expression -Command (kubectl completion powershell | Out-String)
+    Import-CachedCompletion -Name "kubectl" -Generator { kubectl completion powershell }
 }
 if (Get-Command pnpm -ErrorAction SilentlyContinue) {
-    Invoke-Expression -Command (pnpm completion pwsh | Out-String)
+    Import-CachedCompletion -Name "pnpm" -Generator { pnpm completion pwsh }
 }
 if (Get-Command uv -ErrorAction SilentlyContinue) {
-    Invoke-Expression -Command (uv generate-shell-completion powershell | Out-String)
+    Import-CachedCompletion -Name "uv" -Generator { uv generate-shell-completion powershell }
 }
 
-## git補完 (posh-git) 未インストールの環境では自動インストールしてからインポートする
+## git補完 (posh-git) は起動のたびにImport-Module(数百ms)すると重いため、
+## ディレクトリ判定ではなく「実際にgitコマンドをTab補完しようとした瞬間」に読み込む。
+## (ディレクトリ判定だとgitリポジトリ外で `git clone`/`git init` 等を打つ際に補完が効かなくなるため)
 ## プロンプトは自前のprompt関数を使い続けるため、posh-git側のプロンプト統合(Add-PoshGitToProfile)は行わない
 ## https://github.com/dahlbyk/posh-git
 if (Get-Command git -ErrorAction SilentlyContinue) {
-    if (-not (Get-Module posh-git -ListAvailable)) {
-        Install-Module posh-git -Scope CurrentUser -Force
+    function Import-PoshGitIfNeeded {
+        if (Get-Module posh-git) {
+            return
+        }
+        if (-not (Get-Module posh-git -ListAvailable)) {
+            Install-Module posh-git -Scope CurrentUser -Force
+        }
+        Import-Module posh-git
     }
-    Import-Module posh-git
+
+    Set-PSReadLineKeyHandler -Key Tab -ScriptBlock {
+        param($key, $arg)
+        $line = $null
+        $cursor = $null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+        if ($line -match '^\s*git(\.exe)?\s' -and -not (Get-Module posh-git)) {
+            Import-PoshGitIfNeeded
+        }
+        [Microsoft.PowerShell.PSConsoleReadLine]::MenuComplete($key, $arg)
+    }
 }
 
 ## ssh/scp Host補完 (~/.ssh/config の Host エントリを候補にする)
