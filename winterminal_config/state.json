@@ -1,0 +1,29 @@
+{
+	"dismissedBadges" : 
+	[
+		"page.extensions"
+	],
+	"dismissedMessages" : 
+	[
+		"deprecated",
+		"closeOnExitInfo"
+	],
+	"generatedProfiles" : 
+	[
+		"{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+		"{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+		"{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+		"{4dd1e689-b517-5f39-947d-78e8a8bdf958}",
+		"{59b72ad2-09f7-55ec-af87-65d062af8472}",
+		"{f9ceaf27-504c-58d7-927c-d1d6a7ac7d3c}",
+		"{125c57a3-eb08-536c-9410-9a21faea046a}",
+		"{17bf3de4-5353-5709-bcf9-835bd952a95e}",
+		"{621616fd-3e4f-5683-a3ce-f720310e55a7}",
+		"{d7b20cea-47a9-518c-95a4-c8bd91e2e1c6}",
+		"{2c4de342-38b7-51cf-b940-2309a097f518}",
+		"{51855cb2-8cce-5362-8f54-464b92b32386}",
+		"{16208362-94fc-5b1f-a491-5b2624d5ab56}"
+	],
+	"persistedWindowLayouts" : [],
+	"settingsHash" : "77dfa072f972b228-01dd39d2ad558f96"
+}
