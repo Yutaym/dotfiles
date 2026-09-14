@@ -48,6 +48,8 @@ zstyle ':zle:*' word-style unspecified
 
 export EDITOR="vim"
 
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+
 source ${SCRIPT_DIR}/zshrc_function.sh
 source ${SCRIPT_DIR}/zshrc_alias.sh
 source ${SCRIPT_DIR}/zshrc_prompt.sh
