@@ -1,5 +1,5 @@
 -- 起動時間計測開始
-local start_time = vim.loop.hrtime()
+local start_time = vim.uv.hrtime()
 
 require("base")
 require("mapping")
@@ -11,23 +11,21 @@ for _, key in ipairs({ "gri", "grr", "grn", "gra" }) do
 end
 pcall(vim.keymap.del, "x", "gra")
 
--- require("config.toggleterm")
-require("config.comment")
-require("config.plugins")
-
--- if (vim.g.vscode == nil) then
---     require("config.lspconfig")
---     require("config.cmpconfig")
--- end
+-- デフォルトの gx（カーソル下の URL を開く）を gxx に移し、LSP の gx* と前方一致して待たされるのを防ぐ
+for _, mode in ipairs({ "n", "x" }) do
+  local gx = vim.fn.maparg("gx", mode, false, true)
+  if gx.callback then
+    vim.keymap.set(mode, "gxx", gx.callback, { desc = gx.desc })
+    vim.keymap.del(mode, "gx")
+  end
+end
 
 require("function.toggleMotion")
 require("function.cleanShada")
 
--- require('Comment').setup()
-
 -- 起動時間計測終了と表示
 vim.defer_fn(function()
-    local end_time = vim.loop.hrtime()
+    local end_time = vim.uv.hrtime()
     local elapsed = (end_time - start_time) / 1000000  -- ミリ秒に変換
     local message = string.format("⚡ Neovim 起動時間: %.2f ms", elapsed)
     vim.notify(message, vim.log.levels.INFO)
