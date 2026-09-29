@@ -8,6 +8,23 @@ return {
     end,
   },
 
+  -- mason でインストールするツールを自動で揃える
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    cond = function() return vim.g.vscode == nil end,
+    lazy = false,
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        "pyright",
+        "ruff",
+        "clangd",
+        "lua-language-server",
+        "tree-sitter-cli", -- nvim-treesitter (main) のパーサービルドに必要
+      },
+    },
+  },
+
   -- nvim-lspconfig は削除して、Neovim のネイティブ LSP を使用
   {
     "hrsh7th/cmp-nvim-lsp",
@@ -19,12 +36,12 @@ return {
         local bufmap = function(mode, lhs, rhs, desc)
           vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
         end
-        bufmap("n", "K", vim.lsp.buf.hover, "Hover")
         bufmap("n", "gd", vim.lsp.buf.definition, "Go to Definition")
-        bufmap("n", "gr", vim.lsp.buf.references, "References")
-        bufmap("n", "<Space>r", vim.lsp.buf.rename, "Rename")
-        bufmap("n", "<Space>a", vim.lsp.buf.code_action, "Code Action")
-        -- gr* デフォルトを gx プレフィックスで再実装
+        bufmap("n", "<leader>r", vim.lsp.buf.rename, "Rename")
+        bufmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
+        -- K / gr* は他のマッピングで使うため、LSP 操作は gx プレフィックスにまとめる
+        bufmap("n", "gxh", vim.lsp.buf.hover, "Hover")
+        bufmap("n", "gxd", vim.diagnostic.open_float, "Line Diagnostics")
         bufmap("n", "gxi", vim.lsp.buf.implementation, "Go to Implementation")
         bufmap("n", "gxr", vim.lsp.buf.references, "References")
         bufmap("n", "gxn", vim.lsp.buf.rename, "Rename")
@@ -64,11 +81,45 @@ return {
         on_attach = on_attach,
       }
 
-      -- Ruff の設定
+      -- Ruff の設定（リント + フォーマット）
+      -- augroup は一度だけ作り、バッファごとにはそのバッファの autocmd だけを消す
+      local format_group = vim.api.nvim_create_augroup("RuffFormat", { clear = true })
       vim.lsp.config.ruff = {
         cmd = { "ruff", "server" },
         root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" },
         filetypes = { "python" },
+        capabilities = capabilities,
+        on_attach = function(client, bufnr)
+          on_attach(client, bufnr)
+          -- hover は pyright に任せる
+          client.server_capabilities.hoverProvider = false
+          vim.api.nvim_clear_autocmds({ group = format_group, buffer = bufnr })
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            group = format_group,
+            buffer = bufnr,
+            callback = function()
+              -- 保存前に整形を終わらせるため同期で実行する
+              vim.lsp.buf.format({ bufnr = bufnr, name = "ruff", async = false })
+            end,
+          })
+        end,
+      }
+
+      -- Lua Language Server の設定（Neovim 設定の編集用）
+      vim.lsp.config.lua_ls = {
+        cmd = { "lua-language-server" },
+        root_markers = { ".luarc.json", ".luarc.jsonc", ".stylua.toml", "stylua.toml", ".git" },
+        filetypes = { "lua" },
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim", "Snacks" } },
+            workspace = {
+              checkThirdParty = false,
+              library = { vim.env.VIMRUNTIME },
+            },
+          },
+        },
         capabilities = capabilities,
         on_attach = on_attach,
       }
@@ -77,69 +128,11 @@ return {
       vim.lsp.enable("pyright")
       vim.lsp.enable("clangd")
       vim.lsp.enable("ruff")
-    end,
-  },
+      vim.lsp.enable("lua_ls")
 
-  {
-    "nvimdev/lspsaga.nvim",
-    cond = function() return vim.g.vscode == nil end,
-    event = "LspAttach",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("lspsaga").setup({
-        ui = { border = "rounded" },
-        lightbulb = {
-          enable = true,
-          enable_in_insert = false,
-        },
-      })
-
-      local ok, lsp_signature = pcall(require, "lsp_signature")
-      if ok then
-        lsp_signature.setup({
-          floating_window = false,
-          hint_enable = false,
-        })
-      end
-
+      -- フロートウィンドウ（hover / signature help / 診断）を丸角にする
+      vim.o.winborder = "rounded"
       vim.opt.signcolumn = "yes"
-
-      -- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-      --   vim.lsp.handlers.hover,
-      --   { border = "rounded", max_width = 60, max_height = 20 }
-      -- )
-      -- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-      --   vim.lsp.handlers.signature_help,
-      --   { border = "rounded", max_width = 60, max_height = 10 }
-      -- )
-      local _hover = vim.lsp.buf.hover
-      vim.lsp.buf.hover = function(opts)
-        return _hover(vim.tbl_extend("force", {
-          border = "rounded",
-          max_width = 60,
-          max_height = 20,
-        }, opts or {}))
-      end
-
-      local _sig = vim.lsp.buf.signature_help
-      vim.lsp.buf.signature_help = function(opts)
-        return _sig(vim.tbl_extend("force", {
-          border = "rounded",
-          max_width = 60,
-          max_height = 10,
-        }, opts or {}))
-      end
-
-      local keymap = vim.keymap.set
-      keymap("n", "gv", "<cmd>Lspsaga hover_doc<CR>", { desc = "Hover Doc" })
-      keymap("n", "gy", "<cmd>Lspsaga show_line_diagnostics<CR>", { desc = "Line Diagnostics" })
-      keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>", { desc = "Go to Definition" })
-      keymap("n", "gr", "<cmd>Lspsaga finder<CR>", { desc = "LSP Finder" })
-      keymap("n", "<Space>r", "<cmd>Lspsaga rename<CR>", { desc = "Rename Symbol" })
-      keymap("n", "<Space>a", "<cmd>Lspsaga code_action<CR>", { desc = "Code Action" })
     end,
   },
 }
