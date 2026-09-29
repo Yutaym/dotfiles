@@ -1,5 +1,5 @@
 # Dotfiles 側のプロファイルファイルのパス
-$sourceProfilePath = Join-Path $env:USERPROFILE "dotfiles\powersell\Microsoft.PowerShell_profile.ps1"
+$sourceProfilePath = Join-Path $env:USERPROFILE "dotfiles\powershell_config\Microsoft.PowerShell_profile.ps1"
 $targetProfilePath = $PROFILE
 
 $profileDir = Split-Path -Path $targetProfilePath
