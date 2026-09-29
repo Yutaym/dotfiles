@@ -21,6 +21,7 @@ require("config.plugins")
 -- end
 
 require("function.toggleMotion")
+require("function.cleanShada")
 
 -- require('Comment').setup()
 
