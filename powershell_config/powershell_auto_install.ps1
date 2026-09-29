@@ -1,7 +1,7 @@
 ## 未インストールのプログラム・モジュールを自動インストールする処理をまとめるファイル
 ## 実行のたびに時間がかかる/EULA同意を伴うため、profile読み込み時には自動実行しない。
 ## 新しい環境をセットアップする際に手動で ". .\powershell_auto_install.ps1" するか、
-## init_powershell_config.ps1 などのセットアップ手順から呼び出す想定。
+## install_powershell.ps1 などのセットアップ手順から呼び出す想定。
 
 ## Winget経由でコマンドが無ければインストールする
 function Install-CommandIfMissing {
