@@ -125,11 +125,12 @@ return {
             { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "他のバッファを削除" },
 
             -- 通知
-            { "<leader>un", function() Snacks.notifier.hide() end, desc = "通知を消去" },
-            { "<leader>nh", function() Snacks.notifier.show_history() end, desc = "通知履歴" },
+            -- notifier を無効にしているため使えない
+            -- { "<leader>un", function() Snacks.notifier.hide() end, desc = "通知を消去" },
+            -- { "<leader>nh", function() Snacks.notifier.show_history() end, desc = "通知履歴" },
 
             -- Zenモード
-            { "<leader>z", function() Snacks.zen() end, desc = "Zenモード切り替え" },
+            { "<leader>zz", function() Snacks.zen() end, desc = "Zenモード切り替え" },
             { "<leader>Z", function() Snacks.zen.zoom() end, desc = "ウィンドウズーム切り替え" },
 
             -- Picker

@@ -58,13 +58,15 @@ return {
 },
 {
     "yuki-yano/fzf-preview.vim",
+    -- main ブランチはビルドが必要で動かないため無効化（snacks の picker で代替）
+    enabled = false,
     cond = function() return vim.g.vscode == nil end,
     dependencies = {"junegunn/fzf", "junegunn/fzf.vim"},
     keys = {
         {"<leader>pf", "<cmd>FzfPreviewProjectFiles<CR>", desc = "FZF: Project Files"},
         {"<leader>pb", "<cmd>FzfPreviewBuffers<CR>", desc = "FZF: Buffers"},
         {"<leader>pr", "<cmd>FzfPreviewFromResources<CR>", desc = "FZF: Resources"},
-        {"<leader>ld", "<cmd>FzfPreviewDiagnostics<CR>", desc = "FZF: Diagnostics"},
+        {"<leader>ldd", "<cmd>FzfPreviewDiagnostics<CR>", desc = "FZF: Diagnostics"},
         {"<leader>lr", "<cmd>FzfPreviewLspReferences<CR>", desc = "FZF: LSP References"},
         {"<leader>ldf", "<cmd>FzfPreviewLspDefinition<CR>", desc = "FZF: LSP Definition"},
     },

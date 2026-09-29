@@ -100,7 +100,7 @@ vim.keymap.set({'n', 'x'}, 'L', '10l', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'i', 'x', 'c'}, '<Ctrl-C>', '<ESC>', {
+vim.keymap.set({'i', 'x'}, '<C-c>', '<ESC>', {
     noremap = true
 })
 
@@ -142,7 +142,7 @@ vim.keymap.set('i', '<C-u>', '<ESC>ui', {
     noremap = true,
     silent = true
 })
-vim.keymap.set({'i', 'c'}, '<C-j>', '<ESC>', {
+vim.keymap.set('i', '<C-j>', '<ESC>', {
     noremap = true,
     silent = true
 })
@@ -223,11 +223,6 @@ vim.keymap.set('n', 'cd', vim.g.vscode and function()
 end or function()
     -- VSCode環境では使用しない
 end, {
-    noremap = true,
-    silent = true
-})
-
-vim.keymap.set('n', 'gw', vim.g.vscode and '<Nop>' or '<C-w>', {
     noremap = true,
     silent = true
 })
@@ -371,7 +366,7 @@ else
 end
 
 -- ---------------------------------------------------
-vim.keymap.set('n', '<leader>q', 'atest<Esc>', {
-    noremap = true,
-    silent = true
-})
+-- vim.keymap.set('n', '<leader>q', 'atest<Esc>', {
+--     noremap = true,
+--     silent = true
+-- })

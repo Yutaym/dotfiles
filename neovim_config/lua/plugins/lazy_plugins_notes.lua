@@ -24,7 +24,7 @@ return {
         build = "cd app && npm install",
         cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
         keys = {
-            { "<leader>mp", "<cmd>MarkdownPreviewToggle<CR>", desc = "Markdown: Preview Toggle" },
+            { "<leader>Mp", "<cmd>MarkdownPreviewToggle<CR>", desc = "Markdown: Preview Toggle" },
         },
         init = function()
             vim.g.mkdp_auto_close = 1
@@ -36,10 +36,11 @@ return {
         cond = function() return vim.g.vscode == nil end,
         cmd = { "Git", "G", "Gread", "Gwrite", "Gdiffsplit", "GBrowse" },
         keys = {
-            { "<leader>gs", "<cmd>Git<CR>",            desc = "Git: Status" },
-            { "<leader>gd", "<cmd>Gdiffsplit<CR>",     desc = "Git: Diff Split" },
-            { "<leader>gb", "<cmd>Git blame<CR>",      desc = "Git: Blame" },
-            { "<leader>gl", "<cmd>Git log --oneline<CR>", desc = "Git: Log" },
+            -- snacks.nvim の <leader>g* と重ならないよう大文字 G をプレフィックスにする
+            { "<leader>Gs", "<cmd>Git<CR>",            desc = "Git: Status" },
+            { "<leader>Gd", "<cmd>Gdiffsplit<CR>",     desc = "Git: Diff Split" },
+            { "<leader>Gb", "<cmd>Git blame<CR>",      desc = "Git: Blame" },
+            { "<leader>Gl", "<cmd>Git log --oneline<CR>", desc = "Git: Log" },
         },
     },
     {
@@ -54,7 +55,7 @@ return {
         },
         config = function()
             require("zk").setup({
-                picker = "telescope",
+                picker = "snacks_picker",
                 lsp = {
                     config = {
                         cmd = { "zk", "lsp" },

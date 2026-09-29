@@ -23,7 +23,7 @@ else
     vim.o.clipboard = vim.o.clipboard .. "unnamed"
 end
 
-vim.o.number = trued
+vim.o.number = true
 vim.o.relativenumber = true
 vim.o.fenc = 'utf-8'
 
@@ -65,7 +65,6 @@ vim.api.nvim_create_autocmd({"InsertLeave"}, {
 })
 vim.opt.scrolloff = 3
 vim.opt.lazyredraw = true
-vim.opt.foldmethod = "manual"
 
 vim.o.list = true
 vim.o.listchars = "tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%"
@@ -80,11 +79,9 @@ vim.o.tabstop = 4
 vim.o.smartindent = true
 vim.o.autoindent = true
 
-vim.o.showmatch = true
 vim.o.swapfile = false
 vim.o.foldenable = false
 vim.o.title = true
-vim.o.number = true
 
 vim.o.whichwrap = vim.o.whichwrap .. "b,s,h,l,<,>,[,],~"
 vim.o.mouse = "a"
@@ -108,8 +105,6 @@ end
 
 try_catch {
     try = function()
-        vim.o.widmenu = true
-        vim.o.widmode = 'longest:full,full'
         vim.o.shellslash = true
     end,
     catch = function()

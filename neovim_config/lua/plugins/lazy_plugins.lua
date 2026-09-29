@@ -40,24 +40,34 @@ return {
     end
 },
 {
+    -- main ブランチ版。遅延読み込み非対応で、パーサーのビルドに tree-sitter CLI と C コンパイラが必要
+    "nvim-treesitter/nvim-treesitter",
+    cond = function() return vim.g.vscode == nil end,
+    branch = "main",
+    lazy = false,
+    build = ":TSUpdate",
+    config = function()
+        -- インストール済みのものはスキップされる
+        require("nvim-treesitter").install({"javascript", "typescript", "tsx", "html", "css", "vue", "lua", "python",
+                                            "bash", "json", "markdown", "markdown_inline"})
+        -- パーサーがあるファイルタイプだけハイライトとインデントを有効にする
+        vim.api.nvim_create_autocmd("FileType", {
+            group = vim.api.nvim_create_augroup("TreesitterStart", {
+                clear = true
+            }),
+            callback = function(args)
+                if not pcall(vim.treesitter.start, args.buf) then
+                    return
+                end
+                vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
+        })
+    end
+},
+{
     "numToStr/Comment.nvim",
     cond = function() return vim.g.vscode == nil end,
-    dependencies = {"JoosepAlviste/nvim-ts-context-commentstring", {
-        "nvim-treesitter/nvim-treesitter",
-        build = ":TSUpdate",
-        config = function()
-            require("nvim-treesitter").setup({
-                ensure_installed = {"javascript", "typescript", "tsx", "html", "css", "vue", "lua", "python", "bash",
-                                    "json", "markdown", "markdown_inline"},
-                highlight = {
-                    enable = true
-                },
-                indent = {
-                    enable = true
-                }
-            })
-        end
-    }},
+    dependencies = {"JoosepAlviste/nvim-ts-context-commentstring", "nvim-treesitter/nvim-treesitter"},
     event = {"BufReadPre", "BufNewFile"},
     -- event = "VeryLazy",
     config = function()
@@ -76,11 +86,11 @@ return {
             },
             toggler = {
                 line = "gcc",
-                block = "gbc"
+                block = "gBc" -- gb は camelcasemotion で使うため gB にする
             },
             opleader = {
                 line = "gc",
-                block = "gb"
+                block = "gB"
             },
             -- ts-context-commentstring を連携
             pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook()
@@ -120,32 +130,20 @@ return {
 {
     "vim-scripts/camelcasemotion",
     keys = {
-        {"sw", mode = {"n", "v"}},
-        {"se", mode = {"n", "v"}},
-        {"sb", mode = {"n", "v"}},
-        {"isw", mode = {"o", "v"}},
-        {"ise", mode = {"o", "v"}},
-        {"isb", mode = {"o", "v"}},
-        {"<C-w>", mode = {"n", "v"}},
-        {"<C-e>", mode = {"n", "v"}},
-        {"<C-b>", mode = {"n", "v"}},
-        {"i<C-w>", mode = {"o", "v"}},
-        {"i<C-e>", mode = {"o", "v"}},
-        {"i<C-b>", mode = {"o", "v"}},
+        {"gw", mode = {"n", "v"}},
+        {"ge", mode = {"n", "v"}},
+        {"gb", mode = {"n", "v"}},
+        {"igw", mode = {"o", "v"}},
+        {"ige", mode = {"o", "v"}},
+        {"igb", mode = {"o", "v"}},
     },
     config = function()
-        vim.keymap.set({"n", "v"}, "sw", "<Plug>CamelCaseMotion_w", {noremap = true, silent = true})
-        vim.keymap.set({"n", "v"}, "se", "<Plug>CamelCaseMotion_e", {noremap = true, silent = true})
-        vim.keymap.set({"n", "v"}, "sb", "<Plug>CamelCaseMotion_b", {noremap = true, silent = true})
-        vim.keymap.set({"o", "v"}, "isw", "<Plug>CamelCaseMotion_iw", {noremap = true, silent = true})
-        vim.keymap.set({"o", "v"}, "ise", "<Plug>CamelCaseMotion_ie", {noremap = true, silent = true})
-        vim.keymap.set({"o", "v"}, "isb", "<Plug>CamelCaseMotion_ib", {noremap = true, silent = true})
-        vim.keymap.set({"n", "v"}, "<C-w>", "<Plug>CamelCaseMotion_w", {noremap = true, silent = true})
-        vim.keymap.set({"n", "v"}, "<C-e>", "<Plug>CamelCaseMotion_e", {noremap = true, silent = true})
-        vim.keymap.set({"n", "v"}, "<C-b>", "<Plug>CamelCaseMotion_b", {noremap = true, silent = true})
-        vim.keymap.set({"o", "v"}, "i<C-w>", "<Plug>CamelCaseMotion_iw", {noremap = true, silent = true})
-        vim.keymap.set({"o", "v"}, "i<C-e>", "<Plug>CamelCaseMotion_ie", {noremap = true, silent = true})
-        vim.keymap.set({"o", "v"}, "i<C-b>", "<Plug>CamelCaseMotion_ib", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "gw", "<Plug>CamelCaseMotion_w", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "ge", "<Plug>CamelCaseMotion_e", {noremap = true, silent = true})
+        vim.keymap.set({"n", "v"}, "gb", "<Plug>CamelCaseMotion_b", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "igw", "<Plug>CamelCaseMotion_iw", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "ige", "<Plug>CamelCaseMotion_ie", {noremap = true, silent = true})
+        vim.keymap.set({"o", "v"}, "igb", "<Plug>CamelCaseMotion_ib", {noremap = true, silent = true})
     end
 },
 {
@@ -314,10 +312,6 @@ return {
             silent = true
         })
     end
-},
-{
-    'jghauser/mkdir.nvim',
-    event = "BufWritePre",
 },
 {
     'nacro90/numb.nvim',

@@ -31,7 +31,7 @@ return {
     "yuki-yano/fuzzy-motion.vim",
     dependencies = { "vim-denops/denops.vim" },
     keys = {
-      {"<Space>m", "<Plug>(fuzzy-motion)", mode = "n", desc = "Fuzzy Motion"},
+      {"<leader>m", "<Plug>(fuzzy-motion)", mode = "n", desc = "Fuzzy Motion"},
     },
   },
   {
