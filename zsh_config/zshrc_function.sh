@@ -222,7 +222,7 @@ function claude-anthropic() {
 }
 
 # Ollama経由
-# 接続先は CLAUDE_OLLAMA_URL で指定する(ホスト名をリポジトリに書かないよう ~/.zshrc.local などで設定する)
+# 接続先は CLAUDE_OLLAMA_URL(既定値は zshrc_main.sh で設定)
 function claude-ollama() {
   export ANTHROPIC_AUTH_TOKEN=ollama
   export ANTHROPIC_API_KEY=""

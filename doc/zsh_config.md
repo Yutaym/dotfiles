@@ -56,7 +56,7 @@ oh-my-zsh・zsh-autosuggestions・zsh-syntax-highlighting・fzf は、zsh の初
 | 9   | `zshrc_alias.sh`      | エイリアス                                                          |
 | 10  | `zshrc_prompt.sh`     | プロンプト                                                          |
 | 11  | `zshrc_completion.sh` | 補完の設定                                                          |
-| 12  | `~/.zshrc.local`      | あれば読み込む。環境ごとの設定（リポジトリ管理外。`CLAUDE_OLLAMA_URL` などホスト名を含むものはここに書く） |
+| 12  | `~/.zshrc.local`      | あれば読み込む。環境ごとの設定（リポジトリ管理外。`CLAUDE_OLLAMA_URL` の上書きなど） |
 
 - `fpath` の追加は、`compinit` を実行する oh-my-zsh より前に行う必要がある
 - `compinit` は oh-my-zsh の中でだけ実行する。`zshrc_completion.sh` などで再実行すると、nvm プラグインが `bashcompinit` 経由で登録した補完が消える
@@ -102,6 +102,7 @@ Ubuntu / Debian の `/etc/zsh/zshrc` は、`~/.zshrc` より先に `compinit` �
 | -------------------------------------- | ----- |
 | `EDITOR`                               | `vim` |
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `1`   |
+| `CLAUDE_OLLAMA_URL` | `http://yutapc:11434`（`claude-ollama` の接続先。設定済みならその値を使う） |
 
 ---
 
@@ -249,7 +250,7 @@ fzf の画面内での主な操作:
 | `ghcs [flags] <prompt>`  | `gh copilot suggest` のラッパー。提案されたコマンドを履歴に追加して実行する。`-t shell/gh/git` で対象を指定 |
 | `ghce [flags] <command>` | `gh copilot explain` のラッパー。コマンドの説明を表示                                                       |
 | `claude-anthropic`       | Anthropic API で Claude Code を起動（`ANTHROPIC_API_KEY` はプレースホルダーのままなので要書き換え）         |
-| `claude-ollama`          | Ollama 経由（モデル `qwen3.5`）で Claude Code を起動。接続先は `CLAUDE_OLLAMA_URL`（未設定なら `http://localhost:11434`）                                  |
+| `claude-ollama`          | Ollama 経由（モデル `qwen3.5`）で Claude Code を起動。接続先は `CLAUDE_OLLAMA_URL`（`zshrc_main.sh` で `http://yutapc:11434` を設定）                                  |
 
 ---
 

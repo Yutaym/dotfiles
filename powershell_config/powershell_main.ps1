@@ -2,6 +2,11 @@ if (-not $env:path.Split(';').Contains('.')) {
     $env:path += ";."
 }
 
+# Use-ClaudeOllama の接続先 (自宅 PC の Ollama)。ユーザー環境変数などで設定済みならそちらを優先する
+if (-not $env:CLAUDE_OLLAMA_URL) {
+    $env:CLAUDE_OLLAMA_URL = "http://yutapc:11434"
+}
+
 ## 補完/フック系スクリプトのキャッシュ機構
 ## 外部コマンドの起動はWindowsではプロセス生成コストが大きく、profile読み込みのたびに
 ## gh/docker/kubectl/pnpm/uv/condaのフックを都度実行すると起動が数秒単位で遅くなる。

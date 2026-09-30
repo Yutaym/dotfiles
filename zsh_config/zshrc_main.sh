@@ -49,6 +49,8 @@ zstyle ':zle:*' word-style unspecified
 export EDITOR="vim"
 
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+# claude-ollama の接続先(自宅 PC の Ollama)。環境ごとに変えたい場合は ~/.zshrc.local で上書きする
+export CLAUDE_OLLAMA_URL="${CLAUDE_OLLAMA_URL:-http://yutapc:11434}"
 
 source ${SCRIPT_DIR}/zshrc_function.sh
 source ${SCRIPT_DIR}/zshrc_alias.sh
