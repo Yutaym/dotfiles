@@ -53,8 +53,10 @@ bash ~/dotfiles/claude_config/install_claude.sh
 - **シンボリックリンク方式**（Neovim / Vim / Claude Code）: リポジトリのファイルを直接参照するので、リポジトリ側の変更がすぐ反映される。リンク先に既存ファイルがある場合は警告してスキップする
 - **コピー方式**（PowerShell / zsh）: 既存ファイルと内容が異なる場合は `*.bak.<日時>` にバックアップしてから上書きする。リポジトリを `~/dotfiles` 以外に置いた場合は、読み込み先のパスを書き換えてコピーする
 - **デフォルトシェル**: PowerShell / zsh のインストーラーは、デフォルトシェルが pwsh / zsh でなければ変更手順を表示する（変更自体は手動）
+- **WSLENV**: PowerShell のインストーラーは、ユーザー環境変数 `WSLENV` に `USERPROFILE/p` を追加する（WSL の zsh が VS Code のパスを求めるのに使う）
 - **Claude Code**: `local-paths.md` は環境ごとに編集するため、リンクではなくコピーする（既存なら上書きしない）
 
 ## ドキュメント
 
 - [Neovim 設定まとめ](doc/neovim_config.md) — オプション・キーマッピング・プラグインの一覧
+- [zsh 設定まとめ](doc/zsh_config.md) — 読み込み順・oh-my-zsh プラグイン・キーバインド・エイリアス・プロンプトの一覧
