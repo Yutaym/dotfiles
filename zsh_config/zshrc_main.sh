@@ -54,3 +54,6 @@ source ${SCRIPT_DIR}/zshrc_function.sh
 source ${SCRIPT_DIR}/zshrc_alias.sh
 source ${SCRIPT_DIR}/zshrc_prompt.sh
 source ${SCRIPT_DIR}/zshrc_completion.sh
+
+# 環境ごとの設定(ホスト名などリポジトリに入れたくないもの)。リポジトリ管理外
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

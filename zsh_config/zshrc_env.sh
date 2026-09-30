@@ -1,8 +1,20 @@
 # conda初期化はdotfiles(zshrc_main.sh)の遅延ロードに一本化。ここでは何もしない。
 # compinitはoh-my-zsh側(zshrc_main.sh -> zshrc_ohmyzsh.sh)で実行されるため、ここでは呼ばない。
 
-export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
-export PATH=$PATH:$JAVA_HOME/bin
+# JAVA_HOME が未設定なら JDK の場所を求める。
+# macOS の /usr/bin/javac は実体へのリンクではないスタブのため、/usr/libexec/java_home を使う。
+# JDK が無い環境では何もしない(以前は空の JAVA_HOME から PATH に "/bin" を足していた)。
+if [[ -z "$JAVA_HOME" ]]; then
+    if [[ "$OSTYPE" == darwin* ]]; then
+        [[ -x /usr/libexec/java_home ]] && JAVA_HOME=$(/usr/libexec/java_home 2>/dev/null)
+    elif [[ -x /usr/bin/javac ]]; then
+        JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
+    fi
+fi
+if [[ -n "$JAVA_HOME" ]]; then
+    export JAVA_HOME
+    export PATH=$PATH:$JAVA_HOME/bin
+fi
 export PATH=$HOME/bin:$PATH
 
 # WindowsのPATHを丸ごと引き継ぐと(/etc/wsl.confのappendWindowsPath)、遅い9pマウント越しの
@@ -13,7 +25,15 @@ export PATH=$HOME/bin:$PATH
 # 環境変数でサブプロセス不要、念のため/proc/versionのmicrosoft文字列もフォールバックで見る)
 if [[ -n "$WSL_DISTRO_NAME" ]] || [[ -n "$WSL_INTEROP" ]] || grep -qi microsoft /proc/version 2>/dev/null; then
     export PATH="$PATH:/mnt/c/Windows:/mnt/c/Windows/System32"                         # explorer.exe, clip.exe など
-    export PATH="$PATH:/mnt/c/Users/yutay/AppData/Local/Programs/Microsoft VS Code/bin" # `code` コマンド
+    # VS Code の `code` コマンド。ユーザー名を書かずに済むよう、Windows 側で WSLENV に USERPROFILE/p を
+    # 設定しておき(install_powershell.ps1 が設定する)、WSL に渡される $USERPROFILE(/mnt/c/Users/<名前>)から組み立てる。
+    # WSLENV が効かない場合(SSH で WSL に入ったときなど)は /mnt/c/Users/* から探す(10ms 程度)。
+    () {
+        local -a dirs
+        [[ -n "$USERPROFILE" ]] && dirs=("$USERPROFILE/AppData/Local/Programs/Microsoft VS Code/bin"(N/))
+        (( $#dirs )) || dirs=(/mnt/c/Users/*/AppData/Local/Programs/"Microsoft VS Code"/bin(N/))
+        (( $#dirs )) && export PATH="$PATH:$dirs[1]"
+    }
 fi
 
 # nvmでグローバルインストールしたautoenvを読み込む。

@@ -150,7 +150,8 @@ if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]
 fi
 #peco
 function peco-history-selection() {
-    BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
+    # fc -r で新しい順に出す(tac は macOS に無いため使わない)
+    BUFFER=$(fc -lnr 1 | awk '!a[$0]++' | peco)
     CURSOR=$#BUFFER
     zle reset-prompt
 }
@@ -168,14 +169,24 @@ zle -N peco-cdr
 bindkey '^T' peco-cdr
 
 function peco-ghq-look () {
-    local ghq_roots="$(git config --path --get-all ghq.root)"
-    local selected_dir=$(ghq list --full-path | \
-        xargs -I{} ls -dl --time-style=+%s {}/.git | sed 's/.*\([0-9]\{10\}\)/\1/' | sort -nr | \
-        sed "s,.*\(${ghq_roots/$'\n'/\|}\)/,," | \
-        sed 's/\/.git//' | \
-        peco --prompt="cd-ghq >" --query "$LBUFFER")
-    if [ -n "$selected_dir" ]; then
-        BUFFER="cd $(ghq list --full-path | grep --color=never -E "/$selected_dir$")"
+    # .git の更新日時が新しい順に並べる。
+    # 更新日時は zsh の zstat で取る(ls --time-style は GNU 専用で macOS では使えないため)
+    zmodload -F zsh/stat b:zstat || return
+    local -a roots lines
+    local -A full st
+    local repo rel root
+    roots=(${(f)"$(ghq root --all)"})
+    for repo in ${(f)"$(ghq list --full-path)"}; do
+        st=()
+        zstat -H st -- "$repo/.git" 2>/dev/null || continue
+        rel=$repo
+        for root in $roots; do rel=${rel#$root/}; done
+        full[$rel]=$repo
+        lines+=("$st[mtime] $rel")
+    done
+    local selected=$(print -rl -- ${(On)lines} | cut -d' ' -f2- | peco --prompt="cd-ghq >" --query "$LBUFFER")
+    if [[ -n "$selected" && -n "$full[$selected]" ]]; then
+        BUFFER="cd ${(q)full[$selected]}"
         zle accept-line
     fi
 }
@@ -211,10 +222,11 @@ function claude-anthropic() {
 }
 
 # Ollama経由
+# 接続先は CLAUDE_OLLAMA_URL で指定する(ホスト名をリポジトリに書かないよう ~/.zshrc.local などで設定する)
 function claude-ollama() {
   export ANTHROPIC_AUTH_TOKEN=ollama
   export ANTHROPIC_API_KEY=""
-  export ANTHROPIC_BASE_URL=http://yutapc:11434
+  export ANTHROPIC_BASE_URL="${CLAUDE_OLLAMA_URL:-http://localhost:11434}"
   echo "→ Ollama mode"
   claude --model qwen3.5 "$@"
 }

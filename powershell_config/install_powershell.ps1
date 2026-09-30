@@ -60,6 +60,21 @@ if ((Test-Path $oldProfile) -and (Select-String -Path $oldProfile -Pattern 'powe
 }
 
 # ---------------------------------------------------------------
+# 2.5. WSL に USERPROFILE を渡す (WSLENV に USERPROFILE/p を追加)
+# ---------------------------------------------------------------
+# /p を付けると WSL 側では /mnt/c/Users/<名前> の形に変換される。
+# zsh の設定 (zshrc_env.sh) が、これを使って VS Code の code コマンドのパスを組み立てる
+$wslenv = [Environment]::GetEnvironmentVariable('WSLENV', 'User')
+$wslenvItems = @(if ($wslenv) { $wslenv -split ':' | Where-Object { $_ } })
+if ($wslenvItems | Where-Object { $_ -match '^USERPROFILE(/|$)' }) {
+    Write-Host "[skip] WSLENV already contains USERPROFILE: $wslenv"
+} else {
+    $newWslenv = (@($wslenvItems) + 'USERPROFILE/p') -join ':'
+    [Environment]::SetEnvironmentVariable('WSLENV', $newWslenv, 'User')
+    Write-Host "[set] WSLENV (User) = $newWslenv (新しく開いたターミナルから反映)"
+}
+
+# ---------------------------------------------------------------
 # 3. 未インストールのプログラム・モジュールを自動インストール
 # ---------------------------------------------------------------
 if ($SkipAutoInstall) {

@@ -47,7 +47,7 @@ plugins=(
     git-extras
     # gitfast
     git-flow
-    github
+    # github は旧 hub CLI 用で非推奨(読み込むと警告が出る)。GitHub CLI の補完は gh プラグインで行う
     gitignore
     git-prompt
     gh

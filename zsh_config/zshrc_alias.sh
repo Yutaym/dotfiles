@@ -1,17 +1,13 @@
 # aliases
+# oh-my-zsh(git / common-aliases プラグインなど)と同じ定義のものはここに書かない。
+# ここに書いたものは oh-my-zsh より後に読み込まれるので、同名のエイリアスを上書きする。
+
 # git
-alias g='git'
 alias gs='git status'
-alias gb='git branch'
 alias gc='git clone'
-alias gco='git checkout'
-alias gct='git commit -m'
 alias gg='git grep'
-alias ga='git add'
-alias gd='git diff'
 alias gcma='git checkout master'
 alias gfu='git fetch upstream'
-alias gfo='git fetch origin'
 alias gmod='git merge origin/develop'
 alias gmud='git merge upstream/develop'
 alias gmom='git merge origin/master'
@@ -23,44 +19,40 @@ alias gsl='git stash list'
 alias gsu='git stash -u'
 alias gsp='git stash pop'
 
-alias gl='git log --abbrev-commit --no-merges --date=short --date=iso'
-alias glg='git log --abbrev-commit --no-merges --date=short --date=iso --grep'
-alias glc='git log --abbrev-commit --no-merges --date=short --date=iso origin/html..html'
+alias gl='git log --abbrev-commit --no-merges --date=iso'
+alias glg='git log --abbrev-commit --no-merges --date=iso --grep'
 
 #vim
 alias v='nvim'
 alias vi='nvim'
-alias nv='nvim'
 
 #vscode
-alias codef='code ./'
 alias co='code ./'
 
 #ls
-alias ls='ls -G --color=auto'
-alias la='ls -a --color=auto'
-alias ll='ls -lh --color=auto'
-alias lla='ls -alh --color=auto'
-alias lal='ls -alh --color=auto'
-alias lsgr='ls -a  --color=auto | grep -E'
+# ls 自体の色付けは oh-my-zsh(lib/theme-and-appearance.zsh)が OS に合わせて設定する
+# (GNU は ls --color=tty、macOS は ls -G)。--color は古い macOS の ls に無いのでここでは付けない
+alias la='ls -a'
+alias ll='ls -lh'
+alias lla='ls -alh'
+alias lsgr='ls -a | grep -E'
 
 alias lsc='eza --icons --group-directories-first'
 alias llc='eza -la --icons --group-directories-first --git'
 alias ltc='eza --tree --level=2 --icons'
 
-alias lspt="echo $PATH | tr ':' '\n'"
-alias ecpt="echo $PATH | tr ':' '\n'"
+# シングルクォートにして、定義時ではなく実行時の PATH を表示する
+alias lspt='echo $PATH | tr ":" "\n"'
 
 
 #one commands
 alias c='clear'
-alias h='history'
 alias B='./build'
 alias lns='ln -snf'
-alias pandoc='/usr/local/bin/pandoc'
 #other commands
 alias tree="pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/| /g'"
-alias pwdc='pwd | tr -d "\n" | pbcopy'
+# clipcopy は oh-my-zsh(lib/clipboard.zsh)の関数で、pbcopy / clip.exe / wl-copy / xclip / xsel などから使えるものを選ぶ
+alias pwdc='pwd | tr -d "\n" | clipcopy'
 alias gr='grep -E'
 alias chx='chmod +x'
 #zsh

@@ -31,7 +31,8 @@ function Use-ClaudeAnthropic {
 function Use-ClaudeOllama {
     $env:ANTHROPIC_AUTH_TOKEN = "ollama"
     # $env:ANTHROPIC_API_KEY = ""
-    $env:ANTHROPIC_BASE_URL = "http://yutapc:11434"
+    # 接続先は環境変数 CLAUDE_OLLAMA_URL で指定する (ホスト名をリポジトリに書かないため)
+    $env:ANTHROPIC_BASE_URL = if ($env:CLAUDE_OLLAMA_URL) { $env:CLAUDE_OLLAMA_URL } else { "http://localhost:11434" }
     Write-Host "-> Ollama mode"
 }
 
