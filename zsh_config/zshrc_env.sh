@@ -54,8 +54,11 @@ _load_nvm_autoenv() {
     # defaultエイリアスが "node"/"stable"/"lts/*" のような間接指定で
     # 直接パスを解決できない場合は、インストール済みバージョンの中から
     # autoenvが入っているものを更新日時が新しい順に探す。
+    # (N) で一致なしでも "no matches found" エラーにせず空にし、om で更新日時の新しい順に並べる。
     if [[ -z "$script" ]]; then
-        script=$(ls -t "$nvm_dir"/versions/node/*/lib/node_modules/@hyperupcall/autoenv/activate.sh 2>/dev/null | head -n1)
+        local -a candidates
+        candidates=("$nvm_dir"/versions/node/*/lib/node_modules/@hyperupcall/autoenv/activate.sh(N.om))
+        script="${candidates[1]}"
     fi
 
     [[ -n "$script" && -f "$script" ]] && source "$script"
