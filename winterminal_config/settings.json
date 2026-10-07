@@ -1,9 +1,39 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": [
+    "actions": 
+    [
         {
-            "command": {
+            "command": "paste",
+            "id": "User.paste"
+        },
+        {
+            "command": 
+            {
+                "action": "copy",
+                "singleLine": false
+            },
+            "id": "User.copy.644BA8F2"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "\u001b[13;3u"
+            },
+            "id": "User.sendInput.AltEnter"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "\u001b[13;5u"
+            },
+            "id": "User.sendInput.CtrlEnter"
+        },
+        {
+            "command": 
+            {
                 "action": "splitPane",
                 "split": "auto",
                 "splitMode": "duplicate"
@@ -15,79 +45,84 @@
             "id": "User.find"
         },
         {
-            "command": {
-                "action": "commandPalette"
-            },
-            "id": "User.commandPalette.D3F0B923"
-        },
-        {
-            "command": {
+            "command": 
+            {
                 "action": "closeTab"
             },
             "id": "User.closeTab.0"
         },
         {
-            "command": "paste",
-            "id": "User.paste"
+            "command": 
+            {
+                "action": "commandPalette"
+            },
+            "id": "User.commandPalette.D3F0B923"
         },
         {
-            "command": {
-                "action": "copy",
-                "singleLine": false
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "\u001b[13;2u"
             },
-            "id": "User.copy.644BA8F2"
-        },  
-        {
-        "command": {
-          "action": "sendInput",
-          "input": "\u001b[13;5u"
-            },
-          "id": "User.sendInput.CtrlEnterCustom"
+            "id": "User.sendInput.ShiftEnter"
         }
     ],
     "copyFormatting": "none",
-    "copyOnSelect": true,
+    "copyOnSelect": false,
     "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-    "keybindings": [
+    "keybindings": 
+    [
         {
-            "id": "User.splitPane.A6751878",
-            "keys": "alt+shift+d"
-        },
-        {
-            "id": "User.commandPalette.D3F0B923",
-            "keys": "ctrl+alt+space"
+            "id": "User.paste",
+            "keys": "ctrl+v"
         },
         {
             "id": "User.find",
             "keys": "ctrl+shift+f"
         },
         {
-            "id": null,
-            "keys": "ctrl+v"
+            "id": "User.sendInput.CtrlEnter",
+            "keys": "ctrl+enter"
         },
         {
-            "id": null,
-            "keys": "ctrl+w"
+            "id": "User.splitPane.A6751878",
+            "keys": "alt+shift+d"
+        },
+        {
+            "id": "User.sendInput.ShiftEnter",
+            "keys": "shift+enter"
+        },
+        {
+            "id": "User.sendInput.AltEnter",
+            "keys": "alt+enter"
         },
         {
             "id": "User.copy.644BA8F2",
             "keys": "ctrl+c"
         },
         {
-            "id": "User.sendInput.CtrlEnterCustom",
-            "keys": "ctrl+enter"
+            "id": "User.commandPalette.D3F0B923",
+            "keys": "ctrl+alt+space"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+w"
         }
     ],
-    "newTabMenu": [
+    "newTabMenu": 
+    [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": {
-        "defaults": {
+    "profiles": 
+    {
+        "defaults": 
+        {
             "colorScheme": "Campbell"
         },
-        "list": [
+        "list": 
+        [
             {
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
@@ -105,6 +140,18 @@
                 "hidden": false,
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{d7897446-0e74-5efc-9b5d-c24b8099bdf1}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 2022",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{c43d3fd3-25b7-5249-8b00-3f58529ad801}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 2022",
+                "source": "Windows.Terminal.VisualStudio"
             },
             {
                 "guid": "{125c57a3-eb08-536c-9410-9a21faea046a}",
@@ -125,9 +172,28 @@
                 "source": "VSDebugConsole"
             },
             {
+                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+                "hidden": false,
+                "name": "Ubuntu",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{4dd1e689-b517-5f39-947d-78e8a8bdf958}",
+                "hidden": false,
+                "name": "Ubuntu 20.04.6 LTS",
+                "source": "CanonicalGroupLimited.Ubuntu20.04LTS_79rhkp1fndgsc"
+            },
+            {
+                "guid": "{1b0fc0ec-f2b8-5851-9c2d-3fe80b626251}",
+                "hidden": false,
+                "name": "Ubuntu-24.04",
+                "source": "Microsoft.WSL"
+            },
+            {
                 "commandline": "ubuntu.exe",
                 "cursorShape": "filledBox",
-                "font": {
+                "font": 
+                {
                     "face": "Cascadia Mono",
                     "size": 13
                 },
@@ -165,30 +231,8 @@
             }
         ]
     },
-    "schemes": [
-        {
-            "background": "#300A24",
-            "black": "#171421",
-            "blue": "#0037DA",
-            "brightBlack": "#767676",
-            "brightBlue": "#08458F",
-            "brightCyan": "#2C9FB3",
-            "brightGreen": "#26A269",
-            "brightPurple": "#A347BA",
-            "brightRed": "#C01C28",
-            "brightWhite": "#F2F2F2",
-            "brightYellow": "#A2734C",
-            "cursorColor": "#FFFFFF",
-            "cyan": "#3A96DD",
-            "foreground": "#FFFFFF",
-            "green": "#26A269",
-            "name": "Ubuntu-20.04-ColorScheme",
-            "purple": "#881798",
-            "red": "#C21A23",
-            "selectionBackground": "#FFFFFF",
-            "white": "#CCCCCC",
-            "yellow": "#A2734C"
-        },
+    "schemes": 
+    [
         {
             "background": "#300A24",
             "black": "#171421",

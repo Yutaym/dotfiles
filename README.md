@@ -11,7 +11,7 @@ Windows / Linux / macOS で使うエディタ・シェル・ツールの設定�
 | `powershell_config/`  | PowerShell 7 のプロファイル                   | `install_powershell.ps1`                            | コピー           |
 | `zsh_config/`         | zsh（oh-my-zsh は初回起動時に自動インストール） | `install_zsh.sh`                                    | コピー           |
 | `claude_config/`      | Claude Code（`CLAUDE.md` / `settings.json` など） | `install_claude.ps1` / `install_claude.sh`          | シンボリックリンク |
-| `winterminal_config/` | Windows Terminal の `settings.json`           | なし（手動でコピー）                                | —                |
+| `winterminal_config/` | Windows Terminal の `settings.json`（Store 版）  | `install_winterminal.ps1`                           | シンボリックリンク |
 | `tmux_config/`        | tmux（`.tmux.config`）                        | なし（手動で `~/.tmux.conf` に配置）                | —                |
 | `python_config/`      | Miniconda のインストール・conda パッケージ導入 | `install_miniconda.sh` / `python_init.bat`          | —                |
 | `scripts/`            | 補助スクリプト（zsh 用ツールのインストールなど） | —                                                   | —                |
@@ -35,6 +35,7 @@ pwsh ~/dotfiles/powershell_config/install_powershell.ps1   # -SkipAutoInstall �
 pwsh ~/dotfiles/neovim_config/install_nvim.ps1
 pwsh ~/dotfiles/vim_config/install_vim.ps1
 pwsh ~/dotfiles/claude_config/install_claude.ps1
+pwsh ~/dotfiles/winterminal_config/install_winterminal.ps1
 ```
 
 > シンボリックリンクを作るインストーラーは、「開発者モード」の有効化か管理者権限での実行が必要。
@@ -50,7 +51,7 @@ bash ~/dotfiles/claude_config/install_claude.sh
 
 ### インストーラーの動作
 
-- **シンボリックリンク方式**（Neovim / Vim / Claude Code）: リポジトリのファイルを直接参照するので、リポジトリ側の変更がすぐ反映される。リンク先に既存ファイルがある場合は警告してスキップする
+- **シンボリックリンク方式**（Neovim / Vim / Claude Code / Windows Terminal）: リポジトリのファイルを直接参照するので、リポジトリ側の変更がすぐ反映される。リンク先に既存ファイルがある場合は警告してスキップする（Windows Terminal だけは既存の `settings.json` を `*.bak.<日時>` に退避してからリンクする）
 - **コピー方式**（PowerShell / zsh）: 既存ファイルと内容が異なる場合は `*.bak.<日時>` にバックアップしてから上書きする。リポジトリを `~/dotfiles` 以外に置いた場合は、読み込み先のパスを書き換えてコピーする
 - **デフォルトシェル**: PowerShell / zsh のインストーラーは、デフォルトシェルが pwsh / zsh でなければ変更手順を表示する（変更自体は手動）
 - **WSLENV**: PowerShell のインストーラーは、ユーザー環境変数 `WSLENV` に `USERPROFILE/p` を追加する（WSL の zsh が VS Code のパスを求めるのに使う）
