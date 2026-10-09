@@ -22,6 +22,24 @@ for name in "${FILES[@]}"; do
     fi
 done
 
+# skills/ の下の各スキルを ~/.claude/skills/<スキル名> にリンクする (~/.claude/skills には管理対象外のスキルもあるため、フォルダごとではなくスキルごとにリンクする)
+if [ -d "$SCRIPT_DIR/skills" ]; then
+    mkdir -p "$CLAUDE_DIR/skills"
+    for src in "$SCRIPT_DIR"/skills/*/; do
+        [ -d "$src" ] || continue
+        src="${src%/}"
+        dst="$CLAUDE_DIR/skills/$(basename "$src")"
+        if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+            echo "[skip] $dst -> $src"
+        elif [ -e "$dst" ] || [ -L "$dst" ]; then
+            echo "[warn] $dst already exists. skipped." >&2
+        else
+            ln -s "$src" "$dst"
+            echo "[link] $dst -> $src"
+        fi
+    done
+fi
+
 # local-paths.md は環境ごとに編集するためリンクではなくコピーする (既存なら上書きしない)
 src="$SCRIPT_DIR/local-paths.md"
 dst="$CLAUDE_DIR/local-paths.md"

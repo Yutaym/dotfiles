@@ -27,6 +27,29 @@ foreach ($name in $Files) {
     }
 }
 
+# skills/ の下の各スキルを ~/.claude/skills/<スキル名> にリンクする (~/.claude/skills には管理対象外のスキルもあるため、フォルダごとではなくスキルごとにリンクする)
+$SkillsSrc = Join-Path $ScriptDir 'skills'
+$SkillsDst = Join-Path $ClaudeDir 'skills'
+if (Test-Path $SkillsSrc) {
+    if (-not (Test-Path $SkillsDst)) {
+        New-Item -ItemType Directory -Path $SkillsDst | Out-Null
+        Write-Host "[mkdir] $SkillsDst"
+    }
+    foreach ($skill in Get-ChildItem -Path $SkillsSrc -Directory) {
+        $src = $skill.FullName
+        $dst = Join-Path $SkillsDst $skill.Name
+        $item = Get-Item -Path $dst -Force -ErrorAction SilentlyContinue
+        if ($item -and $item.LinkType -eq 'SymbolicLink' -and "$($item.Target)" -eq $src) {
+            Write-Host "[skip] $dst -> $src"
+        } elseif ($item) {
+            Write-Warning "$dst already exists. skipped."
+        } else {
+            New-Item -ItemType SymbolicLink -Path $dst -Target $src | Out-Null
+            Write-Host "[link] $dst -> $src"
+        }
+    }
+}
+
 # local-paths.md は環境ごとに編集するためリンクではなくコピーする (既存なら上書きしない)
 $src = Join-Path $ScriptDir 'local-paths.md'
 $dst = Join-Path $ClaudeDir 'local-paths.md'
