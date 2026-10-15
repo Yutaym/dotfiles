@@ -13,6 +13,110 @@
   "agentPushNotifEnabled": true,
   "inputNeededNotifEnabled": true,
   "effortLevel": "medium",
-  "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" },
-  "teammateMode": "auto"
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "auto",
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      }
+    ]
+  }
 }
