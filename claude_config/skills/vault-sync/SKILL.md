@@ -22,7 +22,8 @@ vault の同期は 2 つの部分に分かれていて、互いに独立して�
 
 手順の詳細は vault 内のプロジェクトスキルにまとめてあるので、二重に書かずにそちらに従う。
 
-1. `VAULT_DIR/.claude/skills/sync-vault/SKILL.md` を Read で読む。
+1. `VAULT_DIR/.claude/skills/vault-sync/SKILL.md` を Read で読む（2026/10/15 までは `sync-vault`。同じ名前なのでスキルとしては呼べず、グローバル版のこのファイルが優先される。必ず Read で読む）。
+   - 古い端末で `vault-sync` が見つからなければ、`VAULT_DIR/.claude/skills/sync-vault/SKILL.md` を読む。
    - 見つからない場合（SMB 同期をセットアップしていない端末など）は、A をスキップしたことを報告して B に進む。
 2. その「対話でこのスキルが呼ばれたときは…」の確認事項と「手順」（ドライラン → 確認 → 本実行 → 要確認ファイルの整理 → 報告）に従う。
    - Mac / Linux では、同じフォルダの `mac-linux.md` も読む。
