@@ -1,141 +1,72 @@
+# GitHub Copilot CLI (copilot コマンド) でコマンドの提案 (ghcs)・説明 (ghce) を行う
+# 旧 gh copilot 拡張 (gh copilot suggest / explain) は 2025-10 に提供が終わったため、後継の Copilot CLI の非対話モード (-p) を使う
+# インストール: npm install -g @github/copilot (Node.js 22 以上)。初回は copilot を起動して /login でログインする
+# --allow-tool を付けないので、Copilot にファイルの編集やコマンドの実行はさせない (提案されたコマンドを実行するかは ghcs で確認する)
+# https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically
+_copilot_prompt() {
+    if ! (( $+commands[copilot] )); then
+        echo "copilot (GitHub Copilot CLI) が見つかりません。npm install -g @github/copilot でインストールしてください" >&2
+        return 1
+    fi
+    # -s: セッションの情報を出さず回答だけを出力する、--no-ask-user: 聞き返さずに回答させる
+    local output
+    if ! output="$(copilot -p "$1" -s --no-ask-user)"; then
+        echo "copilot が失敗しました。未ログインなら copilot を起動して /login を実行してください" >&2
+        return 1
+    fi
+    print -r -- "$output"
+}
+
+# 使い方: ghcs [-t shell|gh|git] <やりたいこと>
+# 提案されたコマンドを表示し、y で実行する。実行しなくても履歴に追加するので、↑ で呼び出して編集できる
 ghcs() {
-    local FUNCNAME="ghcs"
-    local TARGET="shell"
-    local GH_DEBUG="$GH_DEBUG"
-    local GH_HOST="$GH_HOST"
-
-    __USAGE=$(cat <<'EOF'
-Wrapper around `gh copilot suggest` to suggest a command based on a natural language description of the desired output effort.
-Supports executing suggested commands if applicable.
-
-USAGE
-  ghcs [flags] <prompt>
-
-FLAGS
-  -d, --debug           Enable debugging
-  -h, --help            Display help usage
-      --hostname        The GitHub host to use for authentication
-  -t, --target target   Target for suggestion; must be shell, gh, git
-                        default: "shell"
-
-EXAMPLES
-
-- Guided experience
-  $ ghcs
-
-- Git use cases
-  $ ghcs -t git "Undo the most recent local commits"
-  $ ghcs -t git "Clean up local branches"
-  $ ghcs -t git "Setup LFS for images"
-
-- Working with the GitHub CLI in the terminal
-  $ ghcs -t gh "Create pull request"
-  $ ghcs -t gh "List pull requests waiting for my review"
-  $ ghcs -t gh "Summarize work I have done in issues and pull requests for promotion"
-
-- General use cases
-  $ ghcs "Kill processes holding onto deleted files"
-  $ ghcs "Test whether there are SSL/TLS issues with github.com"
-  $ ghcs "Convert SVG to PNG and resize"
-  $ ghcs "Convert MOV to animated PNG"
-EOF
-)
-
-    local OPT OPTARG OPTIND
-    while getopts "dht:-:" OPT; do
-        if [ "$OPT" = "-" ]; then
-            OPT="${OPTARG%%=*}"
-            OPTARG="${OPTARG#"$OPT"}"
-            OPTARG="${OPTARG#=}"
-        fi
-
-        case "$OPT" in
-            debug | d)
-                GH_DEBUG=api
-                ;;
-            help | h)
-                echo "$__USAGE"
-                return 0
-                ;;
-            hostname)
-                GH_HOST="$OPTARG"
-                ;;
-            target | t)
-                TARGET="$OPTARG"
-                ;;
+    local target="shell" opt OPTARG OPTIND
+    while getopts "ht:" opt; do
+        case "$opt" in
+            h) echo "usage: ghcs [-t shell|gh|git] <やりたいこと>"; return 0 ;;
+            t) target="$OPTARG" ;;
+            *) return 1 ;;
         esac
     done
-
     shift "$((OPTIND-1))"
 
-    TMPFILE="$(mktemp -t gh-copilotXXXXXX)"
-    trap 'rm -f "$TMPFILE"' EXIT
-    if GH_DEBUG="$GH_DEBUG" GH_HOST="$GH_HOST" gh copilot suggest -t "$TARGET" "$@" --shell-out "$TMPFILE"; then
-        if [ -s "$TMPFILE" ]; then
-            FIXED_CMD="$(cat "$TMPFILE")"
-            print -s -- "$FIXED_CMD"
-            echo
-            eval -- "$FIXED_CMD"
-        fi
-    else
-        return 1
+    local kind
+    case "$target" in
+        gh) kind="a GitHub CLI (gh) command" ;;
+        git) kind="a git command" ;;
+        shell) kind="a zsh command line on $(uname -s)" ;;
+        *) echo "ghcs: -t は shell / gh / git のどれかを指定してください" >&2; return 1 ;;
+    esac
+
+    local text="$*"
+    if [[ -z "$text" ]]; then
+        read -r "text?やりたいことを入力してください: "
+        [[ -z "$text" ]] && return 1
+    fi
+
+    local output cmd
+    output="$(_copilot_prompt "Suggest $kind for the following task. Reply with only the command itself, with no explanation, no Markdown and no code fences. If several commands are needed, join them into one line. Task: $text")" || return 1
+    # 指示に反してコードブロックで返ってきた場合に備えて、``` の行と空行を除く
+    cmd="$(print -r -- "$output" | grep -v '^[[:space:]]*```' | sed '/^[[:space:]]*$/d')"
+    [[ -z "$cmd" ]] && return 1
+
+    printf '\n    \e[36m%s\e[0m\n\n' "$cmd"
+    print -s -- "$cmd"
+    local answer
+    read -r "answer?実行しますか? [y/N] (実行しない場合も ↑ で呼び出せます) "
+    if [[ "$answer" == [yY]* ]]; then
+        eval -- "$cmd"
     fi
 }
 
+# 使い方: ghce <コマンド>
+# コマンドの意味を日本語で説明させる
 ghce() {
-    local FUNCNAME="ghce"
-    local GH_DEBUG="$GH_DEBUG"
-    local GH_HOST="$GH_HOST"
-
-    __USAGE=$(cat <<'EOF'
-Wrapper around `gh copilot explain` to explain a given input command in natural language.
-
-USAGE
-  ghce [flags] <command>
-
-FLAGS
-  -d, --debug      Enable debugging
-  -h, --help       Display help usage
-      --hostname   The GitHub host to use for authentication
-
-EXAMPLES
-
-# View disk usage, sorted by size
-$ ghce 'du -sh | sort -h'
-
-# View git repository history as text graphical representation
-$ ghce 'git log --oneline --graph --decorate --all'
-
-# Remove binary objects larger than 50 megabytes from git history
-$ ghce 'bfg --strip-blobs-bigger-than 50M'
-EOF
-)
-
-    local OPT OPTARG OPTIND
-    while getopts "dh-:" OPT; do
-        if [ "$OPT" = "-" ]; then
-            OPT="${OPTARG%%=*}"
-            OPTARG="${OPTARG#"$OPT"}"
-            OPTARG="${OPTARG#=}"
-        fi
-
-        case "$OPT" in
-            debug | d)
-                GH_DEBUG=api
-                ;;
-            help | h)
-                echo "$__USAGE"
-                return 0
-                ;;
-            hostname)
-                GH_HOST="$OPTARG"
-                ;;
-        esac
-    done
-
-    shift "$((OPTIND-1))"
-
-    GH_DEBUG="$GH_DEBUG" GH_HOST="$GH_HOST" gh copilot explain "$@"
+    if [[ $# -eq 0 ]]; then
+        echo "usage: ghce <説明してほしいコマンド>" >&2
+        return 1
+    fi
+    _copilot_prompt "Explain in Japanese what the following command does, briefly, part by part. Do not run it. Command: $*"
 }
 
 

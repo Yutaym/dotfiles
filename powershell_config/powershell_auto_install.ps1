@@ -31,6 +31,8 @@ function Install-CommandIfMissing {
 Install-CommandIfMissing -CommandName git -WingetId "Git.Git"
 Install-CommandIfMissing -CommandName uv -WingetId "astral-sh.uv"
 Install-CommandIfMissing -CommandName nvm -WingetId "CoreyButler.NVMforWindows"
+## GitHub Copilot CLI (ghcs / ghce / Ctrl+G で使う。初回は copilot を起動して /login でログインする)
+Install-CommandIfMissing -CommandName copilot -WingetId "GitHub.Copilot"
 
 ## Node.js本体はnvmで管理する(winget等での直接インストールは行わない)
 if ((Get-Command nvm -ErrorAction SilentlyContinue) -and -not (Get-Command node -ErrorAction SilentlyContinue)) {

@@ -37,7 +37,7 @@ bash ~/dotfiles/zsh_config/install_zsh.sh
 
 oh-my-zsh・zsh-autosuggestions・zsh-syntax-highlighting・fzf は、zsh の初回起動時に `zshrc_ohmyzsh.sh` が自動でインストールする（[oh-my-zsh](#oh-my-zsh-zshrc_ohmyzshsh) 参照）。
 
-外部依存: `curl`（oh-my-zsh の取得）、`git`（プラグイン・fzf の取得）、`peco`（履歴検索・ディレクトリ移動）、`eza`（`lsc` などのエイリアス）、`ghq`（`^G`）、`thefuck` / `direnv`（同名プラグイン）、`gh`（Copilot 拡張、`ghcs` / `ghce`）。いずれも任意。
+外部依存: `curl`（oh-my-zsh の取得）、`git`（プラグイン・fzf の取得）、`peco`（履歴検索・ディレクトリ移動）、`eza`（`lsc` などのエイリアス）、`ghq`（`^G`）、`thefuck` / `direnv`（同名プラグイン）、`copilot`（GitHub Copilot CLI。`npm install -g @github/copilot` で入れ、初回は `/login`。`ghcs` / `ghce`）。いずれも任意。
 
 ---
 
@@ -247,8 +247,8 @@ fzf の画面内での主な操作:
 | `mkcd <dir>`             | ディレクトリを作成（`mkdir -p`）して移動                                                                    |
 | `fe`                     | カレント以下のファイルを fzf で選んで `$EDITOR` で開く                                                      |
 | `fkill [signal]`         | プロセスを fzf で選んで（複数可）シグナルを送る。省略時は `9`                                               |
-| `ghcs [flags] <prompt>`  | `gh copilot suggest` のラッパー。提案されたコマンドを履歴に追加して実行する。`-t shell/gh/git` で対象を指定 |
-| `ghce [flags] <command>` | `gh copilot explain` のラッパー。コマンドの説明を表示                                                       |
+| `ghcs [-t shell/gh/git] <やりたいこと>` | GitHub Copilot CLI（`copilot -p`）にコマンドを 1 つ提案させて表示し、`y` で実行する。実行しなくても履歴に入れるので `↑` で編集できる |
+| `ghce <command>`         | GitHub Copilot CLI にコマンドの意味を日本語で説明させる                                                     |
 | `claude-anthropic`       | Anthropic API で Claude Code を起動（`ANTHROPIC_API_KEY` はプレースホルダーのままなので要書き換え）         |
 | `claude-ollama`          | Ollama 経由（モデル `qwen3.5`）で Claude Code を起動。接続先は `CLAUDE_OLLAMA_URL`（`zshrc_main.sh` で `http://yutapc:11434` を設定）                                  |
 

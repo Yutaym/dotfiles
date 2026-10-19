@@ -13,11 +13,21 @@ Set-PSReadLineKeyHandler -Key "Alt+f" -Function NextWord
 Set-PSReadLineKeyHandler -Key "Alt+b" -Function BackwardWord
 Set-PSReadLineKeyHandler -Key "Ctrl+p" -Function PreviousHistory
 Set-PSReadLineKeyHandler -Key "Ctrl+n" -Function NextHistory
-Set-PSReadLineKeyHandler -Key Ctrl+g -ScriptBlock {
+## Ctrl+G: 入力中の行 (やりたいことを自然文で書く) を Copilot CLI が提案したコマンドに置き換える (実行はしない)
+## Get-CopilotCommandSuggestion は powershell_alias.ps1 で定義している
+Set-PSReadLineKeyHandler -Key Ctrl+g -BriefDescription CopilotSuggest -LongDescription '入力中の行を Copilot CLI が提案したコマンドに置き換える' -ScriptBlock {
     $line = $null
     $cursor = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-    Invoke-CopilotSuggest $line
+    if (-not $line.Trim()) {
+        return
+    }
+    Write-Host "`nCopilot に問い合わせています..." -ForegroundColor DarkGray
+    $command = Get-CopilotCommandSuggestion -Prompt $line
+    if ($command) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Replace(0, $line.Length, $command)
+    }
+    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
 
 ## input History Plugin
