@@ -12,6 +12,8 @@ ZSH_DISABLE_COMPFIX="true"
 # 実際に nvm/node/npm/npx 等を初めて使ったタイミングまで遅延させる。
 # (未設定だと起動のたびに数秒かかる)
 zstyle ':omz:plugins:nvm' lazy yes
+# nvm でグローバルに入れた claude も、初回実行時に nvm を読み込むきっかけにする
+zstyle ':omz:plugins:nvm' lazy-cmd claude
 
 # oh-my-zsh plugins
 plugins=(
