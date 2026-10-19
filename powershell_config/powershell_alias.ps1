@@ -1,6 +1,27 @@
 
-set-alias vi 'C:\Program Files\Vim\vim90\vim.exe'
-set-alias vim 'C:\Program Files\Neovim\bin\nvim.exe'
+## vi は Vim、vim は Neovim を起動する
+## インストール先のパスやバージョン (vim90 など) に依存しないよう、PATH → 既定のインストール先の順に探す
+## Vim の公式インストーラーは PATH に追加しないため、Program Files\Vim\vim*\vim.exe からバージョンが最も新しいものを使う
+$vimExe = Get-Command vim.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source
+if (-not $vimExe) {
+    $vimExe = @($env:ProgramFiles, ${env:ProgramFiles(x86)}) | Where-Object { $_ } |
+        ForEach-Object { Get-ChildItem -Path (Join-Path $_ 'Vim\vim*\vim.exe') -ErrorAction SilentlyContinue } |
+        Sort-Object { [int]($_.Directory.Name -replace '\D', '') } -Descending |
+        Select-Object -First 1 -ExpandProperty FullName
+}
+if ($vimExe) {
+    Set-Alias -Name vi -Value $vimExe
+}
+
+$nvimExe = Get-Command nvim.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source
+if (-not $nvimExe) {
+    $nvimExe = Join-Path $env:ProgramFiles 'Neovim\bin\nvim.exe'
+    if (-not (Test-Path $nvimExe)) { $nvimExe = $null }
+}
+if ($nvimExe) {
+    Set-Alias -Name vim -Value $nvimExe
+}
+Remove-Variable vimExe, nvimExe
 function ghcs {
     [CmdletBinding()]
     # Debug support provided by common PowerShell function parameters, which is natively aliased as -d or -db
