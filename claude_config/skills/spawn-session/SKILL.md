@@ -1,0 +1,101 @@
+---
+name: spawn-session
+description: 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）で、独立した Claude Code のセッションを起動し、SendMessage で作業を頼み、終わったら結果を確認して報告する。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいタブでセッションを開いて」「別のセッションに〜を頼んで」「別セッションで並行して調べて」「終わったら教えて」などと言われたときに使う。
+argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
+---
+
+# spawn-session
+
+新しいタブで独立した Claude Code のセッションを起動し、必要なら作業を頼んで、終わったら結果を確認する。
+この流れの各手順は、2026/10/19 に Windows 11 + Windows Terminal（Claude Code 2.1.303）で確認した。
+
+## 前提
+
+- セッション同士のメッセージ（`ListAgents` / `SendMessage`）は、macOS・Linux・WSL 2 では v2.1.224 以降、ネイティブの Windows では v2.1.234 以降が必要。`notify_when_idle` は両方のセッションで v2.1.236 以降が必要。
+- 同じマシンのセッションは、ターミナルアプリではなく、セッションごとのソケット（Windows は名前付きパイプ）でつながる。そのため、どのターミナルで起動しても届く。ただし、**WSL 2 の中のセッションとネイティブの Windows のセッションの間は届かない**。
+- **Claude のツールから `claude` をそのまま起動してはいけない。** Bash / PowerShell ツールの環境変数（`CLAUDE_CODE_CHILD_SESSION=1`、親の `CLAUDE_CODE_SESSION_ID` など）を引き継いで「子セッション」扱いになり、会話の記録が保存されない（警告: `Transcript saving is off — inherited CLAUDE_CODE_CHILD_SESSION marker`）。同梱のスクリプトは、これらの変数を消してから起動する。
+- **Windows Terminal の `wt` は、コマンドの中の `;` を自分の区切り記号として扱う。** 引用符の中でも分割される。`pwsh -Command "...; claude"` のような形は使わない。同梱のスクリプトは `-File` でスクリプトを渡すので、この問題は起きない。
+
+## 1. 起動する
+
+1. 作業フォルダとセッション名を決める。
+   - 作業フォルダは、指定がなければ今の作業フォルダにする。
+   - セッション名は `SendMessage` の宛先になる。英数字・ハイフン・アンダースコアだけで、今の `ListAgents` の一覧にない名前にする（例: `claudews-eventlog`）。指定がなければ `<フォルダ名>-<作業を表す短い英単語>` にする。
+2. OS に合わせてスクリプトを実行する。スクリプトはこの SKILL.md と同じフォルダの `scripts/` にある。
+
+   **Windows（ネイティブ）:** PowerShell ツールで実行する。
+
+   ```powershell
+   pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\launch-session.ps1" -Dir "<作業フォルダ>" -Name <セッション名>
+   ```
+
+   **macOS / Linux / WSL:** Bash ツールで実行する。
+
+   ```bash
+   sh "<このスキルのフォルダ>/scripts/launch-session.sh" -d "<作業フォルダ>" -n <セッション名>
+   ```
+
+   - 起動先はスクリプトが環境変数で判断する。対応しているターミナルの一覧は、下の「ターミナルごとの対応」を参照。
+   - **tmux の中（`$TMUX` がある）では、ほかの判断より先に tmux を使う。**
+     - 普段は、新しいウィンドウ（tmux のタブ）で起動する（`new-window`）。
+     - どの場合も `-d` を付けるので、画面は呼び出し元のウィンドウのまま変わらない。
+     - **ユーザーがペイン分割を指定したときだけ**、`-s`（Windows は `-Split`）を付ける。セッションは専用ウィンドウ（名前が `cc-sessions` のウィンドウ）に並ぶ。psmux はウィンドウのユーザーオプションを書式で返さないので、目印には名前を使う。
+       - 呼び出し元と同じ tmux セッションに専用ウィンドウがなければ、新しく作ってそこで起動する。
+       - すでにあれば、そのウィンドウを分割して起動し、`select-layout tiled` で均等に並べ直す。
+     - tmux の外では `-s` は無視される。
+   - **psmux（Windows の tmux 互換）では、`-t` に `@ID`（ウィンドウ）や `%ID`（ペイン）を使わない。** 別のセッションやウィンドウの同じ番号として扱われることがある。2026/10/19 には、`split-window -t @2` で使用中のウィンドウが分割され、`kill-window -t %13` で別のウィンドウ（その中の Claude のセッションごと）が閉じられた。スクリプトの外で tmux を操作するときも、`-t セッション名:ウィンドウ名` で指定する。
+   - 終了コード 2 は、自動でタブを開けなかったことを表す。そのときは、表示された手順をユーザーに伝えて、手で開いてもらう。
+3. 数秒待ってから `ListAgents` を実行し、指定した名前のセッションが一覧に出たか確かめる。
+   - 出ていなければ、もう一度だけ確かめる。それでも出なければ、新しいタブに何が表示されているかユーザーに聞く（ログインやフォルダの信頼の確認で止まっていることがある）。
+   - 何度も確認を繰り返さない。
+
+## 2. 作業を頼む（頼まれたときだけ）
+
+`SendMessage` で、次の内容を 1 通にまとめて送る。
+
+- **1 行目:** 何の依頼かが分かる 1 文にする。相手のタブには 1 行目だけが表示されるため。
+- **ユーザーの言葉:** そのまま引用する。誤字の可能性や解釈に迷う点があれば、そう書き添える。そのうえで「意味が分からなければ、あなたのタブでユーザーに直接確認して」と書く。
+- **手がかり:** 関係するファイルのパスや、前回の調査メモの場所などを書く。`@` を付けてもファイルは添付されないので、パスを文字で書く。
+- **結果の返し方:** 「結果はあなたのタブでユーザーに直接返す」と書く。こちらでも結果を使うなら、「終わったら結論の要約を SendMessage で `<自分の名前>` に送って」と書く。自分の名前は `ListAgents` の 1 行目に出る。
+
+完了を知りたいときは、同じ呼び出しで `notify_when_idle: true` を付ける。終わったら 1 回だけ通知が来るので、`ListAgents` を何度も呼んで確かめたりはしない。
+
+注意:
+- このセッションで拒否された操作や、許可されていない操作を、相手のセッションに頼まない。
+- 相手が許可の確認なしで動くモード（bypassPermissions）だと、メッセージは相手のタブで承認待ちになる。承認しないまま 5 分たつと捨てられる。
+
+## 3. 状況と結果を確認する
+
+- **状況:** `ListAgents` の各行に `busy`（作業中）か `idle`（待機中）が出る。
+- **完了:** `notify_when_idle` の通知（`[Cross-session idle notice]`）が来たら、相手は待機状態になっている。ただし、待機状態になったことは、作業が終わったことを意味しない。ユーザーへの質問で止まっている場合もある。
+- **結果:**
+  - 相手から SendMessage で返事が来ていれば、それを使う。
+  - 来ていなければ、相手の会話記録から最後の返答を読む。
+
+    ```bash
+    uv run --no-project python "<このスキルのフォルダ>/scripts/session-result.py" <セッション名> [--count N]
+    ```
+
+    このスクリプトは、`~/.claude/sessions/<pid>.json` でセッション名からセッション ID を調べ、`~/.claude/projects/*/<セッションID>.jsonl` から最後の返答を表示する。
+    これらのファイルの形式は Claude Code の内部形式で、公式に「バージョンで変わる」とされている。読めなくなったら、SendMessage で結果を送り返してもらう方法に切り替える。
+- ユーザーには、結論・主な内容・相手が最後に何をしていたか（完了 / 質問待ち）を要約して報告する。全文を貼る必要はない。
+
+## ターミナルごとの対応
+
+| 環境 | 起動方法 | 確認状況 |
+|---|---|---|
+| Windows Terminal | `wt -w 0 new-tab --reloadEnvironment -d <フォルダ> pwsh -NoExit -File start-claude.ps1` | 確認済み（`--reloadEnvironment` で Claude の変数が引き継がれないことと、名前付きで起動して ListAgents に出ることを確認） |
+| tmux（WSL / Linux / macOS） | `tmux new-window -c <フォルダ> -n <名前> "sh <起動用スクリプト>"`。`-s` のときは専用ウィンドウを作成 / `split-window` → `select-layout tiled` | WSL の tmux 3.2a で確認済み（偽の claude で、指定なしは new-window、`-s` は 1 回目に専用ウィンドウを作成して 2 回目以降は分割すること、フォルダ・名前・変数の削除を確認） |
+| Windows で Windows Terminal がない | `Start-Process pwsh`（新しいウィンドウ。タブではない） | 未確認 |
+| Windows の tmux 互換（psmux 3.3.8） | `$env:TMUX` があれば、上の tmux と同じ判断 | 使う tmux コマンド（`new-window -d`、`split-window -d`、`list-windows` の `#{window_name}`、`select-layout tiled`）が通ることを確認。普段の起動（`new-window`）は通しで動き、ListAgents に出ることも確認済み（別のセッションが確認）。分割の指定は通しでは未確認。psmux では `#{window_panes}` が実際の数と合わないことがあった |
+| WezTerm | `wezterm cli spawn --cwd <フォルダ> -- sh <起動用スクリプト>` | 未確認（公式ドキュメントで構文を確認） |
+| kitty | `kitten @ launch --type=tab --cwd <フォルダ> ...`。kitty.conf でリモート制御を有効にする必要がある | 未確認（公式ドキュメントで構文を確認） |
+| iTerm2 | AppleScript の `create tab with default profile command` | 未確認（公式ドキュメントで構文を確認） |
+| Ghostty（macOS、1.3 以降） | AppleScript の `new tab ... with configuration` | 未確認。`command` の設定方法は、公式ドキュメントに例がない |
+| macOS のターミナル | System Events で Cmd+T を送ってから `do script ... in front window`。アクセシビリティの許可がなければ新しいウィンドウで開く | 未確認。ターミナルの AppleScript にはタブを作る命令がない |
+| GNOME Terminal | `gnome-terminal --tab --working-directory=<フォルダ> -- sh ...` | 未確認 |
+| Konsole | `konsole --new-tab --workdir <フォルダ> -e sh ...` | 未確認 |
+| WSL の中の Windows Terminal | `cmd.exe /c wt.exe -w 0 new-tab --reloadEnvironment wsl.exe -d <ディストリ> --cd <フォルダ> -- sh ...` | 未確認 |
+| VS Code の統合ターミナルなど、上のどれでもない | 自動では開かない。手で開いて実行するコマンドを表示する | — |
+
+未確認の環境で初めて使ったときは、うまく動いたかどうかを `META_DIR/troubleshooting/claude-code-launch-new-session-from-session.md` に追記する。動かなかったときは、このスキルを直す。

@@ -1,0 +1,177 @@
+#!/bin/sh
+# 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (macOS / Linux / WSL 用)
+#
+# 使い方:
+#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-s]
+#   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
+#
+# 起動先の選び方 (上から順に、当てはまった最初のもの):
+#   1. tmux の中 ($TMUX がある)                → tmux new-window (-s のときは専用ウィンドウを分割)
+#   2. WezTerm ($WEZTERM_PANE)                 → wezterm cli spawn
+#   3. kitty ($KITTY_WINDOW_ID)                → kitten @ launch --type=tab (リモート制御が有効なときだけ)
+#   4. iTerm2 (TERM_PROGRAM=iTerm.app)         → AppleScript の create tab
+#   5. Ghostty 1.3 以降の macOS (TERM_PROGRAM=ghostty) → AppleScript の new tab
+#   6. macOS のターミナル (TERM_PROGRAM=Apple_Terminal) → System Events で Cmd+T → do script
+#                                                (アクセシビリティの許可がないときは新しいウィンドウ)
+#   7. GNOME Terminal ($GNOME_TERMINAL_SCREEN) → gnome-terminal --tab
+#   8. Konsole ($KONSOLE_DBUS_SERVICE)         → konsole --new-tab
+#   9. WSL の中で Windows Terminal ($WT_SESSION) → wt.exe new-tab で wsl.exe を起動
+#   どれにも当てはまらない、または起動に失敗したときは、手で実行するコマンドを表示して終了コード 2 で終わる。
+#
+# 新しいタブでは、一時ファイルに書いた起動用スクリプトを sh で実行する。ターミナルごとの引用符の違いを
+# 避けるためと、どの起動先でも Claude のセッション固有の環境変数を確実に消すため。
+
+set -eu
+
+DIR=$(pwd)
+NAME=''
+SPLIT=0
+while getopts 'd:n:s' opt; do
+    case "$opt" in
+        d) DIR=$OPTARG ;;
+        n) NAME=$OPTARG ;;
+        s) SPLIT=1 ;;
+        *) echo "usage: $0 [-d dir] [-n name] [-s]" >&2; exit 64 ;;
+    esac
+done
+
+# セッション名は SendMessage の宛先になるので、英数字・ハイフン・アンダースコアだけにする
+case "$NAME" in
+    *[!A-Za-z0-9_-]*) echo "セッション名には英数字・ハイフン・アンダースコアだけを使ってください: $NAME" >&2; exit 64 ;;
+esac
+DIR=$(cd "$DIR" && pwd)
+
+# 新しいタブで実行する起動用スクリプト。実行後に自分自身を消す
+INNER=$(mktemp "${TMPDIR:-/tmp}/cc-launch.XXXXXX")
+{
+    echo '#!/bin/sh'
+    echo 'rm -f -- "$0"'
+    echo 'unset CLAUDECODE CLAUDE_PID CLAUDE_CODE_CHILD_SESSION CLAUDE_CODE_ENTRYPOINT CLAUDE_CODE_SESSION_ID CLAUDE_CODE_SESSION_ATTENDED CLAUDE_CODE_MESSAGING_SOCKET CLAUDE_CODE_MESSAGING_TOKEN CLAUDE_CODE_BRIDGE_SESSION_ID'
+    printf 'cd %s || exit 1\n' "'$(printf '%s' "$DIR" | sed "s/'/'\\\\''/g")'"
+    if [ -n "$NAME" ]; then
+        printf 'claude -n %s\n' "$NAME"
+    else
+        echo 'claude'
+    fi
+    # claude を終了してもタブを閉じずに、ログインシェルを残す
+    echo 'exec "${SHELL:-/bin/sh}" -l'
+} > "$INNER"
+chmod +x "$INNER"
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+launched() {
+    echo "launched: $1 / dir=$DIR / name=${NAME:-(自動)}"
+    exit 0
+}
+
+manual() {
+    rm -f -- "$INNER"
+    echo "このターミナルでは自動でタブを開けませんでした ($1)。新しいタブで次を実行してください:" >&2
+    if [ -n "$NAME" ]; then
+        echo "  cd '$DIR' && env -u CLAUDECODE -u CLAUDE_CODE_CHILD_SESSION -u CLAUDE_CODE_SESSION_ID claude -n $NAME" >&2
+    else
+        echo "  cd '$DIR' && env -u CLAUDECODE -u CLAUDE_CODE_CHILD_SESSION -u CLAUDE_CODE_SESSION_ID claude" >&2
+    fi
+    exit 2
+}
+
+# 1. tmux: 普段は new-window で起動する。どの場合も -d を付けて、画面は呼び出し元のウィンドウのままにする。
+#    -s (分割) を指定したときは、専用ウィンドウ (名前が cc-sessions のもの) に並べる。
+#    呼び出し元と同じ tmux セッションに専用ウィンドウがなければ new-window で作り、あれば分割して均等に並べ直す。
+#    専用ウィンドウは名前で見分ける (psmux はウィンドウのユーザーオプションを書式で返さないため)。
+#    tmux は呼び出し元ではなく tmux サーバーの環境を使う。サーバーを Claude の中から起動していると
+#    Claude の変数が残っているが、起動用スクリプトの unset で消える
+if [ -n "${TMUX:-}" ] && have tmux; then
+    if [ "$SPLIT" = 1 ]; then
+        # 場所は「セッション名:ウィンドウ名」で指定する (tmux 互換ソフトでも取り違えないように)
+        PANE=${TMUX_PANE:-}
+        SNAME=$(tmux display-message -p ${PANE:+-t "$PANE"} '#{session_name}')
+        if tmux list-windows -t "$SNAME" -F '#{window_name}' | grep -qx cc-sessions; then
+            tmux split-window -d -t "$SNAME:cc-sessions" -c "$DIR" "sh '$INNER'" || manual 'tmux split-window が失敗した'
+            tmux select-layout -t "$SNAME:cc-sessions" tiled
+            launched 'tmux split-window (専用ウィンドウ)'
+        fi
+        tmux new-window -d -t "$SNAME:" -c "$DIR" -n cc-sessions "sh '$INNER'" \
+            || manual 'tmux new-window が失敗した'
+        launched 'tmux new-window (専用ウィンドウを作成)'
+    fi
+    if [ -n "$NAME" ]; then
+        tmux new-window -d -c "$DIR" -n "$NAME" "sh '$INNER'" && launched 'tmux new-window'
+    else
+        tmux new-window -d -c "$DIR" "sh '$INNER'" && launched 'tmux new-window'
+    fi
+    manual 'tmux new-window が失敗した'
+fi
+
+# 2. WezTerm
+if [ -n "${WEZTERM_PANE:-}" ] && have wezterm; then
+    wezterm cli spawn --cwd "$DIR" -- sh "$INNER" >/dev/null && launched 'wezterm cli spawn'
+    manual 'wezterm cli spawn が失敗した'
+fi
+
+# 3. kitty (kitty.conf で allow_remote_control が有効なときだけ動く)
+if [ -n "${KITTY_WINDOW_ID:-}" ] && have kitten; then
+    kitten @ launch --type=tab --cwd "$DIR" sh "$INNER" >/dev/null 2>&1 && launched 'kitten @ launch'
+    manual 'kitty のリモート制御が無効 (kitty.conf の allow_remote_control)'
+fi
+
+case "${TERM_PROGRAM:-}" in
+    # 4. iTerm2
+    iTerm.app)
+        osascript -e 'tell application "iTerm2" to tell current window to create tab with default profile command "sh '"$INNER"'"' >/dev/null \
+            && launched 'iTerm2 (AppleScript)'
+        manual 'iTerm2 の AppleScript が失敗した'
+        ;;
+    # 5. Ghostty (macOS, 1.3 以降)
+    ghostty)
+        if [ "$(uname)" = Darwin ]; then
+            osascript >/dev/null <<EOF && launched 'Ghostty (AppleScript)'
+tell application "Ghostty"
+    set cfg to new surface configuration
+    set initial working directory of cfg to "$DIR"
+    set command of cfg to "sh $INNER"
+    new tab in front window with configuration cfg
+end tell
+EOF
+        fi
+        manual 'Ghostty のタブを開けなかった (macOS の 1.3 以降だけ対応)'
+        ;;
+    # 6. macOS のターミナル
+    Apple_Terminal)
+        if osascript >/dev/null 2>&1 <<EOF
+tell application "Terminal" to activate
+tell application "System Events" to keystroke "t" using command down
+delay 0.5
+tell application "Terminal" to do script "sh $INNER" in front window
+EOF
+        then
+            launched 'Terminal.app (新しいタブ)'
+        fi
+        # アクセシビリティの許可がないと Cmd+T を送れないので、新しいウィンドウで開く
+        osascript -e 'tell application "Terminal" to do script "sh '"$INNER"'"' >/dev/null \
+            && launched 'Terminal.app (新しいウィンドウ。タブにするにはアクセシビリティの許可が必要)'
+        manual 'Terminal.app の AppleScript が失敗した'
+        ;;
+esac
+
+# 7. GNOME Terminal
+if [ -n "${GNOME_TERMINAL_SCREEN:-}" ] && have gnome-terminal; then
+    gnome-terminal --tab --working-directory="$DIR" -- sh "$INNER" && launched 'gnome-terminal --tab'
+    manual 'gnome-terminal --tab が失敗した'
+fi
+
+# 8. Konsole
+if [ -n "${KONSOLE_DBUS_SERVICE:-}" ] && have konsole; then
+    konsole --new-tab --workdir "$DIR" -e sh "$INNER" >/dev/null 2>&1 &
+    launched 'konsole --new-tab'
+fi
+
+# 9. WSL の中の Windows Terminal (wt.exe の実行エイリアスは WSL から直接は呼べないので cmd.exe を通す)
+if [ -n "${WT_SESSION:-}" ] && [ -n "${WSL_DISTRO_NAME:-}" ] && have cmd.exe; then
+    (cd /mnt/c && cmd.exe /c wt.exe -w 0 new-tab --reloadEnvironment wsl.exe -d "$WSL_DISTRO_NAME" --cd "$DIR" -- sh "$INNER") \
+        && launched 'Windows Terminal (WSL から)'
+    manual 'wt.exe を起動できなかった'
+fi
+
+manual "対応していないターミナル (TERM_PROGRAM=${TERM_PROGRAM:-なし})"

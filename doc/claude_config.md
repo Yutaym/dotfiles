@@ -13,6 +13,12 @@ claude_config/
 ├── install_claude.ps1   # インストーラー（Windows）
 ├── install_claude.sh    # インストーラー（Linux / macOS）
 └── skills/
+    ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
+    ├── spawn-session/   # ~/.claude/skills/spawn-session にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
     └── vault-sync/
         └── SKILL.md     # ~/.claude/skills/vault-sync にリンク（vault の同期スキル）
 ```
@@ -196,6 +202,39 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - ネットワークに届かなければ、ローカルの commit までで止める
 
 最後に、A（実行 / スキップの理由、操作件数、バックアップ先）と B（作成したコミット、取り込んだコミット数、push の結果、最終的な `git status -sb`）を報告する。
+
+### spawn-session
+新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `cc-sessions` を分割して並べる。どちらも画面は元のウィンドウのまま）で独立した Claude Code のセッションを起動し、`SendMessage` で作業を頼み、終わったら結果を確認して報告するユーザースキル。「新しいタブでセッションを開いて」「別のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
+
+```text
+/spawn-session [作業フォルダ] [セッション名] [頼む作業]
+```
+
+| ファイル                     | 内容                                                                                                                                    |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/launch-session.ps1` | Windows 用。tmux の中なら `tmux new-window`（`-Split` のときは専用ウィンドウを分割）、Windows Terminal があれば `wt -w 0 new-tab --reloadEnvironment`、なければ新しいウィンドウで起動 |
+| `scripts/start-claude.ps1`   | Windows の新しいタブの中で実行。Claude のセッション固有の環境変数を消してから `claude -n <名前>` を起動                                  |
+| `scripts/launch-session.sh`  | macOS / Linux / WSL 用。tmux → WezTerm → kitty → iTerm2 → Ghostty → ターミナル → GNOME Terminal → Konsole → WSL の Windows Terminal の順に判断 |
+| `scripts/session-result.py`  | セッション名から会話の記録（`~/.claude/projects/*/<セッションID>.jsonl`）を探し、最後の返答を表示                                       |
+
+- Claude のツールから `claude` をそのまま起動すると、`CLAUDE_CODE_CHILD_SESSION` などを引き継いで子セッション扱いになり、会話の記録が保存されない。そのため、変数を消してから起動する
+- `wt` はコマンドの中の `;` を区切り記号として扱う（引用符の中でも分割される）ので、`-Command "...; claude"` ではなく `-File` でスクリプトを渡す
+- 動作を確認したのは Windows Terminal と tmux（WSL）だけ。ほかのターミナルは公式ドキュメントで構文を確認しただけ（SKILL.md の「ターミナルごとの対応」）
+
+### session-overview
+同じマシンで動いている Claude Code のセッションを一覧にし、それぞれが何をしているかを会話記録から要約するユーザースキル。相手のセッションには何も送らない。「セッションの一覧を出して」「今どのセッションが何をしているか」などと言われたときに、Claude が自動で使う。
+
+```text
+/session-overview [セッション名 ...]
+```
+
+| 手順 | 内容 |
+| ---- | ---- |
+| 1 | `ListAgents` で動いているセッションと状態（busy / idle）を調べる |
+| 2 | `scripts/session-overview.py` で、`~/.claude/sessions/*.json` からセッション ID を、`~/.claude/projects/*/<ID>.jsonl` から依頼（ユーザー / 別セッション）・タイトル・最後の返答を抜き出す |
+| 3 | セッション・状態・フォルダ・何をしているか・最後の動き（作業中 / 完了 / 返事待ち / 記録なし）の表にまとめる |
+
+- 会話記録と `sessions/*.json` は内部形式なので、Claude Code の更新で読めなくなることがある
 
 ---
 
