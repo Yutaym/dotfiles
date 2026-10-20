@@ -1,0 +1,2 @@
+# tmux は CRLF だと %if などが効かなくなるため LF に固定する
+tmux_config/.tmux.conf text eol=lf
