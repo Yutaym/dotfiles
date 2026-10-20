@@ -155,6 +155,8 @@ nnoremap k gk
 
 nnoremap gh ^
 nnoremap gl $
+vnoremap gh ^
+vnoremap gl $
 
 nnoremap <silent>sc :<C-u>setlocal spell! spelllang=en_us<CR>:setlocal spell?<CR>
 
