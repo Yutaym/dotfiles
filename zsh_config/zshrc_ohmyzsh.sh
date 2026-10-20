@@ -51,7 +51,7 @@ plugins=(
     git-flow
     # github は旧 hub CLI 用で非推奨(読み込むと警告が出る)。GitHub CLI の補完は gh プラグインで行う
     gitignore
-    git-prompt
+    # git-prompt  # プロンプトは vcs_info で表示している。/mnt/c 上では cd のたびに git を実行して遅くなるため外した
     gh
     python
     pip
