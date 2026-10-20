@@ -189,6 +189,7 @@ tmux 側のプラグインのうち 2 つは、psmux 版を使わずに設定フ
 
 - ppm のキー（`Prefix` → `I` / `U` / `M`）は設定ファイルで直接割り当てている。psmux は ppm 自身の `plugin.conf` を自動では読まず、`run` で ppm.ps1 を実行しても設定の再読み込みではキーが登録されなかったため
 - `status-interval` は 15 秒にしている。`#()` を実行するたびに pwsh を起動するため
+- psmux-continuum の `client-attached` フックは、ppm の読み込みの後で `run-shell -b` 付きに上書きしている。psmux 3.4.0 は attach 時のフックに `-b` を付けずに実行するので、そのままだと起動時にステータスバーに `running: pwsh ... auto_save.ps1` が一瞬出るため
 
 ---
 
