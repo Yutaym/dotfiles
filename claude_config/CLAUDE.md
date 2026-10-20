@@ -71,3 +71,12 @@
   - 生成コマンドの例: `date '+Claude: %Y/%m/%d %H:%M:%S %z'`
   - このリポジトリでは Co-Authored-By などの帰属表示の行を付けない。
 - pull でコンフリクトが起きたときや、push に失敗したときは、強制 push などで解決しようとせず、状況をユーザーに報告する。
+
+## tmux
+
+- `$TMUX` があるとき（tmux の中で動いているとき）は、作業に応じて自分からペイン分割・新しいウィンドウを使う。
+  - 開発サーバー・ログ監視・長時間かかるビルドなど、終わらない／長いコマンドは `command tmux split-window -d -h -c <作業フォルダ> '<コマンド>'` で別ペインに出す。
+  - 別のテーマの作業や調査は `command tmux new-window -d -n <名前> -c <作業フォルダ>` で別ウィンドウに出す。
+  - `-d` を付けて、ユーザーが見ている画面を切り替えない。
+  - 出力を確かめるときは `command tmux capture-pane -p -t <ペイン>` を使う。
+- Bash ツールの zsh では `tmux` が oh-my-zsh の tmux プラグインのエイリアスになっていてエラーになる（`_zsh_tmux_plugin_run: command not found`）。必ず `command tmux` で呼ぶ。
