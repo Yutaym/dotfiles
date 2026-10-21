@@ -34,14 +34,40 @@ copy_config() {
 }
 
 # .zshrc は ~/dotfiles/zsh_config/zshrc_main.sh を読み込む前提のため、
-# dotfiles が別の場所にある場合は読み込み先を書き換えたものをコピーする
+# dotfiles が別の場所にある場合は読み込み先を書き換えたものを使う
 zshrc_src="$SCRIPT_DIR/.zshrc"
 if [ "$SCRIPT_DIR" != "$HOME/dotfiles/zsh_config" ]; then
     zshrc_src="$(mktemp)"
     trap 'rm -f "$zshrc_src"' EXIT
     sed "s|~/dotfiles/zsh_config/|$SCRIPT_DIR/|" "$SCRIPT_DIR/.zshrc" > "$zshrc_src"
 fi
-copy_config "$zshrc_src" "$HOME/.zshrc"
+
+# ~/.zshrc はマシンごとの設定 (PATH や alias) を足して使うため上書きしない。
+# 無ければコピーし、あれば zshrc_main.sh を読み込む行が無いときだけ末尾に追加する
+install_zshrc() {
+    local src="$1" dst="$2" line
+    line="$(grep -m1 'zshrc_main\.sh' "$src")"
+    if [ ! -e "$dst" ]; then
+        cp "$src" "$dst"
+        echo "[copy] $src -> $dst"
+        return
+    fi
+    if grep -q $'\r' "$dst"; then
+        echo "[warn] $dst の改行が CRLF です。zsh が読み込めないので LF に直してください" >&2
+    fi
+    # 前後の空白と行末の \r は無視して、同じ行があるかを調べる
+    if sed 's/\r$//; s/^[[:space:]]*//; s/[[:space:]]*$//' "$dst" | grep -qxF "$line"; then
+        echo "[skip] $dst already sources zshrc_main.sh"
+        return
+    fi
+    # 末尾が改行で終わっていなければ、改行を足してから追加する
+    if [ -s "$dst" ] && [ -n "$(tail -c 1 "$dst")" ]; then
+        printf '\n' >> "$dst"
+    fi
+    printf '%s\n' "$line" >> "$dst"
+    echo "[append] $line -> $dst"
+}
+install_zshrc "$zshrc_src" "$HOME/.zshrc"
 copy_config "$SCRIPT_DIR/.zshenv" "$HOME/.zshenv"
 
 # ---------------------------------------------------------------

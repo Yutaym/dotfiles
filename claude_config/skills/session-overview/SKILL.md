@@ -58,4 +58,4 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/session-ove
 
 要約に書くのは、抜き出した依頼と返答に書いてあることだけにする。材料が足りず推測が混じるところは、「嘘をついているかもしれない」と明記する。
 
-1 つのセッションをもっと詳しく知りたいと言われたら、そのセッションだけを `--prompts` と `--chars` を増やして実行し直す。session-spawn スキルの `session-result.py` を使えば、最後の返答を全文で読める。
+1 つのセッションをもっと詳しく知りたいと言われたら、そのセッションだけを `--prompts` と `--chars` を増やして実行し直す。session-generate スキルの `session-result.py` を使えば、最後の返答を全文で読める。

@@ -30,9 +30,10 @@ bash ~/dotfiles/zsh_config/install_zsh.sh
 以下を行う（済んでいる処理はスキップ）。
 
 1. zsh がインストールされているか確認（無ければ警告のみ。インストールは apt / brew などで行う）
-2. `.zshrc` / `.zshenv` をホームディレクトリへコピー
-   - 既存ファイルと内容が同じならスキップ、異なれば `*.bak.<日時>` にバックアップしてから上書き
-   - リポジトリが `~/dotfiles` 以外にある場合は、`.zshrc` の読み込み先パスを書き換えてからコピー
+2. `.zshrc` / `.zshenv` をホームディレクトリへ置く
+   - `~/.zshrc` は上書きしない（マシンごとの PATH や alias を足して使うため）。無ければコピーし、あれば `source ~/dotfiles/zsh_config/zshrc_main.sh` の行が無いときだけ末尾に追加する（行が既にあればスキップ）。`~/.zshrc` が CRLF なら警告を出す
+   - `~/.zshenv` は、既存ファイルと内容が同じならスキップ、異なれば `*.bak.<日時>` にバックアップしてから上書き
+   - リポジトリが `~/dotfiles` 以外にある場合は、`.zshrc` の読み込み先パスを書き換えたものを使う
 3. デフォルトシェルが zsh でなければ、変更手順（`/etc/shells` への追記と `chsh -s`）を表示する。変更自体は手動
 
 oh-my-zsh・zsh-autosuggestions・zsh-syntax-highlighting・fzf は、zsh の初回起動時に `zshrc_ohmyzsh.sh` が自動でインストールする（[oh-my-zsh](#oh-my-zsh-zshrc_ohmyzshsh) 参照）。
@@ -148,6 +149,7 @@ nvm でグローバルにインストールした `@hyperupcall/autoenv` の `ac
 | `ZSH`                   | `~/.oh-my-zsh`（設定済みならその値）                                                                      |
 | `ZSH_THEME`             | 空（テーマを使わず、[プロンプト](#プロンプト-zshrc_promptsh) は自前で設定する）                           |
 | `ZSH_DISABLE_COMPFIX`   | `true`（`compaudit` を省略。WSL のマウント越しだと 1 秒以上かかっていたため）                             |
+| `DISABLE_AUTO_TITLE`    | tmux の外（`$TMUX` が空）で `TERM` が `screen*` / `tmux*` のときだけ `true`。psmux から ssh すると `TERM=screen-256color` が渡り、oh-my-zsh がタイトル用に出す `\ek<コマンド名>\e\\` が画面に表示されてしまうため |
 | `:omz:plugins:nvm lazy` | `yes`（nvm を `nvm` / `node` / `npm` / `npx` などの初回実行まで読み込まない。未設定だと起動に数秒かかる） |
 
 ### 自動インストール

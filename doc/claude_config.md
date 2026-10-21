@@ -13,22 +13,22 @@ claude_config/
 ├── install_claude.ps1   # インストーラー（Windows）
 ├── install_claude.sh    # インストーラー（Linux / macOS）
 └── skills/
-    ├── session-order/   # ~/.claude/skills/session-order にリンク（動いている別セッションを選んで作業を頼むスキル）
+    ├── session-generate/ # ~/.claude/skills/session-generate にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
+    ├── session-order/    # ~/.claude/skills/session-order にリンク（動いている別セッションを選んで作業を頼むスキル）
     │   └── SKILL.md
     ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）
     │   ├── SKILL.md
     │   └── scripts/
-    ├── session-spawn/   # ~/.claude/skills/session-spawn にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
+    ├── ssh-generate/     # ~/.claude/skills/ssh-generate にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
     │   ├── SKILL.md
     │   └── scripts/
-    ├── spawn-ssh/       # ~/.claude/skills/spawn-ssh にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
-    │   ├── SKILL.md
-    │   └── scripts/
-    ├── spawn-window/    # ~/.claude/skills/spawn-window にリンク（新しいタブでシェルを開いて移動するスキル）
-    │   ├── SKILL.md
-    │   └── scripts/
-    └── sync-vaults/
-        └── SKILL.md     # ~/.claude/skills/sync-vaults にリンク（vault の同期スキル）
+    ├── sync-vaults/      # ~/.claude/skills/sync-vaults にリンク（vault の同期スキル）
+    │   └── SKILL.md
+    └── window-generate/  # ~/.claude/skills/window-generate にリンク（新しいタブでシェルを開いて移動するスキル）
+        ├── SKILL.md
+        └── scripts/
 ```
 
 シェル側の関連設定:
@@ -211,11 +211,11 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 
 最後に、A（実行 / スキップの理由、操作件数、バックアップ先）と B（作成したコミット、取り込んだコミット数、push の結果、最終的な `git status -sb`）を報告する。
 
-### session-spawn
+### session-generate
 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `cc-sessions` を分割して並べる。どちらも画面は元のウィンドウのまま）で独立した Claude Code のセッションを起動し、`SendMessage` で作業を頼み、終わったら結果を確認して報告するユーザースキル。「新しいタブでセッションを開いて」「別のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
 
 ```text
-/session-spawn [作業フォルダ] [セッション名] [頼む作業]
+/session-generate [作業フォルダ] [セッション名] [頼む作業]
 ```
 
 | ファイル                     | 内容                                                                                                                                    |
@@ -230,43 +230,43 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - tmux の中では、頼む作業が指定されていないときだけ、起動したウィンドウに画面を切り替える（`-Switch`、sh は `-w`）。作業を頼むときは呼び出し元のウィンドウのまま
 - 動作を確認したのは Windows Terminal と tmux（WSL）だけ。ほかのターミナルは公式ドキュメントで構文を確認しただけ（SKILL.md の「ターミナルごとの対応」）
 
-### spawn-ssh
+### ssh-generate
 `~/.ssh/config` の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `ssh-sessions` を分割して並べる）で ssh 接続した状態を作るユーザースキル。複数の接続先を一度に開ける。「新しいタブで ssh して」「〜に ssh 接続したタブを開いて」などと言われたときに、Claude が自動で使う。
 
 ```text
-/spawn-ssh [接続先 ...]
+/ssh-generate [接続先 ...]
 ```
 
 | ファイル                    | 内容                                                                                                   |
 | --------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `scripts/list-ssh-hosts.py` | `~/.ssh/config`（`Include` 先も含む）の Host の別名を No・Host・HostName・User・Port の表で出す。`*` `?` `!` を含むパターンは除く |
-| `scripts/launch-ssh.ps1`    | Windows 用。起動先の判断は session-spawn の `launch-session.ps1` と同じ                                 |
+| `scripts/launch-ssh.ps1`    | Windows 用。起動先の判断は session-generate の `launch-session.ps1` と同じ                                 |
 | `scripts/start-ssh.ps1`     | Windows の新しいタブの中で `ssh <接続先>` を実行。失敗したときはエラーを残して Enter を待つ              |
-| `scripts/launch-ssh.sh`     | macOS / Linux / WSL 用。起動先の判断は session-spawn の `launch-session.sh` と同じ                       |
+| `scripts/launch-ssh.sh`     | macOS / Linux / WSL 用。起動先の判断は session-generate の `launch-session.sh` と同じ                       |
 
 - 接続先は、指定がなければ `AskUserQuestion`（複数選択）で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
 - tmux の中では、既定で開いたウィンドウ（複数なら最後のもの）に画面を切り替える。`-Background`（sh は `-b`）で切り替えない。ウィンドウは `new-window -P` で受け取った番号で指定する（psmux は `.` を含む名前を `-t` で取り違えるため）
-- 動作を確認したのは psmux（Windows）だけ。Windows Terminal はタブが開くところまで。ほかのターミナルは session-spawn と同じ方法を使っているだけで未確認
+- 動作を確認したのは psmux（Windows）だけ。Windows Terminal はタブが開くところまで。ほかのターミナルは session-generate と同じ方法を使っているだけで未確認
 
-### spawn-window
+### window-generate
 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `shells` を分割して並べる）でシェルを開き、指定したフォルダに移った状態を作るユーザースキル。Claude Code は起動しない。「新しいウィンドウを作って」「〜のフォルダでウィンドウを開いて移動して」などと言われたときに、Claude が自動で使う。
 
 ```text
-/spawn-window [作業フォルダ] [ウィンドウ名]
+/window-generate [作業フォルダ] [ウィンドウ名]
 ```
 
 | ファイル                    | 内容                                                                                                   |
 | --------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `scripts/launch-window.ps1` | Windows 用。起動先の判断は session-spawn の `launch-session.ps1` と同じ                                 |
+| `scripts/launch-window.ps1` | Windows 用。起動先の判断は session-generate の `launch-session.ps1` と同じ                                 |
 | `scripts/start-shell.ps1`   | Windows の新しいタブの中で `pwsh -NoExit -File` で実行。Claude の環境変数を消してフォルダに移る          |
-| `scripts/launch-window.sh`  | macOS / Linux / WSL 用。session-spawn の `launch-session.sh` をもとに、claude の代わりにログインシェルを開く |
+| `scripts/launch-window.sh`  | macOS / Linux / WSL 用。session-generate の `launch-session.sh` をもとに、claude の代わりにログインシェルを開く |
 
-- tmux の中では、既定で開いたウィンドウに画面を切り替える（session-spawn は切り替えない）。`-Background`（sh は `-b`）で切り替えない
+- tmux の中では、既定で開いたウィンドウに画面を切り替える（session-generate は切り替えない）。`-Background`（sh は `-b`）で切り替えない
 - Claude の中から開いたシェルは Claude のセッション固有の環境変数を引き継ぎ、そこで `claude` を起動すると子セッション扱いになるので、どの起動先でも消してからシェルを渡す
 - 動作を確認したのは psmux（Windows）だけ（切り替え、フォルダ、プロファイルの読み込み、変数の削除、`-Background`、`-Split` 2 回）
 
 ### session-order
-同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは session-spawn）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
+同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは session-generate）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
 
 ```text
 /session-order [セッション名] [頼む内容]
@@ -274,7 +274,7 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 
 - セッション名がなければ、`ListAgents` の一覧から `AskUserQuestion` で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
 - 頼む内容がなければ、宛先を決めたあとに「次のメッセージに書いてください」と返して待ち、次のメッセージを頼む内容として送る（長い文や複数行を書きやすくするため、選択式にはしない）
-- 送るときは `notify_when_idle` を付け、通知が来たら相手の返事か会話記録の最後の返答（session-spawn の `session-result.py`）を要約して報告する
+- 送るときは `notify_when_idle` を付け、通知が来たら相手の返事か会話記録の最後の返答（session-generate の `session-result.py`）を要約して報告する
 
 ### session-overview
 同じマシンで動いている Claude Code のセッションを一覧にし、それぞれが何をしているかを会話記録から要約するユーザースキル。相手のセッションには何も送らない。「セッションの一覧を出して」「今どのセッションが何をしているか」などと言われたときに、Claude が自動で使う。

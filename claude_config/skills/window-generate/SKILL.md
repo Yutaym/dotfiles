@@ -1,18 +1,18 @@
 ---
-name: spawn-window
+name: window-generate
 description: 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）でシェルを開き、指定したフォルダに移った状態を作る。既定では開いたウィンドウに画面を切り替える。Claude Code は起動しない。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいウィンドウを作って」「新しいタブでシェルを開いて」「〜のフォルダでウィンドウを開いて移動して」などと言われたときに使う。
 argument-hint: "[作業フォルダ] [ウィンドウ名]"
 ---
 
-# spawn-window
+# window-generate
 
-新しいタブ（tmux の中では新しいウィンドウ）でシェルを開く。起動先の判断は session-spawn スキルと同じで、違うのは次の点だけ。
+新しいタブ（tmux の中では新しいウィンドウ）でシェルを開く。起動先の判断は session-generate スキルと同じで、違うのは次の点だけ。
 
 - Claude Code ではなく、普段のシェル（Windows は `pwsh`、それ以外は `$SHELL` のログインシェル）を開く。プロファイルも読み込まれる。
-- tmux の中では、既定で開いたウィンドウに画面を切り替える（session-spawn は切り替えない）。
-- 分割のときの専用ウィンドウの名前は `shells`（session-spawn は `cc-sessions`）。
+- tmux の中では、既定で開いたウィンドウに画面を切り替える（session-generate は切り替えない）。
+- 分割のときの専用ウィンドウの名前は `shells`（session-generate は `cc-sessions`）。
 
-Claude Code のセッションを開きたいときは session-spawn、ssh で接続したタブを開きたいときは spawn-ssh を使う。
+Claude Code のセッションを開きたいときは session-generate、ssh で接続したタブを開きたいときは ssh-generate を使う。
 
 ## 前提
 
@@ -62,10 +62,10 @@ sh "<このスキルのフォルダ>/scripts/launch-window.sh" -d "<作業フォ
 | 環境 | 起動方法 | 確認状況 |
 |---|---|---|
 | tmux の互換（psmux 3.4.0、Windows） | `$env:TMUX` があれば `tmux new-window -d -P -F '#{session_name}:#{window_index}'` → `select-window`。`-Split` のときは専用ウィンドウ `shells` を作成 / `split-window` → `select-layout tiled` | 2026/10/21 に確認（新しいウィンドウに切り替わること、フォルダに移ること、プロファイルが読み込まれること、`CLAUDECODE` と `CLAUDE_CODE_SESSION_ID` が消えていること、`-Background` で画面が変わらないこと、`-Split` を 2 回で `shells` に 2 ペインが並び、新しいペインが選ばれること） |
-| Windows Terminal | `wt -w 0 new-tab --reloadEnvironment -d <フォルダ> pwsh -NoExit -File start-shell.ps1 -Dir <フォルダ>` | 未確認（session-spawn の同じ起動方法は確認済み） |
+| Windows Terminal | `wt -w 0 new-tab --reloadEnvironment -d <フォルダ> pwsh -NoExit -File start-shell.ps1 -Dir <フォルダ>` | 未確認（session-generate の同じ起動方法は確認済み） |
 | Windows で Windows Terminal がない | `Start-Process pwsh`（新しいウィンドウ。タブではない） | 未確認 |
 | tmux（WSL / Linux / macOS） | `tmux new-window -d -P ... "sh <起動用スクリプト>"` → `select-window`。`-s` のときは上と同じ | 未確認（`sh -n` で構文だけ確認） |
-| WezTerm / kitty / iTerm2 / Ghostty / macOS のターミナル / GNOME Terminal / Konsole / WSL の中の Windows Terminal | session-spawn の `launch-session.sh` と同じ方法で、起動用スクリプトを `sh` で実行する | 未確認 |
+| WezTerm / kitty / iTerm2 / Ghostty / macOS のターミナル / GNOME Terminal / Konsole / WSL の中の Windows Terminal | session-generate の `launch-session.sh` と同じ方法で、起動用スクリプトを `sh` で実行する | 未確認 |
 | 上のどれでもない | 自動では開かない。手で開いて `cd` するよう表示する | — |
 
 未確認の環境で初めて使って、うまく動かなかったときは、このスキルを直す。

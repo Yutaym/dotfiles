@@ -1,10 +1,10 @@
 ---
-name: session-spawn
+name: session-generate
 description: 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）で、独立した Claude Code のセッションを起動し、SendMessage で作業を頼み、終わったら結果を確認して報告する。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいタブでセッションを開いて」「別のセッションに〜を頼んで」「別セッションで並行して調べて」「終わったら教えて」などと言われたときに使う。
 argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
 ---
 
-# session-spawn
+# session-generate
 
 新しいタブで独立した Claude Code のセッションを起動し、必要なら作業を頼んで、終わったら結果を確認する。
 この流れの各手順は、2026/10/19 に Windows 11 + Windows Terminal（Claude Code 2.1.303）で確認した。
