@@ -11,6 +11,6 @@
 ## 必須アプリのインストーラー
 
 - 環境構築や設定の実行に必要なアプリ（ランタイム・パッケージマネージャーなど、どの環境でも入れるもの）のインストールは、`scripts/install_essentials.sh`（Linux / macOS）と `scripts/install_essentials.ps1`（Windows）にまとめて書く。各設定のインストーラーや別のスクリプトに散らさない。
-  - 今入れているもの: nvm（Windows は nvm-windows）と Node.js の LTS、uv。
+  - 今入れているもの: git（Linux / macOS は確認だけ）、nvm（Windows は nvm-windows）と Node.js の LTS、npm のグローバルパッケージ（`scripts/npm_global_packages.txt`。nvm の node に入れる）、uv、GitHub Copilot CLI（Windows は winget、Linux / macOS は npm）。
   - 新しく足すときは、`.sh` と `.ps1` の両方に書く（片方の OS でしか使わないものは、その OS のほうだけでよい）。入っていればスキップする形にして、何度実行してもよいようにする。
   - 足したら、`README.md` の構成とセットアップの説明、この一覧も更新する。

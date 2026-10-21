@@ -13,7 +13,7 @@ Windows / Linux / macOS で使うエディタ・シェル・ツールの設定�
 | `claude_config/`      | Claude Code（`CLAUDE.md` / `settings.json` など） | `install_claude.ps1` / `install_claude.sh`          | シンボリックリンク |
 | `winterminal_config/` | Windows Terminal の `settings.json`（Store 版）  | `install_winterminal.ps1`                           | シンボリックリンク |
 | `tmux_config/`        | tmux / psmux（`.tmux.conf`）                  | `install_tmux.ps1` / `install_tmux.sh`              | シンボリックリンク |
-| `scripts/`            | 必須アプリ（nvm と Node.js の LTS、uv）のインストール | `install_essentials.ps1` / `install_essentials.sh` | —                |
+| `scripts/`            | 必須アプリ（git、nvm と Node.js の LTS、npm のグローバルパッケージ、uv、GitHub Copilot CLI）のインストール | `install_essentials.ps1` / `install_essentials.sh` | —                |
 | `doc/`                | 設定のドキュメント                            | —                                                   | —                |
 | `tmp/`                | 使わなくなった旧設定の置き場                  | —                                                   | —                |
 
@@ -30,8 +30,8 @@ git clone https://github.com/Yutaym/dotfiles.git ~/dotfiles
 ### Windows（PowerShell）
 
 ```powershell
-pwsh ~/dotfiles/scripts/install_essentials.ps1           # 最初に実行する（nvm-windows・Node.js の LTS・uv）
-pwsh ~/dotfiles/powershell_config/install_powershell.ps1   # -SkipAutoInstall でツールの自動インストールを省略
+pwsh ~/dotfiles/scripts/install_essentials.ps1           # 最初に実行する（git・nvm-windows・Node.js の LTS・npm のグローバルパッケージ・uv・Copilot CLI）
+pwsh ~/dotfiles/powershell_config/install_powershell.ps1
 pwsh ~/dotfiles/neovim_config/install_nvim.ps1
 pwsh ~/dotfiles/vim_config/install_vim.ps1
 pwsh ~/dotfiles/claude_config/install_claude.ps1
@@ -44,7 +44,7 @@ pwsh ~/dotfiles/tmux_config/install_tmux.ps1          # psmux 用（~/.psmux.con
 ### Linux / macOS
 
 ```sh
-bash ~/dotfiles/scripts/install_essentials.sh   # 最初に実行する（nvm・Node.js の LTS・uv）
+bash ~/dotfiles/scripts/install_essentials.sh   # 最初に実行する（nvm・Node.js の LTS・npm のグローバルパッケージ・uv・Copilot CLI。git は確認だけ）
 bash ~/dotfiles/zsh_config/install_zsh.sh
 bash ~/dotfiles/neovim_config/install_nvim.sh   # Neovim 本体のインストールは Linux x86_64 のみ
 bash ~/dotfiles/vim_config/install_vim.sh

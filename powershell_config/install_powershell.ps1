@@ -1,9 +1,6 @@
 # PowerShell のプロファイルのコピーを行う (Windows 向け)
 # プロファイル (profile.ps1) は PowerShell 7 (pwsh) 用の全ホスト共通の場所 (Documents\PowerShell) に配置する
-# -SkipAutoInstall を付けると powershell_auto_install.ps1 によるツールの自動インストールを行わない
-param(
-    [switch]$SkipAutoInstall
-)
+# git・nvm・uv などのツールは、先に scripts/install_essentials.ps1 で入れる
 $ErrorActionPreference = 'Stop'
 
 $ScriptDir = $PSScriptRoot
@@ -75,16 +72,7 @@ if ($wslenvItems | Where-Object { $_ -match '^USERPROFILE(/|$)' }) {
 }
 
 # ---------------------------------------------------------------
-# 3. 未インストールのプログラム・モジュールを自動インストール
-# ---------------------------------------------------------------
-if ($SkipAutoInstall) {
-    Write-Host '[skip] auto install (-SkipAutoInstall)'
-} else {
-    . (Join-Path $ScriptDir 'powershell_auto_install.ps1')
-}
-
-# ---------------------------------------------------------------
-# 4. デフォルトシェルの確認 (pwsh でなければ変更手順を提案する。変更自体は手動)
+# 3. デフォルトシェルの確認 (pwsh でなければ変更手順を提案する。変更自体は手動)
 # ---------------------------------------------------------------
 # Windows ではターミナル起動時のシェルが Windows Terminal の既定プロファイルで決まるため、それを確認する
 $wtSettingsCandidates = @(

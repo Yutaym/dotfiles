@@ -12,15 +12,13 @@ powershell_config/
 ├── powershell_profile.ps1       # プロンプト
 ├── powershell_alias.ps1         # エイリアス・GitHub Copilot CLI の関数（ghcs / ghce）
 ├── powershell_complete.ps1      # PSReadLine のキーバインド・予測・補完
-├── powershell_function.ps1      # 関数（管理者実行、ログ出力、Claude の接続先切り替え、pwsh の更新）
-└── powershell_auto_install.ps1  # 未インストールのツールを入れる（インストーラーから呼ぶ。起動時には読まない）
+└── powershell_function.ps1      # 関数（管理者実行、ログ出力、Claude の接続先切り替え、pwsh の更新）
 ```
 
 ## インストール
 
 ```powershell
-pwsh ~/dotfiles/powershell_config/install_powershell.ps1                    # ツールの自動インストールも行う
-pwsh ~/dotfiles/powershell_config/install_powershell.ps1 -SkipAutoInstall   # プロファイルの配置だけ
+pwsh ~/dotfiles/powershell_config/install_powershell.ps1   # 先に scripts/install_essentials.ps1 でツールを入れておく
 ```
 
 以下を行う（済んでいる処理はスキップ）。
@@ -32,8 +30,7 @@ pwsh ~/dotfiles/powershell_config/install_powershell.ps1 -SkipAutoInstall   # �
    - リポジトリが `~\dotfiles` 以外にある場合は、読み込み先のパスを書き換えてからコピーする
    - 旧方式の `Microsoft.PowerShell_profile.ps1` も `powershell_main.ps1` を読み込んでいたら、設定が二重に読み込まれるので警告する（削除は手動）
 3. ユーザー環境変数 `WSLENV` に `USERPROFILE/p` を追加する。WSL 側に `$USERPROFILE`（`/mnt/c/Users/<名前>` の形）が渡り、zsh の設定（`zshrc_env.sh`）が VS Code の `code` コマンドのパスを組み立てるのに使う。新しく開いたターミナルから反映される
-4. `powershell_auto_install.ps1` でツールを入れる（`-SkipAutoInstall` で省略。[自動インストール](#自動インストール-powershell_auto_installps1) 参照）
-5. Windows Terminal の既定のプロファイルが PowerShell 7 か確認する。違えば、[設定] > [スタートアップ] > [既定のプロファイル] で変更する手順を表示する（変更自体は手動）
+4. Windows Terminal の既定のプロファイルが PowerShell 7 か確認する。違えば、[設定] > [スタートアップ] > [既定のプロファイル] で変更する手順を表示する（変更自体は手動）
    - 設定ファイルは Store 版 → Preview 版 → 非 Store 版の順に探す
    - `settings.json` はコメント付き JSON なので、Windows PowerShell 5.1 では読めずに警告になることがある
 
@@ -143,7 +140,7 @@ PS: (venv:myproject) user@HOST [main!+] ~\dotfiles E1|5s       [2026/09/30 12:34
 | `Invoke-CopilotPrompt`        | `copilot -p <プロンプト> -s --no-ask-user`（非対話モード。回答だけを出力し、聞き返さない）を実行して出力を返す |
 | `Get-CopilotCommandSuggestion` | 「コマンドだけを 1 行で返す」よう指示して提案させ、` ``` ` の行と空行を除いたコマンドの文字列を返す。`-Target` は `shell`（PowerShell 7）/ `gh` / `git` |
 
-- インストールは `winget install GitHub.Copilot`（[自動インストール](#自動インストール-powershell_auto_installps1) に含めている）。初回は `copilot` を対話で起動して `/login` でログインする
+- インストールは `winget install GitHub.Copilot`（`scripts/install_essentials.ps1` に含めている。[ツールのインストール](#ツールのインストール) 参照）。初回は `copilot` を対話で起動して `/login` でログインする
 - `--allow-tool` を付けないので、Copilot にファイルの編集やコマンドの実行はさせない。提案されたコマンドを実行するかどうかは、`ghcs` で確認する
 - `copilot` が見つからないとき、失敗したとき（終了コードが 0 以外）は、警告を出して何もしない
 - npm で入れた `copilot.cmd` には、引数の中の `"` がエスケープされずに渡って引数が途中で切れるので、`.cmd` / `.bat` のときだけ `"` を `'` に置き換えて渡す
@@ -235,29 +232,6 @@ posh-git は `Import-Module` に数百 ms かかるので、起動時には読�
 
 ---
 
-## 自動インストール (powershell_auto_install.ps1)
+## ツールのインストール
 
-時間がかかり、使用許諾への同意も伴うので、プロファイルの読み込み時には実行しない。`install_powershell.ps1` から呼ぶか、手動で `. .\powershell_auto_install.ps1` する。
-
-| 対象                          | 方法                                                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `git`                         | winget（`Git.Git`）                                                                                     |
-| `uv`                          | winget（`astral-sh.uv`）                                                                                |
-| `nvm`                         | winget（`CoreyButler.NVMforWindows`）                                                                   |
-| `copilot`（GitHub Copilot CLI） | winget（`GitHub.Copilot`）                                                                            |
-| Node.js                       | `nvm` があって `node` が無ければ `nvm install lts` → `nvm use lts`（winget では入れない）               |
-| npm                           | `npm install -g npm@latest`                                                                             |
-| npm のグローバルパッケージ    | 下記の一覧を `npm install -g` でまとめて入れる                                                          |
-
-- winget のパッケージは、コマンドが既にあればスキップする。winget が無ければ警告だけ出す
-- winget で入れた後は、システムとユーザーの `Path` を読み直して、今のセッションに反映する
-- npm のグローバルパッケージは毎回 `npm install -g` するので、入っているものも最新に更新される
-
-npm のグローバルパッケージ（2026-07 時点で入っていたもの）:
-
-| 分類       | パッケージ                                                                                                                                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AI・MCP    | `@anthropic-ai/claude-code`、`@google/gemini-cli`、`@notionhq/notion-mcp-server`、`mcp-markdownify-server`、`openclaw`                                                                                              |
-| textlint   | `textlint`、`textlint-filter-rule-comments`、`textlint-filter-rule-whitelist`、`textlint-rule-preset-icsmedia`、`textlint-rule-preset-ja-technical-writing`、`textlint-rule-prh`、`textlint-rule-spellcheck-tech-word` |
-| 開発ツール | `@google/clasp`、`deno`、`neovim`、`tree-sitter-cli`、`nb.sh`、`shx`                                                                                                                                                |
-| パッケージ管理 | `pnpm`、`yarn`、`uv`                                                                                                                                                                                            |
+git・nvm-windows・Node.js・npm のグローバルパッケージ・uv・GitHub Copilot CLI は、このフォルダではなく `scripts/install_essentials.ps1` で入れる（`install_powershell.ps1` より先に実行する）。npm のグローバルパッケージの一覧は `scripts/npm_global_packages.txt` にある。

@@ -1,0 +1,32 @@
+# install_essentials.ps1 / install_essentials.sh が nvm の Node.js に入れる npm のグローバルパッケージ
+# 1 行に 1 つ、npm install -g に渡す形で書く。# から後はコメント
+# github:<owner>/<repo> の形のものは、<repo> をパッケージ名とみなして入っているかを調べる
+# GitHub Copilot CLI はここに書かない (Windows は winget、Linux / macOS は install_essentials.sh で別に入れる)
+
+# AI・MCP
+@anthropic-ai/claude-code
+@google/gemini-cli
+@notionhq/notion-mcp-server
+mcp-markdownify-server
+openclaw
+
+# textlint
+textlint
+textlint-filter-rule-comments
+textlint-filter-rule-whitelist
+github:ics-creative/textlint-rule-preset-icsmedia  # npm レジストリには公開されていない
+textlint-rule-preset-ja-technical-writing
+textlint-rule-prh
+textlint-rule-spellcheck-tech-word
+
+# 開発ツール
+@google/clasp
+deno
+neovim
+tree-sitter-cli
+nb.sh
+shx
+
+# パッケージ管理
+pnpm
+yarn

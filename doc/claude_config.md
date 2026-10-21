@@ -45,7 +45,7 @@ claude_config/
 | `zsh_config/zshrc_function.sh`            | `claude-anthropic` / `claude-ollama`（接続先を切り替えて起動）                 |
 | `powershell_config/powershell_main.ps1`   | `CLAUDE_OLLAMA_URL` の既定値                                                   |
 | `powershell_config/powershell_function.ps1` | `Use-ClaudeAnthropic` / `Use-ClaudeOllama`（接続先の環境変数だけを切り替える） |
-| `powershell_config/powershell_auto_install.ps1` | npm のグローバルパッケージとして `@anthropic-ai/claude-code` を入れる      |
+| `scripts/npm_global_packages.txt`         | `install_essentials.*` が npm のグローバルパッケージとして `@anthropic-ai/claude-code` を入れる |
 
 ## インストール
 
