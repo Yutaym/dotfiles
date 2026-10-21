@@ -251,6 +251,7 @@ fzf の画面内での主な操作:
 | `ghce <command>`         | GitHub Copilot CLI にコマンドの意味を日本語で説明させる                                                     |
 | `claude-anthropic`       | Anthropic API で Claude Code を起動（`ANTHROPIC_API_KEY` はプレースホルダーのままなので要書き換え）         |
 | `claude-ollama`          | Ollama 経由（モデル `qwen3.5`）で Claude Code を起動。接続先は `CLAUDE_OLLAMA_URL`（`zshrc_main.sh` で `http://yutapc:11434` を設定）                                  |
+| `ssh`                    | `ssh` を実行する。tmux の中では、接続中だけ接続先をペインのオプション `@ssh_host` に入れ、ステータスバーに `🌐 接続先` と出す（[tmux_config.md](tmux_config.md)） |
 
 ---
 

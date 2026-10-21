@@ -219,6 +219,7 @@ posh-git は `Import-Module` に数百 ms かかるので、起動時には読�
 | `LogInfo` / `LogWarn` / `LogError` / `LogSuccess` | `[INFO ]` / `[WARN ]` / `[ERROR]` / `[ OK  ]` を付けて色付きで表示する                                                       |
 | `Use-ClaudeAnthropic` | `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_BASE_URL` を消して、Claude Code の接続先を Anthropic API に戻す（`claude` は起動しない）           |
 | `Use-ClaudeOllama`    | `ANTHROPIC_AUTH_TOKEN=ollama`、`ANTHROPIC_BASE_URL=$env:CLAUDE_OLLAMA_URL`（空なら `http://localhost:11434`）にする（`claude` は起動しない） |
+| `ssh`                 | `ssh.exe` を実行する。tmux（psmux）の中では、接続中だけ接続先をペインのオプション `@ssh_host` に入れ、ステータスバーに `🌐 接続先` と出す（[tmux_config.md](tmux_config.md)） |
 | `Update-Powershell`（`UpdatePowershell`） | PowerShell 7 を winget で最新にする（下記）                                                                                    |
 
 - `Register-ArgumentCompleter -CommandName MyCommand ...` は補完の書き方の見本で、`MyCommand` というコマンドは存在しない

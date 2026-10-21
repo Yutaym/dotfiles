@@ -113,6 +113,7 @@ Windows では `tmux` の代わりに `psmux` でもよい（psmux は `tmux` �
 | `mouse on`                                     | マウス操作を有効にする                                   |
 | `mode-keys vi`                                 | コピーモードを vi 風にする                               |
 | `extended-keys on` / `terminal-features 'xterm*:extkeys'` | 拡張キー（Shift+Enter などの区別）を有効にする |
+| `terminal-features 'xterm*:RGB'` | 24 ビットカラーを使う（ステータスバーの `#RRGGBB` の色をそのまま出す） |
 
 ## キーバインド
 
@@ -137,11 +138,13 @@ Windows では `tmux` の代わりに `psmux` でもよい（psmux は `tmux` �
 ### ステータスバー
 
 - 上に表示する（`status-position top`）。1 秒ごとに更新する（`status-interval 1`。psmux は 15 秒）
-- 色は文字 `brightwhite`、背景 `colour238`。ウィンドウ一覧は左寄せで、区切りの隙間なし
-- 左: セッション名（`#S`）
-- 右（tmux / psmux 共通）: Prefix を押している間の `Wait`、コピーモード中の `Copy`、バッテリー残量（バッテリーが無ければ `AC`）。どちらもプラグインを使わずに書いている（下の「プラグインを使わずに書いているもの」）
-- 右（tmux のみ）: 続けて `~/.config/tmux/.tmux/bin/gip` と `~/.config/tmux/.tmux/bin/print_ip` の出力
-- ウィンドウ: 非アクティブは `brightblack`、アクティブは `colour68` の背景で名前（`#W`）を表示。区切りに Powerline の記号を使う（Nerd Font などの対応フォントが必要）
+- 配色は VS Code の One Dark Pro を元にしている（`#RRGGBB` で指定）。バーは文字 `#9da5b4`、背景 `#21252b`。ウィンドウ一覧は左寄せで、区切りの隙間なし
+- 2 段にしている（`status 2`）
+  - 1 段目: 左に「セッション名:現在のウィンドウ番号」（`status-left`。Prefix やコピーモードに関係なく常に `#4d78cc` の帯。10 文字を超えると切る）、続けてウィンドウ一覧。`status-right` は空。psmux は既定の 1 段目だとウィンドウ番号を帯の外に出すので、`status-format[0]` を自分で書いている（クリックで移れるように `#[range=...]` で囲む）
+  - 2 段目（`status-format[1]`）: 左に Prefix を押している間の `Wait`、コピーモード中の `Copy`。右詰めで `📁 claudeWS | ⚡🔋: 59 % | 10/21 12:58 Wed`（今のフォルダ名 | バッテリー残量 | `%m/%d %H:%M %a`。ssh 中は `📁 フォルダ名` の代わりに `🌐 接続先`。接続先はシェルの `ssh` 関数と spawn-ssh がペインのオプション `@ssh_host` に入れる。充電中・AC につながっているときは ⚡ を付け、バッテリーが無ければ `🔋: AC`）。どちらもプラグインを使わずに書いている（下の「プラグインを使わずに書いているもの」）
+  - 2 段目の左右の中身はユーザーオプション `@status2-left` / `@status2-right` に置き、`#{T:@status2-left}#[align=right]#{T:@status2-right}` で展開する。`status-format` は strftime を通らないので、`T:` で時刻も展開させる
+- ウィンドウ: 非アクティブは `#3e4452`（文字 `#dcdcdc`）、アクティブは `#61afef`（文字 `#21252b`）の背景で番号と名前（`#I:#W`）を表示。区切りに Powerline の記号を使う（Nerd Font などの対応フォントが必要）
+  - ウィンドウ名は 1 段目に収まるように「(画面の幅 - 17) / ウィンドウ数 - 7」文字で切り、`…` を付ける。フック（`client-resized` / `after-new-window` / `window-unlinked`）で `set -gF @wname` し、`#{=/11/…:window_name}` のような書式を作って `#{T:@wname}` で展開する（psmux は `#{=/#{...}/…:...}` のように長さに `#{}` を書けないため）
 
 ### ペイン
 
@@ -184,11 +187,11 @@ tmux は tpm、psmux は ppm（tpm の PowerShell 版）で管理する。設定
 
 ### プラグインを使わずに書いているもの
 
-Prefix の表示とバッテリー残量は、tmux・psmux とも、プラグイン（tmux-prefix-highlight / tmux-battery、psmux-prefix-highlight / psmux-battery）を使わずに `status-right` に直接書いている。
+Prefix の表示とバッテリー残量は、tmux・psmux とも、プラグイン（tmux-prefix-highlight / tmux-battery、psmux-prefix-highlight / psmux-battery）を使わずに `@status2-left` / `@status2-right` に直接書いている。
 
 | 表示           | 書き方（tmux / psmux 共通）                                                                 | 使わないプラグイン |
 | -------------- | ------------------------------------------------------------------------------------------- | ------------------ |
-| Prefix・コピーモード | `#{?client_prefix,... Wait ,}` と `#{?pane_in_mode,... Copy ,}`                         | psmux-prefix-highlight は `status-right` を丸ごと上書きするので使わない。tmux もそろえる |
+| Prefix・コピーモード | `#{?client_prefix,... Wait ,}` と `#{?pane_in_mode,... Copy ,}`                         | psmux-prefix-highlight は `status-right` を丸ごと上書きするので使わない（今は 2 段目に出すのでどのみち使えない）。tmux もそろえる |
 | バッテリー残量 | `#()` で取得する。取り方は下の表                                                            | psmux-battery は試したときに値が「…」のまま変わらなかったので使わない（原因は未確認）。tmux もそろえる |
 
 | 環境           | バッテリー残量の取り方                                                                      |
@@ -197,16 +200,16 @@ Prefix の表示とバッテリー残量は、tmux・psmux とも、プラグイ
 | tmux（macOS）  | `pmset -g batt` の `NN%`                                                                    |
 | tmux（Linux / WSL） | `/sys/class/power_supply/BAT*/capacity`                                                |
 
-- tmux の `status-right` は strftime を通るので、`%` は `%%` と書く。`#()` は対になっていない `)` で終わるので、`case` の `)` は使えない（`$( )` は使える）
+- tmux の `@status2-right` は `#{T:...}` で strftime を通るので、`#()` の中の `%` は `%%` と書く。`#()` は対になっていない `)` で終わるので、`case` の `)` は使えない（`$( )` は使える）
 
 ---
 
 ## 注意点
 
-- **ステータスバーのスクリプト**: `gip` と `print_ip` はこのリポジトリに入っていない。置いていない環境では空欄になる
+
 - **Windows（psmux）で効かないもの**
   - `Prefix` → `r` のリロード: `~/.config/tmux/tmux.conf` が無いので失敗する。`Prefix` → `:` で `source-file ~/.psmux.conf` を実行する
-  - `gip` / `print_ip`: psmux は `#()` を `cmd /C` で実行し、`~` を展開しないので動かない。psmux ではステータスバーに出さない
+
   - `extended-keys` / `terminal-features`: psmux は対応していない（読み込むと起動時に「unknown option」の警告が一瞬出る）。`%if` で tmux のときだけ読み込む
 - **改行コード**: `.tmux.conf` は LF にする。CRLF だと Linux の tmux で `%if` などが効かなくなる（WSL の tmux 3.2a で確認）
 - **ステータスバーの色**: psmux は `status-fg` / `status-bg` に対応していないので、`status-style` で指定している

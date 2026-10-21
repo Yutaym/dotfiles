@@ -161,3 +161,33 @@ function claude-ollama() {
   echo "→ Ollama mode"
   claude --model qwen3.5 "$@"
 }
+
+# ssh: tmux の中では、接続先をペインのオプション @ssh_host に入れ、ステータスバーに 🌐 (接続先) と出す
+# 接続先は、オプションとその値を飛ばした最初の引数から user@ と :port を除いたもの
+ssh() {
+    local dest="" a skip=0 i rc
+    for a in "$@"; do
+        if (( skip )); then skip=0; continue; fi
+        case "$a" in
+            --) continue ;;
+            -*)
+                # 値を取るオプションの文字が最後にあれば、次の引数がその値
+                for (( i = 2; i <= ${#a}; i++ )); do
+                    if [[ "BbcDEeFIiJLlmOoPpQRSWw" == *"${a[i]}"* ]]; then
+                        (( i == ${#a} )) && skip=1
+                        break
+                    fi
+                done
+                ;;
+            *) dest="$a"; break ;;
+        esac
+    done
+    dest="${dest#ssh://}"; dest="${dest##*@}"; dest="${dest%:[0-9]*}"
+    if [[ -n "$dest" && -n "$TMUX" && -n "$TMUX_PANE" ]]; then
+        command tmux set -p -t "$TMUX_PANE" @ssh_host "$dest" 2>/dev/null
+        command ssh "$@"; rc=$?
+        command tmux set -pu -t "$TMUX_PANE" @ssh_host 2>/dev/null
+        return $rc
+    fi
+    command ssh "$@"
+}
