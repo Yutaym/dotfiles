@@ -21,7 +21,7 @@ claude_config/
     ├── session-spawn/   # ~/.claude/skills/session-spawn にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
     │   ├── SKILL.md
     │   └── scripts/
-    ├── spawn-ssh/       # ~/.claude/skills/spawn-ssh にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
+    ├── session-ssh/       # ~/.claude/skills/session-ssh にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
     │   ├── SKILL.md
     │   └── scripts/
     ├── spawn-window/    # ~/.claude/skills/spawn-window にリンク（新しいタブでシェルを開いて移動するスキル）
@@ -230,11 +230,11 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - tmux の中では、頼む作業が指定されていないときだけ、起動したウィンドウに画面を切り替える（`-Switch`、sh は `-w`）。作業を頼むときは呼び出し元のウィンドウのまま
 - 動作を確認したのは Windows Terminal と tmux（WSL）だけ。ほかのターミナルは公式ドキュメントで構文を確認しただけ（SKILL.md の「ターミナルごとの対応」）
 
-### spawn-ssh
+### session-ssh
 `~/.ssh/config` の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `ssh-sessions` を分割して並べる）で ssh 接続した状態を作るユーザースキル。複数の接続先を一度に開ける。「新しいタブで ssh して」「〜に ssh 接続したタブを開いて」などと言われたときに、Claude が自動で使う。
 
 ```text
-/spawn-ssh [接続先 ...]
+/session-ssh [接続先 ...]
 ```
 
 | ファイル                    | 内容                                                                                                   |
