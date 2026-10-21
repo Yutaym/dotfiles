@@ -43,7 +43,8 @@ fi
 # nvm.sh は未定義の変数を参照するため、set -u を外して読み込む
 set +u
 . "$NVM_DIR/nvm.sh"
-default_version="$(nvm version default)"
+# default が無いと nvm version は N/A を出して 3 で終わるため、set -e で止まらないようにする
+default_version="$(nvm version default || true)"
 default_major="${default_version#v}"
 default_major="${default_major%%.*}"
 if [ "$default_version" != "N/A" ] && [ "$default_major" -ge "$MIN_NODE_MAJOR" ]; then
