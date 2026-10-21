@@ -12,7 +12,7 @@ argument-hint: "[作業フォルダ] [ウィンドウ名]"
 - tmux の中では、既定で開いたウィンドウに画面を切り替える（session-spawn は切り替えない）。
 - 分割のときの専用ウィンドウの名前は `shells`（session-spawn は `cc-sessions`）。
 
-Claude Code のセッションを開きたいときは session-spawn、ssh で接続したタブを開きたいときは session-ssh を使う。
+Claude Code のセッションを開きたいときは session-spawn、ssh で接続したタブを開きたいときは spawn-ssh を使う。
 
 ## 前提
 
