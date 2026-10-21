@@ -116,6 +116,11 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM`（`date '+Claude: %Y/%m/%d %H:%M:%S %z'`）。Co-Authored-By などの帰属表示は付けない
 - pull のコンフリクトや push の失敗は、強制 push などで解決せずにユーザーに報告する
 
+### サブエージェントの名前
+- 基本は名前なしで起動する（一度で終わる調べもの・並列の下調べ）
+- 名前を付けるのは、あとで SendMessage で続けて頼むとき、役割を分けて長く動かすとき、ユーザーが名前や別ペインでの表示を求めたときだけ。エージェントチームが有効なので、名前付きはチームメイトとして別のペインで起動し、終わっても残る
+- 不要になったチームメイトは閉じる（shutdown_request）か、閉じるかどうかを確認する
+
 ---
 
 ## local-paths.md
