@@ -149,6 +149,7 @@ nvm でグローバルにインストールした `@hyperupcall/autoenv` の `ac
 | `ZSH`                   | `~/.oh-my-zsh`（設定済みならその値）                                                                      |
 | `ZSH_THEME`             | 空（テーマを使わず、[プロンプト](#プロンプト-zshrc_promptsh) は自前で設定する）                           |
 | `ZSH_DISABLE_COMPFIX`   | `true`（`compaudit` を省略。WSL のマウント越しだと 1 秒以上かかっていたため）                             |
+| `DISABLE_AUTO_TITLE`    | tmux の外（`$TMUX` が空）で `TERM` が `screen*` / `tmux*` のときだけ `true`。psmux から ssh すると `TERM=screen-256color` が渡り、oh-my-zsh がタイトル用に出す `\ek<コマンド名>\e\\` が画面に表示されてしまうため |
 | `:omz:plugins:nvm lazy` | `yes`（nvm を `nvm` / `node` / `npm` / `npx` などの初回実行まで読み込まない。未設定だと起動に数秒かかる） |
 
 ### 自動インストール

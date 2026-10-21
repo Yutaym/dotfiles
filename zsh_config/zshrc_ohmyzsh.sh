@@ -8,6 +8,12 @@ export ZSH_THEME=""
 # WSLのマウント越しだと特に遅く、実測で1秒以上かかっていたため。
 ZSH_DISABLE_COMPFIX="true"
 
+# tmux の外なのに TERM が screen 系(psmux から ssh したときなど)だと、
+# oh-my-zsh がタイトル用の \ek...\e\\ を出し、コマンド名が画面に表示されるので止める
+if [[ -z $TMUX && $TERM == (screen|tmux)* ]]; then
+    DISABLE_AUTO_TITLE="true"
+fi
+
 # nvmプラグインの初期化(nvm.sh読み込み + .nvmrc自動切り替え)を起動時ではなく、
 # 実際に nvm/node/npm/npx 等を初めて使ったタイミングまで遅延させる。
 # (未設定だと起動のたびに数秒かかる)
