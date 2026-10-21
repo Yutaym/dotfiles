@@ -139,8 +139,8 @@ Windows では `tmux` の代わりに `psmux` でもよい（psmux は `tmux` �
 - 上に表示する（`status-position top`）。1 秒ごとに更新する（`status-interval 1`。psmux は 15 秒）
 - 色は文字 `brightwhite`、背景 `colour238`。ウィンドウ一覧は左寄せで、区切りの隙間なし
 - 左: セッション名（`#S`）
-- 右（tmux）: Prefix の表示（tmux-prefix-highlight）、バッテリー残量（tmux-battery）、`~/.config/tmux/.tmux/bin/gip` と `~/.config/tmux/.tmux/bin/print_ip` の出力
-- 右（psmux）: Prefix を押している間の `Wait`、コピーモード中の `Copy`、バッテリー残量（デスクトップでは `AC`）
+- 右（tmux / psmux 共通）: Prefix を押している間の `Wait`、コピーモード中の `Copy`、バッテリー残量（バッテリーが無ければ `AC`）。どちらもプラグインを使わずに書いている（下の「プラグインを使わずに書いているもの」）
+- 右（tmux のみ）: 続けて `~/.config/tmux/.tmux/bin/gip` と `~/.config/tmux/.tmux/bin/print_ip` の出力
 - ウィンドウ: 非アクティブは `brightblack`、アクティブは `colour68` の背景で名前（`#W`）を表示。区切りに Powerline の記号を使う（Nerd Font などの対応フォントが必要）
 
 ### ペイン
@@ -154,7 +154,7 @@ Windows では `tmux` の代わりに `psmux` でもよい（psmux は `tmux` �
 
 ## プラグイン
 
-tmux は tpm、psmux は ppm（tpm の PowerShell 版）で管理する。設定ファイルの `%if "#{m:*psmux*,#{socket_path}}"` で切り替える（psmux のソケットは `~/.psmux/<名前>`、tmux は `/tmp/tmux-<UID>/<名前>`）。
+tmux は tpm、psmux は ppm（tpm の PowerShell 版）で管理する。設定ファイルの `%if "#{m:*psmux*,#{socket_path}}"` で切り替える（psmux のソケットは `~/.psmux/<名前>`、tmux は `/tmp/tmux-<UID>/<名前>`）。入れるプラグインは、tmux と psmux で同じもの（resurrect と continuum）にそろえている。
 
 ### tmux（tpm）
 
@@ -163,10 +163,8 @@ tmux は tpm、psmux は ppm（tpm の PowerShell 版）で管理する。設定
 | プラグイン                                                                     | 内容                                                       |
 | ------------------------------------------------------------------------------ | ---------------------------------------------------------- |
 | [tpm](https://github.com/tmux-plugins/tpm)                                     | プラグインマネージャー                                     |
-| [tmux-battery](https://github.com/tmux-plugins/tmux-battery)                   | `#{battery_percentage}` でバッテリー残量を表示             |
 | [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect)               | セッションの保存（`Prefix` → `Ctrl-s`）と復元（`Prefix` → `Ctrl-r`） |
-| [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum)               | 15 分ごとにセッションを自動保存（起動時の自動復元は `@continuum-restore 'on'` が無いのでしない） |
-| [tmux-prefix-highlight](https://github.com/tmux-plugins/tmux-prefix-highlight) | Prefix を押している間、ステータスバーに表示する            |
+| [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum)               | 15 分ごとにセッションを自動保存（起動時の自動復元は `@continuum-restore 'on'` が無いのでしない）。ほかに tmux のサーバーが動いているときは自動保存を始めない |
 
 コメントアウトしているもの: tmux-online-status、tmux-sidebar。tmux 用の `@plugin` の行は `set -g` ではなく `set-option -g` と書く（ppm は設定ファイルの `set -g @plugin '...'` の行を文字列で探すので、`%else` の中にあっても tmux 用のプラグインまでインストールしてしまうため）。
 
@@ -180,16 +178,26 @@ tmux は tpm、psmux は ppm（tpm の PowerShell 版）で管理する。設定
 | psmux-resurrect     | セッションの保存（`Prefix` → `Ctrl-s`）と復元（`Prefix` → `Ctrl-r`）。保存先は `~/.psmux/resurrect` |
 | psmux-continuum     | 15 分ごとにセッションを自動保存（tmux 側と同じく自動復元はしない）       |
 
-tmux 側のプラグインのうち 2 つは、psmux 版を使わずに設定ファイルに直接書いている。
-
-| tmux 側               | psmux での扱い                                                                                       |
-| --------------------- | ---------------------------------------------------------------------------------------------------- |
-| tmux-prefix-highlight | psmux-prefix-highlight は `status-right` を丸ごと上書きするので使わない。`#{?client_prefix,...}` と `#{?pane_in_mode,...}` で直接表示する |
-| tmux-battery          | psmux-battery は試したときに値が「…」のまま変わらなかったので使わない（原因は未確認）。`#()` で `pwsh -EncodedCommand` を実行して `Win32_Battery` から取得する（`#()` は `cmd /C` で実行され、括弧や `%` をそのまま書けないため、PowerShell のコマンドを Base64 にして渡す） |
-
 - ppm のキー（`Prefix` → `I` / `U` / `M`）は設定ファイルで直接割り当てている。psmux は ppm 自身の `plugin.conf` を自動では読まず、`run` で ppm.ps1 を実行しても設定の再読み込みではキーが登録されなかったため
 - `status-interval` は 15 秒にしている。`#()` を実行するたびに pwsh を起動するため
 - psmux-continuum の `client-attached` フックは、ppm の読み込みの後で `run-shell -b` 付きに上書きしている。psmux 3.4.0 は attach 時のフックに `-b` を付けずに実行するので、そのままだと起動時にステータスバーに `running: pwsh ... auto_save.ps1` が一瞬出るため
+
+### プラグインを使わずに書いているもの
+
+Prefix の表示とバッテリー残量は、tmux・psmux とも、プラグイン（tmux-prefix-highlight / tmux-battery、psmux-prefix-highlight / psmux-battery）を使わずに `status-right` に直接書いている。
+
+| 表示           | 書き方（tmux / psmux 共通）                                                                 | 使わないプラグイン |
+| -------------- | ------------------------------------------------------------------------------------------- | ------------------ |
+| Prefix・コピーモード | `#{?client_prefix,... Wait ,}` と `#{?pane_in_mode,... Copy ,}`                         | psmux-prefix-highlight は `status-right` を丸ごと上書きするので使わない。tmux もそろえる |
+| バッテリー残量 | `#()` で取得する。取り方は下の表                                                            | psmux-battery は試したときに値が「…」のまま変わらなかったので使わない（原因は未確認）。tmux もそろえる |
+
+| 環境           | バッテリー残量の取り方                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| psmux          | `pwsh -EncodedCommand` で `Win32_Battery` の `EstimatedChargeRemaining` を読む（`#()` は `cmd /C` で実行され、括弧や `%` をそのまま書けないため、PowerShell のコマンドを Base64 にして渡す） |
+| tmux（macOS）  | `pmset -g batt` の `NN%`                                                                    |
+| tmux（Linux / WSL） | `/sys/class/power_supply/BAT*/capacity`                                                |
+
+- tmux の `status-right` は strftime を通るので、`%` は `%%` と書く。`#()` は対になっていない `)` で終わるので、`case` の `)` は使えない（`$( )` は使える）
 
 ---
 
