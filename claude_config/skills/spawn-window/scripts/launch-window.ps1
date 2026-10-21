@@ -3,7 +3,7 @@
 # 使い方:
 #   pwsh -NoProfile -File launch-window.ps1 [-Dir <作業フォルダ>] [-Name <ウィンドウ名>] [-NewWindow] [-Split] [-Background]
 #
-# 起動先の選び方 (spawn-session の launch-session.ps1 と同じ):
+# 起動先の選び方 (session-spawn の launch-session.ps1 と同じ):
 #   1. tmux (psmux など) の中 ($env:TMUX がある) → tmux new-window (-Split のときは専用ウィンドウを分割)
 #   2. Windows Terminal がある                    → wt -w 0 new-tab --reloadEnvironment
 #   3. どちらもない                                → pwsh / powershell の新しいウィンドウ

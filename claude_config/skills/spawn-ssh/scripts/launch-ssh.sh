@@ -7,7 +7,7 @@
 #   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
 #   -b: tmux の中で、開いたウィンドウに画面を切り替えない (指定しなければ、最後に開いたウィンドウに切り替える)
 #
-# 起動先の選び方 (spawn-session の launch-session.sh と同じ。上から順に、当てはまった最初のもの):
+# 起動先の選び方 (session-spawn の launch-session.sh と同じ。上から順に、当てはまった最初のもの):
 #   1. tmux の中 ($TMUX がある)                → tmux new-window (-s のときは専用ウィンドウを分割)
 #   2. WezTerm ($WEZTERM_PANE)                 → wezterm cli spawn
 #   3. kitty ($KITTY_WINDOW_ID)                → kitten @ launch --type=tab (リモート制御が有効なときだけ)
@@ -59,8 +59,11 @@ make_inner() {
         echo '#!/bin/sh'
         echo 'rm -f -- "$0"'
         printf 'printf "\\033]0;%%s\\007" %s\n' "$1"
+        # tmux の中では、接続先をペインのオプション @ssh_host に入れ、ステータスバーに 🌐 (接続先) と出す
+        printf '[ -n "$TMUX_PANE" ] && tmux set -p -t "$TMUX_PANE" @ssh_host %s 2>/dev/null\n' "$1"
         printf 'ssh %s\n' "$1"
         echo 'rc=$?'
+        echo '[ -n "$TMUX_PANE" ] && tmux set -pu -t "$TMUX_PANE" @ssh_host 2>/dev/null'
         echo 'if [ "$rc" -ne 0 ]; then'
         echo '    echo; echo "ssh が終了しました (終了コード $rc)。Enter で閉じます。"; read _'
         echo 'fi'

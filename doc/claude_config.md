@@ -13,12 +13,12 @@ claude_config/
 ├── install_claude.ps1   # インストーラー（Windows）
 ├── install_claude.sh    # インストーラー（Linux / macOS）
 └── skills/
-    ├── order-session/   # ~/.claude/skills/order-session にリンク（動いている別セッションを選んで作業を頼むスキル）
+    ├── session-order/   # ~/.claude/skills/session-order にリンク（動いている別セッションを選んで作業を頼むスキル）
     │   └── SKILL.md
     ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）
     │   ├── SKILL.md
     │   └── scripts/
-    ├── spawn-session/   # ~/.claude/skills/spawn-session にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
+    ├── session-spawn/   # ~/.claude/skills/session-spawn にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
     │   ├── SKILL.md
     │   └── scripts/
     ├── spawn-ssh/       # ~/.claude/skills/spawn-ssh にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
@@ -27,8 +27,8 @@ claude_config/
     ├── spawn-window/    # ~/.claude/skills/spawn-window にリンク（新しいタブでシェルを開いて移動するスキル）
     │   ├── SKILL.md
     │   └── scripts/
-    └── vault-sync/
-        └── SKILL.md     # ~/.claude/skills/vault-sync にリンク（vault の同期スキル）
+    └── sync-vaults/
+        └── SKILL.md     # ~/.claude/skills/sync-vaults にリンク（vault の同期スキル）
 ```
 
 シェル側の関連設定:
@@ -107,7 +107,7 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 ### VAULT_DIR / META_DIR の同期
 | 対象                                   | 同期方法                                                                                                                  |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `META_DIR`（`VAULT_DIR/90_Meta`）      | git では管理しない（`.gitignore` で除外）。SMB 共有経由でタスクスケジューラが自動同期する。頼まれたときだけ `vault-sync` スキルで同期 |
+| `META_DIR`（`VAULT_DIR/90_Meta`）      | git では管理しない（`.gitignore` で除外）。SMB 共有経由でタスクスケジューラが自動同期する。頼まれたときだけ `sync-vaults` スキルで同期 |
 | `VAULT_DIR` のそれ以外                 | 編集したら確認を待たずに、作業の区切りで `git add -A` → `commit` → `pull --rebase` → `push`                               |
 
 - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM`（`date '+Claude: %Y/%m/%d %H:%M:%S %z'`）。Co-Authored-By などの帰属表示は付けない
@@ -187,23 +187,23 @@ f="$HOME/.config/iterm2/cc-status"; [ -x "$f" ] || exit 0; exec "$f"
 
 ## スキル (skills/)
 
-### vault-sync
-vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル。どのディレクトリで作業していても `/vault-sync` で呼べる。「vault を同期」「メモを同期」などと言われたとき、または `VAULT_DIR` を編集した作業の区切りで、Claude が自動で使う。
+### sync-vaults
+vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル。どのディレクトリで作業していても `/sync-vaults` で呼べる。「vault を同期」「メモを同期」などと言われたとき、または `VAULT_DIR` を編集した作業の区切りで、Claude が自動で使う。
 
 ```text
-/vault-sync          # A → B の両方
-/vault-sync meta     # A だけ
-/vault-sync git      # B だけ
+/sync-vaults          # A → B の両方
+/sync-vaults meta     # A だけ
+/sync-vaults git      # B だけ
 ```
 
 | 部分                  | 内容                                                                                                                                                                         |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0. 準備               | `~/.claude/local-paths.md` から `VAULT_DIR`・`META_DIR`・リモート・ブランチを読む。`VAULT_DIR` が無い・git リポジトリでなければ中止                                         |
-| A. 90_Meta の SMB 同期 | 手順は vault 内のプロジェクトスキル `VAULT_DIR/.claude/skills/vault-sync/SKILL.md`（古い端末では `sync-vault`）を Read で読んで従う（ドライラン → 確認 → 本実行 → 要確認ファイルの整理）。見つからない・接続できなければスキップして B へ |
+| A. 90_Meta の SMB 同期 | 手順は vault 内のプロジェクトスキル `VAULT_DIR/.claude/skills/sync-vaults/SKILL.md`（古い端末では `sync-vault`）を Read で読んで従う（ドライラン → 確認 → 本実行 → 要確認ファイルの整理）。見つからない・接続できなければスキップして B へ |
 | B. git の同期         | `status` で確認 → 変更があれば `add -A` / `commit` → `pull --rebase origin master` → `push origin master` → `status -sb` で ahead / behind が無いことを確認               |
 
 - A と B は独立していて、片方が失敗してももう片方は行う
-- プロジェクトスキルはこのスキルと同じ名前（`vault-sync`）なので、スキルとして呼ぶとグローバル版（このスキル）が優先される。そのため、スキルとして呼ばずに Read で読む
+- プロジェクトスキルはこのスキルと同じ名前（`sync-vaults`）なので、スキルとして呼ぶとグローバル版（このスキル）が優先される。そのため、スキルとして呼ばずに Read で読む
 - マージ・リベースの途中（`.git/MERGE_HEAD`、`.git/rebase-merge/` など）なら何もせずに報告する。`.git/index.lock` は Obsidian Git などの実行中の可能性があるので、勝手に消さない
 - コンフリクトや push の拒否は、強制 push や `git reset --hard` で解決せずに報告する。リベース中のマーカーはマージと逆で、`<<<<<<< HEAD` 側がリモート（ほかの端末）、`>>>>>>>` 側がこの PC のコミット
 - vault の git の同期方式は rebase にそろえている（PC の Obsidian Git・タスクスケジューラ・Claude Code）。iPad の Obsidian Git だけは rebase に対応していないので merge になる
@@ -211,11 +211,11 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 
 最後に、A（実行 / スキップの理由、操作件数、バックアップ先）と B（作成したコミット、取り込んだコミット数、push の結果、最終的な `git status -sb`）を報告する。
 
-### spawn-session
+### session-spawn
 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `cc-sessions` を分割して並べる。どちらも画面は元のウィンドウのまま）で独立した Claude Code のセッションを起動し、`SendMessage` で作業を頼み、終わったら結果を確認して報告するユーザースキル。「新しいタブでセッションを開いて」「別のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
 
 ```text
-/spawn-session [作業フォルダ] [セッション名] [頼む作業]
+/session-spawn [作業フォルダ] [セッション名] [頼む作業]
 ```
 
 | ファイル                     | 内容                                                                                                                                    |
@@ -227,6 +227,7 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 
 - Claude のツールから `claude` をそのまま起動すると、`CLAUDE_CODE_CHILD_SESSION` などを引き継いで子セッション扱いになり、会話の記録が保存されない。そのため、変数を消してから起動する
 - `wt` はコマンドの中の `;` を区切り記号として扱う（引用符の中でも分割される）ので、`-Command "...; claude"` ではなく `-File` でスクリプトを渡す
+- tmux の中では、頼む作業が指定されていないときだけ、起動したウィンドウに画面を切り替える（`-Switch`、sh は `-w`）。作業を頼むときは呼び出し元のウィンドウのまま
 - 動作を確認したのは Windows Terminal と tmux（WSL）だけ。ほかのターミナルは公式ドキュメントで構文を確認しただけ（SKILL.md の「ターミナルごとの対応」）
 
 ### spawn-ssh
@@ -239,13 +240,13 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 | ファイル                    | 内容                                                                                                   |
 | --------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `scripts/list-ssh-hosts.py` | `~/.ssh/config`（`Include` 先も含む）の Host の別名を No・Host・HostName・User・Port の表で出す。`*` `?` `!` を含むパターンは除く |
-| `scripts/launch-ssh.ps1`    | Windows 用。起動先の判断は spawn-session の `launch-session.ps1` と同じ                                 |
+| `scripts/launch-ssh.ps1`    | Windows 用。起動先の判断は session-spawn の `launch-session.ps1` と同じ                                 |
 | `scripts/start-ssh.ps1`     | Windows の新しいタブの中で `ssh <接続先>` を実行。失敗したときはエラーを残して Enter を待つ              |
-| `scripts/launch-ssh.sh`     | macOS / Linux / WSL 用。起動先の判断は spawn-session の `launch-session.sh` と同じ                       |
+| `scripts/launch-ssh.sh`     | macOS / Linux / WSL 用。起動先の判断は session-spawn の `launch-session.sh` と同じ                       |
 
 - 接続先は、指定がなければ `AskUserQuestion`（複数選択）で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
 - tmux の中では、既定で開いたウィンドウ（複数なら最後のもの）に画面を切り替える。`-Background`（sh は `-b`）で切り替えない。ウィンドウは `new-window -P` で受け取った番号で指定する（psmux は `.` を含む名前を `-t` で取り違えるため）
-- 動作を確認したのは psmux（Windows）だけ。Windows Terminal はタブが開くところまで。ほかのターミナルは spawn-session と同じ方法を使っているだけで未確認
+- 動作を確認したのは psmux（Windows）だけ。Windows Terminal はタブが開くところまで。ほかのターミナルは session-spawn と同じ方法を使っているだけで未確認
 
 ### spawn-window
 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `shells` を分割して並べる）でシェルを開き、指定したフォルダに移った状態を作るユーザースキル。Claude Code は起動しない。「新しいウィンドウを作って」「〜のフォルダでウィンドウを開いて移動して」などと言われたときに、Claude が自動で使う。
@@ -256,24 +257,24 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 
 | ファイル                    | 内容                                                                                                   |
 | --------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `scripts/launch-window.ps1` | Windows 用。起動先の判断は spawn-session の `launch-session.ps1` と同じ                                 |
+| `scripts/launch-window.ps1` | Windows 用。起動先の判断は session-spawn の `launch-session.ps1` と同じ                                 |
 | `scripts/start-shell.ps1`   | Windows の新しいタブの中で `pwsh -NoExit -File` で実行。Claude の環境変数を消してフォルダに移る          |
-| `scripts/launch-window.sh`  | macOS / Linux / WSL 用。spawn-session の `launch-session.sh` をもとに、claude の代わりにログインシェルを開く |
+| `scripts/launch-window.sh`  | macOS / Linux / WSL 用。session-spawn の `launch-session.sh` をもとに、claude の代わりにログインシェルを開く |
 
-- tmux の中では、既定で開いたウィンドウに画面を切り替える（spawn-session は切り替えない）。`-Background`（sh は `-b`）で切り替えない
+- tmux の中では、既定で開いたウィンドウに画面を切り替える（session-spawn は切り替えない）。`-Background`（sh は `-b`）で切り替えない
 - Claude の中から開いたシェルは Claude のセッション固有の環境変数を引き継ぎ、そこで `claude` を起動すると子セッション扱いになるので、どの起動先でも消してからシェルを渡す
 - 動作を確認したのは psmux（Windows）だけ（切り替え、フォルダ、プロファイルの読み込み、変数の削除、`-Background`、`-Split` 2 回）
 
-### order-session
-同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは spawn-session）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
+### session-order
+同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは session-spawn）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
 
 ```text
-/order-session [セッション名] [頼む内容]
+/session-order [セッション名] [頼む内容]
 ```
 
 - セッション名がなければ、`ListAgents` の一覧から `AskUserQuestion` で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
 - 頼む内容がなければ、宛先を決めたあとに「次のメッセージに書いてください」と返して待ち、次のメッセージを頼む内容として送る（長い文や複数行を書きやすくするため、選択式にはしない）
-- 送るときは `notify_when_idle` を付け、通知が来たら相手の返事か会話記録の最後の返答（spawn-session の `session-result.py`）を要約して報告する
+- 送るときは `notify_when_idle` を付け、通知が来たら相手の返事か会話記録の最後の返答（session-spawn の `session-result.py`）を要約して報告する
 
 ### session-overview
 同じマシンで動いている Claude Code のセッションを一覧にし、それぞれが何をしているかを会話記録から要約するユーザースキル。相手のセッションには何も送らない。「セッションの一覧を出して」「今どのセッションが何をしているか」などと言われたときに、Claude が自動で使う。
