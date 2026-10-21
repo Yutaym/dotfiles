@@ -13,6 +13,8 @@ claude_config/
 ├── install_claude.ps1   # インストーラー（Windows）
 ├── install_claude.sh    # インストーラー（Linux / macOS）
 └── skills/
+    ├── order-session/   # ~/.claude/skills/order-session にリンク（動いている別セッションを選んで作業を頼むスキル）
+    │   └── SKILL.md
     ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）
     │   ├── SKILL.md
     │   └── scripts/
@@ -20,6 +22,9 @@ claude_config/
     │   ├── SKILL.md
     │   └── scripts/
     ├── spawn-ssh/       # ~/.claude/skills/spawn-ssh にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
+    ├── spawn-window/    # ~/.claude/skills/spawn-window にリンク（新しいタブでシェルを開いて移動するスキル）
     │   ├── SKILL.md
     │   └── scripts/
     └── vault-sync/
@@ -241,6 +246,34 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - 接続先は、指定がなければ `AskUserQuestion`（複数選択）で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
 - tmux の中では、既定で開いたウィンドウ（複数なら最後のもの）に画面を切り替える。`-Background`（sh は `-b`）で切り替えない。ウィンドウは `new-window -P` で受け取った番号で指定する（psmux は `.` を含む名前を `-t` で取り違えるため）
 - 動作を確認したのは psmux（Windows）だけ。Windows Terminal はタブが開くところまで。ほかのターミナルは spawn-session と同じ方法を使っているだけで未確認
+
+### spawn-window
+新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `shells` を分割して並べる）でシェルを開き、指定したフォルダに移った状態を作るユーザースキル。Claude Code は起動しない。「新しいウィンドウを作って」「〜のフォルダでウィンドウを開いて移動して」などと言われたときに、Claude が自動で使う。
+
+```text
+/spawn-window [作業フォルダ] [ウィンドウ名]
+```
+
+| ファイル                    | 内容                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `scripts/launch-window.ps1` | Windows 用。起動先の判断は spawn-session の `launch-session.ps1` と同じ                                 |
+| `scripts/start-shell.ps1`   | Windows の新しいタブの中で `pwsh -NoExit -File` で実行。Claude の環境変数を消してフォルダに移る          |
+| `scripts/launch-window.sh`  | macOS / Linux / WSL 用。spawn-session の `launch-session.sh` をもとに、claude の代わりにログインシェルを開く |
+
+- tmux の中では、既定で開いたウィンドウに画面を切り替える（spawn-session は切り替えない）。`-Background`（sh は `-b`）で切り替えない
+- Claude の中から開いたシェルは Claude のセッション固有の環境変数を引き継ぎ、そこで `claude` を起動すると子セッション扱いになるので、どの起動先でも消してからシェルを渡す
+- 動作を確認したのは psmux（Windows）だけ（切り替え、フォルダ、プロファイルの読み込み、変数の削除、`-Background`、`-Split` 2 回）
+
+### order-session
+同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは spawn-session）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
+
+```text
+/order-session [セッション名] [頼む内容]
+```
+
+- セッション名がなければ、`ListAgents` の一覧から `AskUserQuestion` で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
+- 頼む内容がなければ、宛先を決めたあとに「次のメッセージに書いてください」と返して待ち、次のメッセージを頼む内容として送る（長い文や複数行を書きやすくするため、選択式にはしない）
+- 送るときは `notify_when_idle` を付け、通知が来たら相手の返事か会話記録の最後の返答（spawn-session の `session-result.py`）を要約して報告する
 
 ### session-overview
 同じマシンで動いている Claude Code のセッションを一覧にし、それぞれが何をしているかを会話記録から要約するユーザースキル。相手のセッションには何も送らない。「セッションの一覧を出して」「今どのセッションが何をしているか」などと言われたときに、Claude が自動で使う。
