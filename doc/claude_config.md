@@ -19,6 +19,9 @@ claude_config/
     ├── session-generate/ # ~/.claude/skills/session-generate にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
     │   ├── SKILL.md
     │   └── scripts/
+    ├── session-kill/     # ~/.claude/skills/session-kill にリンク（別セッションを選んで終了するスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
     ├── session-order/    # ~/.claude/skills/session-order にリンク（動いている別セッションを選んで作業を頼むスキル）
     │   └── SKILL.md
     ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）
@@ -309,6 +312,19 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - tmux の中では、既定で開いたウィンドウに画面を切り替える（session-generate は切り替えない）。`-Background`（sh は `-b`）で切り替えない
 - Claude の中から開いたシェルは Claude のセッション固有の環境変数を引き継ぎ、そこで `claude` を起動すると子セッション扱いになるので、どの起動先でも消してからシェルを渡す
 - 動作を確認したのは psmux（Windows）だけ（切り替え、フォルダ、プロファイルの読み込み、変数の削除、`-Background`、`-Split` 2 回）
+
+### session-kill
+同じマシンで動いている別の Claude Code のセッションを選んで終了するユーザースキル。「セッションを kill して」などと言われたときに、Claude が自動で使う。
+
+```text
+/session-kill [セッション名 または 番号 ...]
+```
+
+- 自分以外のセッションを session-overview と同じ番号付きの表で出し、`AskUserQuestion` で選んでもらう。選択肢をクリック（4 つまで）、または Other に番号かセッション名を書く（カンマ区切りで複数可）
+- `busy` / `waiting` のセッションを選んだときだけ、終了してよいかを 1 回確かめる
+- `scripts/kill-session.py` が `~/.claude/sessions/<pid>.json` から PID を調べ、claude のプロセスであることを確かめてから終了する（Windows は `taskkill /T /F`、ほかは `SIGTERM`）。`--dry-run` で対象だけを表示
+- 開いていたウィンドウも閉じる。tmux はペインのシェル（`#{pane_pid}`）ごと終了してペイン・ウィンドウを閉じ、ターミナル（Windows Terminal など）はシェルごと終了してタブを閉じる。VS Code などそれ以外は claude だけを終了する。`--keep-window` で claude だけ
+- 会話の記録は消えないので、`claude --resume` で開き直せる
 
 ### session-order
 同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは session-generate）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
