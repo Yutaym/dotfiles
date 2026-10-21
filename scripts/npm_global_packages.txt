@@ -13,7 +13,7 @@ openclaw
 # textlint
 textlint
 textlint-filter-rule-comments
-textlint-filter-rule-whitelist
+textlint-filter-rule-allowlist  # whitelist は非推奨で、依存先の str-to-regexp が npm から消えていてインストールできない
 github:ics-creative/textlint-rule-preset-icsmedia  # npm レジストリには公開されていない
 textlint-rule-preset-ja-technical-writing
 textlint-rule-prh
