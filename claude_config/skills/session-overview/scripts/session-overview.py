@@ -4,7 +4,7 @@
     uv run --no-project python session-overview.py [セッション名 ...] [--prompts N] [--chars N]
 
 セッション名を指定しなければ、~/.claude/sessions/*.json にあるセッションをすべて出す。
-各セッションについて、状態・フォルダ・起動時刻・最後に動いた時刻・自動で付いたタイトル・
+各セッションについて、状態・フォルダ・場所 (tmux / terminal / other)・起動時刻・最後に動いた時刻・自動で付いたタイトル・
 依頼 (ユーザーが入力したもの / 別のセッションから届いたもの) の最初と最後の N 件・最後の返答を表示する。
 要約そのものは、この出力を読んだ Claude が書く。
 
@@ -18,6 +18,9 @@ import glob
 import json
 import os
 import re
+import shutil
+import subprocess
+import sys
 
 CONFIG_DIR = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.join(os.path.expanduser("~"), ".claude")
 SELF_ID = os.environ.get("CLAUDE_CODE_SESSION_ID", "")
@@ -123,6 +126,68 @@ def read_transcript(path):
     return prompts, last_reply, title, last_time
 
 
+SHELLS = {"pwsh", "powershell", "cmd", "bash", "zsh", "sh", "fish", "dash", "nu"}
+TERMINALS = {
+    "windowsterminal", "openconsole", "wezterm-gui", "wezterm", "kitty", "alacritty", "ghostty",
+    "iterm2", "terminal", "gnome-terminal-server", "konsole", "xterm", "tilix", "foot",
+}
+
+
+def base(name):
+    """プロセス名を小文字にし、パスと .exe を除く。"""
+    name = (name or "").lower().replace("\\", "/").rsplit("/", 1)[-1]
+    return name[:-4] if name.endswith(".exe") else name
+
+
+def process_table():
+    """{PID: (名前, 親の PID)} を 1 回のコマンドで取る。取れなければ空。"""
+    try:
+        if sys.platform == "win32":
+            cmd = ["powershell", "-NoProfile", "-NonInteractive", "-Command",
+                   "Get-CimInstance Win32_Process | ForEach-Object { \"$($_.ProcessId)`t$($_.ParentProcessId)`t$($_.Name)\" }"]
+        else:
+            cmd = ["ps", "-A", "-o", "pid=,ppid=,comm="]
+        out = subprocess.run(cmd, capture_output=True, text=True, errors="replace").stdout
+    except OSError:
+        return {}
+    table = {}
+    for line in out.splitlines():
+        parts = line.split("	") if "	" in line else line.split(None, 2)
+        if len(parts) == 3 and parts[0].strip().isdigit() and parts[1].strip().isdigit():
+            table[int(parts[0])] = (base(parts[2].strip()), int(parts[1]))
+    return table
+
+
+def tmux_panes():
+    """{ペインの最初のプロセスの PID: 'セッション:ウィンドウ番号 ウィンドウ名'}。"""
+    if not shutil.which("tmux"):
+        return {}
+    r = subprocess.run(["tmux", "list-panes", "-a", "-F", "#{pane_pid}	#{session_name}:#{window_index} #{window_name}"],
+                       capture_output=True, text=True, errors="replace")
+    panes = {}
+    for line in r.stdout.splitlines():
+        pid, _, where = line.partition("	")
+        if pid.strip().isdigit():
+            panes[int(pid)] = where
+    return panes
+
+
+def location(pid, procs, panes):
+    """claude の親プロセスから、どこで動いているか (tmux / terminal / other) を返す。"""
+    me = procs.get(pid)
+    if not me:
+        return "不明 (プロセスが見つからない)"
+    parent = procs.get(me[1])
+    if parent and parent[0] in SHELLS:
+        if me[1] in panes:
+            return f"tmux ({panes[me[1]]})"
+        grand = procs.get(parent[1])
+        if grand and grand[0] in TERMINALS:
+            return f"terminal ({grand[0]})"
+    host = parent[0] if parent else "?"
+    return f"other ({host})"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("names", nargs="*", help="出すセッションの名前 (ListAgents の名前)。省略時はすべて")
@@ -131,6 +196,7 @@ def main():
     args = parser.parse_args()
 
     sessions = load_sessions(set(args.names))
+    procs, panes = process_table(), tmux_panes()
     found = {s.get("name") for s in sessions}
     for name in args.names:
         if name not in found:
@@ -141,6 +207,7 @@ def main():
         me = " (このセッション)" if sid and sid == SELF_ID else ""
         print(f"## {s.get('name')}{me}")
         print(f"状態: {s.get('status')} / 種類: {s.get('kind')} / フォルダ: {s.get('cwd')}")
+        print(f"場所: {location(int(s.get('pid') or 0), procs, panes)}")
         print(f"起動: {local_time(s.get('startedAt'))} / 状態の更新: {local_time(s.get('statusUpdatedAt') or s.get('updatedAt'))}")
 
         transcripts = glob.glob(os.path.join(CONFIG_DIR, "projects", "*", f"{sid}.jsonl"))

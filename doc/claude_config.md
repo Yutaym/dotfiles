@@ -10,10 +10,16 @@ claude_config/
 ├── settings.json        # ~/.claude/settings.json にリンク（ユーザー設定）
 ├── keybindings.json     # ~/.claude/keybindings.json にリンク（キーバインド）
 ├── local-paths.md       # ~/.claude/local-paths.md にコピー（環境固有のパス。CLAUDE.md から読み込む）
+├── statusline.sh        # statusLine から呼ぶ。node を探して statusline.mjs を実行する
+├── statusline.mjs       # ステータスラインの表示（使用リミット・コンテキスト使用率・モデル）
+├── subagent-statusline.mjs # エージェント一覧のサブエージェントの行（トークン数・直近の増え・ctx・経過時間）
 ├── install_claude.ps1   # インストーラー（Windows）
 ├── install_claude.sh    # インストーラー（Linux / macOS）
 └── skills/
     ├── session-generate/ # ~/.claude/skills/session-generate にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
+    ├── session-kill/     # ~/.claude/skills/session-kill にリンク（別セッションを選んで終了するスキル）
     │   ├── SKILL.md
     │   └── scripts/
     ├── session-order/    # ~/.claude/skills/session-order にリンク（動いている別セッションを選んで作業を頼むスキル）
@@ -113,6 +119,11 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM`（`date '+Claude: %Y/%m/%d %H:%M:%S %z'`）。Co-Authored-By などの帰属表示は付けない
 - pull のコンフリクトや push の失敗は、強制 push などで解決せずにユーザーに報告する
 
+### サブエージェントの名前
+- 基本は名前なしで起動する（一度で終わる調べもの・並列の下調べ）
+- 名前を付けるのは、あとで SendMessage で続けて頼むとき、役割を分けて長く動かすとき、ユーザーが名前や別ペインでの表示を求めたときだけ。エージェントチームが有効なので、名前付きはチームメイトとして別のペインで起動し、終わっても残る
+- 不要になったチームメイトは閉じる（shutdown_request）か、閉じるかどうかを確認する
+
 ---
 
 ## local-paths.md
@@ -145,6 +156,8 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 | `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `"1"`                                     | エージェントチーム（実験的機能）を有効にする                                                                 |
 | `teammateMode`                        | `"auto"`                                       | チームメイトの表示方法。tmux の中か、iTerm2 + `it2` CLI のときは分割ペイン、それ以外は同じ画面内（in-process） |
 
+| `statusLine`                          | `sh ~/dotfiles/claude_config/statusline.sh`（60 秒ごと） | 入力欄の下に使用リミットなどを 1 行で出す。下記参照                                                          |
+| `subagentStatusLine`                  | `sh ~/dotfiles/claude_config/statusline.sh subagent-statusline.mjs` | エージェント一覧のサブエージェントの行を書き換える。下記参照 |
 | `hooks`                               | 10 イベント                                    | iTerm2 の Claude Code 連携（`~/.config/iterm2/cc-status`）を呼ぶ。下記参照                                   |
 
 ### フック（hooks）
@@ -157,6 +170,41 @@ f="$HOME/.config/iterm2/cc-status"; [ -x "$f" ] || exit 0; exec "$f"
 ```
 
 - `cc-status` が無い（実行できない）環境（Linux・WSL・Windows）では、何もせずに `exit 0` で終わる。設定ファイルを全環境で共通にするため
+
+### ステータスライン（statusLine）
+Claude Code が stdin に渡す JSON から、次の形で 1 行に出す（`statusline.mjs`）。
+
+```text
+5h 60% ~22:42 ⚠  21:52 │ 週 47% ~10/22 21:00 │ ctx 17% │ cache 52m │ med │ Opus 5.5
+```
+
+- `5h` / `週`: プランの 5 時間枠・週の上限の使用率（`rate_limits.five_hour` / `seven_day`）と、`~` の後がリセットされる時刻。Pro / Max のみで、セッションの最初の応答が届くまでは出ない
+- `⚠  時刻`: 今のペース（使用率 ÷ 枠の経過時間）のままだとリセット前に 100% に届くとき、その予測時刻を赤で出す。枠の経過が 10% 未満のうちは予測しない
+- `ctx`: コンテキストの使用率（`context_window.used_percentage`）
+- `cache`: プロンプトキャッシュが切れるまでの分数（`prompt_cache.expires_at`）。5 分以下で黄、切れたら灰色の `cache cold`（次の応答でコンテキスト全体を読み直す）。分数を減らすため、`refreshInterval` を 60 秒にしている
+- 状態: effort（`low` / `med` / `high` / `xhigh` / `max`）、思考がオフなら `no-think`、fast モードなら `fast`
+- 色: 50% 未満は緑、80% 未満は黄、それ以上は赤
+- 項目が JSON に無いときは、その項目だけ出さない
+- 右揃え: Claude Code が渡す `COLUMNS`（画面の幅）から左に空白を詰めて出す。Claude Code は行頭の空白を詰めるので、先頭に `\x1b[0m` を置いている。右端の余白は `RIGHT_MARGIN`（既定 4。Claude Code の左の字下げ 2 を含み、右に 2 空く）で調整する
+- `statusline.sh` は、`node` が PATH に無いとき（zsh の nvm 遅延読み込みなど）に `~/.nvm/versions/node` の一番新しい node を使う。node は `scripts/install_essentials.*` で入れる
+- Windows では Git Bash 経由で実行される（Git Bash が無いと PowerShell で実行され、`sh` が無いので動かない）
+- カスタムのステータスラインを入れると、フッターのキーのヒント（`esc to interrupt` など）の多くが出なくなる
+
+### サブエージェントの行（subagentStatusLine）
+入力欄の下のエージェント一覧で、サブエージェントの行を次の形にする（`subagent-statusline.mjs`）。
+
+```text
+文字だけの行の表示テスト [Explore] · 29.2k (+1.0k) · ctx 3% · 15s
+```
+
+- 進み具合の要約（`label`、無ければ説明。40 桁で … で切る）と種類（`general-purpose` 以外）
+- トークン数と、動いている間は直近の refresh での増え（`tokenSamples` の最後の 2 つの差）を緑で
+- コンテキスト使用率（`tokenCount ÷ contextWindowSize`）、経過時間。`failed` / `killed` は赤で状態を足す。終わった行は全体を灰色
+- 文字だけを左から詰めて並べる。最初は右端まで空白で寄せて ▁▂▄█ のグラフを出していたが、後ろが切れて見えないことがあったのでやめた
+- `statusline.sh` は引数でスクリプト名を受け取る（省略時は `statusline.mjs`）
+- 名前を付けて起動したエージェント（エージェントチームが有効なときのチームメイト）の行は書き換わらず、既定の表示のまま（2026/10/21 に確認）
+
+参考: [Customize your status line](https://code.claude.com/docs/en/statusline)
 
 ### 補足
 - `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` は zsh 側（`zshrc_main.sh`）でも export しているが、`settings.json` の `env` で設定しているので PowerShell や VS Code 拡張から起動したときも有効になる
@@ -264,6 +312,19 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - tmux の中では、既定で開いたウィンドウに画面を切り替える（session-generate は切り替えない）。`-Background`（sh は `-b`）で切り替えない
 - Claude の中から開いたシェルは Claude のセッション固有の環境変数を引き継ぎ、そこで `claude` を起動すると子セッション扱いになるので、どの起動先でも消してからシェルを渡す
 - 動作を確認したのは psmux（Windows）だけ（切り替え、フォルダ、プロファイルの読み込み、変数の削除、`-Background`、`-Split` 2 回）
+
+### session-kill
+同じマシンで動いている別の Claude Code のセッションを選んで終了するユーザースキル。「セッションを kill して」などと言われたときに、Claude が自動で使う。
+
+```text
+/session-kill [セッション名 または 番号 ...]
+```
+
+- 自分以外のセッションを session-overview と同じ番号付きの表で出し、`AskUserQuestion` で選んでもらう。選択肢をクリック（4 つまで）、または Other に番号かセッション名を書く（カンマ区切りで複数可）
+- `busy` / `waiting` のセッションを選んだときだけ、終了してよいかを 1 回確かめる
+- `scripts/kill-session.py` が `~/.claude/sessions/<pid>.json` から PID を調べ、claude のプロセスであることを確かめてから終了する（Windows は `taskkill /T /F`、ほかは `SIGTERM`）。`--dry-run` で対象だけを表示
+- 開いていたウィンドウも閉じる。tmux はペインのシェル（`#{pane_pid}`）ごと終了してペイン・ウィンドウを閉じ、ターミナル（Windows Terminal など）はシェルごと終了してタブを閉じる。VS Code などそれ以外は claude だけを終了する。`--keep-window` で claude だけ
+- 会話の記録は消えないので、`claude --resume` で開き直せる
 
 ### session-order
 同じマシンで動いている別の Claude Code のセッションに、SendMessage で作業を頼むユーザースキル。セッションは起動しない（起動から頼むときは session-generate）。「〜のセッションに〜を頼んで」などと言われたときに、Claude が自動で使う。
