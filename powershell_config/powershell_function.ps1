@@ -79,3 +79,31 @@ function Update-Powershell {
     LogWarn "インストールを完了させるため、開いている PowerShell 7 のウィンドウをすべて閉じてください"
 }
 Set-Alias -Name:"UpdatePowershell" -Value:"Update-Powershell" -Description:"Update PowerShell 7 to the latest version" -Option:"None"
+
+# ssh: tmux (psmux) の中では、接続先をペインのオプション @ssh_host に入れ、ステータスバーに 🌐 (接続先) と出す
+# 接続先は、オプションとその値を飛ばした最初の引数から user@ と :port を除いたもの
+function ssh {
+    $valueOptions = 'BbcDEeFIiJLlmOoPpQRSWw'
+    $dest = $null
+    for ($i = 0; $i -lt $args.Count; $i++) {
+        $a = [string]$args[$i]
+        if ($a -eq '--') { if ($i + 1 -lt $args.Count) { $dest = [string]$args[$i + 1] }; break }
+        if ($a.StartsWith('-') -and $a.Length -gt 1) {
+            for ($j = 1; $j -lt $a.Length; $j++) {
+                if ($valueOptions.Contains($a[$j])) { if ($j -eq $a.Length - 1) { $i++ }; break }
+            }
+            continue
+        }
+        $dest = $a; break
+    }
+    if ($dest) { $dest = ($dest -replace '^ssh://', '' -replace '^.*@', '' -replace ':\d+$', '') }
+    $inTmux = $dest -and $env:TMUX -and $env:TMUX_PANE -and (Get-Command tmux -ErrorAction SilentlyContinue)
+    if ($inTmux) { tmux set -p -t $env:TMUX_PANE '@ssh_host' $dest 2>$null }
+    try {
+        ssh.exe @args
+    } finally {
+        $code = $LASTEXITCODE
+        if ($inTmux) { tmux set -pu -t $env:TMUX_PANE '@ssh_host' 2>$null }
+        $global:LASTEXITCODE = $code
+    }
+}

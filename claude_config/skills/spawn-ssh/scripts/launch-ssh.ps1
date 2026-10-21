@@ -5,7 +5,7 @@
 #   接続先は ~/.ssh/config の Host の別名 (または user@host)。複数書くと、1 つずつ別のタブで開く。
 #   tmux の中では、開いたウィンドウ (複数なら最後のもの) に画面を切り替える。-Background を付けると呼び出し元のまま。
 #
-# 起動先の選び方 (spawn-session の launch-session.ps1 と同じ):
+# 起動先の選び方 (session-spawn の launch-session.ps1 と同じ):
 #   1. tmux (psmux など) の中 ($env:TMUX がある) → tmux new-window (-Split のときは専用ウィンドウを分割)
 #   2. Windows Terminal がある                    → wt -w 0 new-tab
 #   3. どちらもない                                → pwsh / powershell の新しいウィンドウ

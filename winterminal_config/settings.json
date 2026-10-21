@@ -124,7 +124,8 @@
     {
         "defaults": 
         {
-            "colorScheme": "Campbell"
+            "colorScheme": "Campbell",
+            "intenseTextStyle": "bold"
         },
         "list": 
         [

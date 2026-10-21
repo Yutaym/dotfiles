@@ -2,8 +2,9 @@
 # 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (macOS / Linux / WSL 用)
 #
 # 使い方:
-#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-s]
+#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-s] [-w]
 #   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
+#   -w: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
 #
 # 起動先の選び方 (上から順に、当てはまった最初のもの):
 #   1. tmux の中 ($TMUX がある)                → tmux new-window (-s のときは専用ウィンドウを分割)
@@ -26,12 +27,14 @@ set -eu
 DIR=$(pwd)
 NAME=''
 SPLIT=0
-while getopts 'd:n:s' opt; do
+SWITCH=0
+while getopts 'd:n:sw' opt; do
     case "$opt" in
         d) DIR=$OPTARG ;;
         n) NAME=$OPTARG ;;
         s) SPLIT=1 ;;
-        *) echo "usage: $0 [-d dir] [-n name] [-s]" >&2; exit 64 ;;
+        w) SWITCH=1 ;;
+        *) echo "usage: $0 [-d dir] [-n name] [-s] [-w]" >&2; exit 64 ;;
     esac
 done
 
@@ -65,6 +68,14 @@ launched() {
     exit 0
 }
 
+# tmux で作ったウィンドウ ($1 = セッション名:ウィンドウ番号 または セッション名:ウィンドウ名) に、-w のときだけ切り替える
+switch_to() {
+    if [ "$SWITCH" = 1 ] && [ -n "$1" ]; then
+        tmux select-window -t "$1" && echo "switched: $1"
+    fi
+    return 0
+}
+
 manual() {
     rm -f -- "$INNER"
     echo "このターミナルでは自動でタブを開けませんでした ($1)。新しいタブで次を実行してください:" >&2
@@ -76,7 +87,8 @@ manual() {
     exit 2
 }
 
-# 1. tmux: 普段は new-window で起動する。どの場合も -d を付けて、画面は呼び出し元のウィンドウのままにする。
+# 1. tmux: 普段は new-window で起動する。どの場合も -d を付けて作り、-w のときだけ最後にそのウィンドウへ切り替える
+#    (ウィンドウは名前ではなく new-window -P で受け取った番号で指定する)。
 #    -s (分割) を指定したときは、専用ウィンドウ (名前が cc-sessions のもの) に並べる。
 #    呼び出し元と同じ tmux セッションに専用ウィンドウがなければ new-window で作り、あれば分割して均等に並べ直す。
 #    専用ウィンドウは名前で見分ける (psmux はウィンドウのユーザーオプションを書式で返さないため)。
@@ -90,18 +102,18 @@ if [ -n "${TMUX:-}" ] && have tmux; then
         if tmux list-windows -t "$SNAME" -F '#{window_name}' | grep -qx cc-sessions; then
             tmux split-window -d -t "$SNAME:cc-sessions" -c "$DIR" "sh '$INNER'" || manual 'tmux split-window が失敗した'
             tmux select-layout -t "$SNAME:cc-sessions" tiled
+            switch_to "$SNAME:cc-sessions"
             launched 'tmux split-window (専用ウィンドウ)'
         fi
-        tmux new-window -d -t "$SNAME:" -c "$DIR" -n cc-sessions "sh '$INNER'" \
+        W=$(tmux new-window -d -P -F '#{session_name}:#{window_index}' -t "$SNAME:" -c "$DIR" -n cc-sessions "sh '$INNER'") \
             || manual 'tmux new-window が失敗した'
+        switch_to "$W"
         launched 'tmux new-window (専用ウィンドウを作成)'
     fi
-    if [ -n "$NAME" ]; then
-        tmux new-window -d -c "$DIR" -n "$NAME" "sh '$INNER'" && launched 'tmux new-window'
-    else
-        tmux new-window -d -c "$DIR" "sh '$INNER'" && launched 'tmux new-window'
-    fi
-    manual 'tmux new-window が失敗した'
+    W=$(tmux new-window -d -P -F '#{session_name}:#{window_index}' -c "$DIR" ${NAME:+-n "$NAME"} "sh '$INNER'") \
+        || manual 'tmux new-window が失敗した'
+    switch_to "$W"
+    launched 'tmux new-window'
 fi
 
 # 2. WezTerm

@@ -7,6 +7,7 @@
 - `*` `?` `!` を含むパターン (Host * など) は、接続先として選べないので除く。
 - HostName / User / Port は、その Host ブロックの中に書かれた値だけを表示する
   (Host * などほかのブロックから当たる値は反映しない)。
+- Host の行のすぐ次の行に `# not suggest` と書かれた Host は出さない。
 - --names を付けると、別名だけを 1 行に 1 つ出す。
 """
 
@@ -37,6 +38,11 @@ def split_line(line):
     return key.strip().lower(), values
 
 
+def is_not_suggest(line):
+    line = line.strip()
+    return line.startswith("#") and line.lstrip("#").strip().lower() == "not suggest"
+
+
 def expand_include(pattern, ssh_dir):
     pattern = os.path.expanduser(pattern)
     if not os.path.isabs(pattern):
@@ -53,7 +59,13 @@ def parse(path, ssh_dir, hosts, seen, depth=0):
     except OSError:
         return
     current = []  # 今の Host ブロックの別名 (Match ブロックの中では空)
+    prev_host = []  # 直前の行が Host の行なら、その別名
     for raw in lines:
+        # Host の行のすぐ次の行の "# not suggest" は、その Host を一覧から隠す印
+        if prev_host and is_not_suggest(raw):
+            for name in prev_host:
+                seen[name]["hidden"] = True
+        prev_host = []
         key, values = split_line(raw)
         if key is None:
             continue
@@ -66,6 +78,7 @@ def parse(path, ssh_dir, hosts, seen, depth=0):
                     seen[name] = {"host": name, "hostname": "", "user": "", "port": "", "file": path}
                     hosts.append(seen[name])
                 current.append(name)
+            prev_host = current
         elif key == "match":
             current = []
         elif key == "include":
@@ -91,6 +104,7 @@ def main():
 
     hosts, seen = [], {}
     parse(args.config, os.path.dirname(os.path.abspath(args.config)), hosts, seen)
+    hosts = [h for h in hosts if not h.get("hidden")]
 
     if args.names:
         for h in hosts:

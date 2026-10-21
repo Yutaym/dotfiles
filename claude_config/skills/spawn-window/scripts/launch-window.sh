@@ -6,7 +6,7 @@
 #   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
 #   -b: tmux の中で、開いたウィンドウに画面を切り替えない (指定しなければ切り替える。tmux 以外では無視する)
 #
-# 起動先の選び方 (spawn-session の launch-session.sh と同じ。上から順に、当てはまった最初のもの):
+# 起動先の選び方 (session-spawn の launch-session.sh と同じ。上から順に、当てはまった最初のもの):
 #   1. tmux の中 ($TMUX がある)                → tmux new-window (-s のときは専用ウィンドウを分割)
 #   2. WezTerm ($WEZTERM_PANE)                 → wezterm cli spawn
 #   3. kitty ($KITTY_WINDOW_ID)                → kitten @ launch --type=tab (リモート制御が有効なときだけ)

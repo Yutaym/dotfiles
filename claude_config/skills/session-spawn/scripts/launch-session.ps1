@@ -1,7 +1,8 @@
 # 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (Windows ネイティブ用)
 #
 # 使い方:
-#   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split]
+#   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split] [-Switch]
+#   -Switch: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
 #
 # 起動先の選び方:
 #   1. tmux (psmux など) の中 ($env:TMUX がある) → tmux new-window (-Split のときは専用ウィンドウを分割)
@@ -17,7 +18,9 @@ param(
     [string]$Name = '',
     [switch]$NewWindow,
     # tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
-    [switch]$Split
+    [switch]$Split,
+    # tmux の中で、起動したウィンドウに画面を切り替える (tmux 以外では無視する)
+    [switch]$Switch
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,7 +41,7 @@ $InnerArgs = @('-NoExit', '-File', $Inner, '-Dir', $Dir)
 if ($Name) { $InnerArgs += @('-Name', $Name) }
 
 if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
-    # 普段は new-window。どの場合も -d を付けて、画面は呼び出し元のウィンドウのままにする。-Split のときは専用ウィンドウ (名前が cc-sessions のもの) に並べる。
+    # 普段は new-window。どの場合も -d を付けて作り、-Switch のときだけ最後にそのウィンドウへ切り替える。-Split のときは専用ウィンドウ (名前が cc-sessions のもの) に並べる。
     # 呼び出し元と同じセッションに専用ウィンドウがなければ作り、あれば分割して均等に並べ直す。
     # 専用ウィンドウは名前で見分ける (psmux はウィンドウのユーザーオプションを書式で返さないため)。
     # psmux は -t の @ID / %ID を別のセッションのものとして解決することがあるので、
@@ -49,18 +52,24 @@ if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
         if ($exists) {
             & tmux split-window -d -t "${sname}:cc-sessions" -c $Dir $Shell @InnerArgs
             & tmux select-layout -t "${sname}:cc-sessions" tiled
+            $target = "${sname}:cc-sessions"
             $how = 'tmux split-window (専用ウィンドウ)'
         }
         else {
-            & tmux new-window -d -t "${sname}:" -c $Dir -n cc-sessions $Shell @InnerArgs
+            $target = & tmux new-window -d -P -F '#{session_name}:#{window_index}' -t "${sname}:" -c $Dir -n cc-sessions $Shell @InnerArgs
             $how = 'tmux new-window (専用ウィンドウを作成)'
         }
     }
     else {
-        $tmuxArgs = @('new-window', '-d', '-c', $Dir)
+        $tmuxArgs = @('new-window', '-d', '-P', '-F', '#{session_name}:#{window_index}', '-c', $Dir)
         if ($Name) { $tmuxArgs += @('-n', $Name) }
-        & tmux @tmuxArgs $Shell @InnerArgs
+        $target = & tmux @tmuxArgs $Shell @InnerArgs
         $how = 'tmux new-window'
+    }
+    # ウィンドウは名前ではなく番号で指定する (psmux は名前を -t で取り違えることがある)
+    if ($Switch -and $target) {
+        & tmux select-window -t $target
+        $switched = $target
     }
 }
 elseif (Get-Command wt -ErrorAction SilentlyContinue) {
@@ -77,3 +86,4 @@ else {
 }
 
 Write-Output "launched: $how / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' })"
+if ($switched) { Write-Output "switched: $switched" }

@@ -1,10 +1,10 @@
 ---
-name: spawn-session
+name: session-spawn
 description: 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）で、独立した Claude Code のセッションを起動し、SendMessage で作業を頼み、終わったら結果を確認して報告する。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいタブでセッションを開いて」「別のセッションに〜を頼んで」「別セッションで並行して調べて」「終わったら教えて」などと言われたときに使う。
 argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
 ---
 
-# spawn-session
+# session-spawn
 
 新しいタブで独立した Claude Code のセッションを起動し、必要なら作業を頼んで、終わったら結果を確認する。
 この流れの各手順は、2026/10/19 に Windows 11 + Windows Terminal（Claude Code 2.1.303）で確認した。
@@ -26,19 +26,21 @@ argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
    **Windows（ネイティブ）:** PowerShell ツールで実行する。
 
    ```powershell
-   pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\launch-session.ps1" -Dir "<作業フォルダ>" -Name <セッション名>
+   pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\launch-session.ps1" -Dir "<作業フォルダ>" -Name <セッション名> [-Split] [-Switch]
    ```
 
    **macOS / Linux / WSL:** Bash ツールで実行する。
 
    ```bash
-   sh "<このスキルのフォルダ>/scripts/launch-session.sh" -d "<作業フォルダ>" -n <セッション名>
+   sh "<このスキルのフォルダ>/scripts/launch-session.sh" -d "<作業フォルダ>" -n <セッション名> [-s] [-w]
    ```
 
    - 起動先はスクリプトが環境変数で判断する。対応しているターミナルの一覧は、下の「ターミナルごとの対応」を参照。
    - **tmux の中（`$TMUX` がある）では、ほかの判断より先に tmux を使う。**
      - 普段は、新しいウィンドウ（tmux のタブ）で起動する（`new-window`）。
-     - どの場合も `-d` を付けるので、画面は呼び出し元のウィンドウのまま変わらない。
+     - **頼む作業が指定されていないときは、起動したウィンドウに画面を切り替える。** `-Switch`（sh は `-w`）を付ける。ユーザーがそのセッションで直接作業を始めるため。スクリプトは `switched: <セッション名>:<ウィンドウ番号>` と出す。
+     - 頼む作業があるときは `-Switch` を付けず、画面は呼び出し元のウィンドウのままにする（こちらから SendMessage で頼み、結果を待つため）。ただし、ユーザーが「移動して」などと言ったときは付ける。
+     - どの場合もウィンドウは `-d` で作り、切り替えは最後に `select-window` で行う。ウィンドウは `new-window -P` で受け取った番号で指定する。
      - **ユーザーがペイン分割を指定したときだけ**、`-s`（Windows は `-Split`）を付ける。セッションは専用ウィンドウ（名前が `cc-sessions` のウィンドウ）に並ぶ。psmux はウィンドウのユーザーオプションを書式で返さないので、目印には名前を使う。
        - 呼び出し元と同じ tmux セッションに専用ウィンドウがなければ、新しく作ってそこで起動する。
        - すでにあれば、そのウィンドウを分割して起動し、`select-layout tiled` で均等に並べ直す。
@@ -87,7 +89,7 @@ argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
 | Windows Terminal | `wt -w 0 new-tab --reloadEnvironment -d <フォルダ> pwsh -NoExit -File start-claude.ps1` | 確認済み（`--reloadEnvironment` で Claude の変数が引き継がれないことと、名前付きで起動して ListAgents に出ることを確認） |
 | tmux（WSL / Linux / macOS） | `tmux new-window -c <フォルダ> -n <名前> "sh <起動用スクリプト>"`。`-s` のときは専用ウィンドウを作成 / `split-window` → `select-layout tiled` | WSL の tmux 3.2a で確認済み（偽の claude で、指定なしは new-window、`-s` は 1 回目に専用ウィンドウを作成して 2 回目以降は分割すること、フォルダ・名前・変数の削除を確認） |
 | Windows で Windows Terminal がない | `Start-Process pwsh`（新しいウィンドウ。タブではない） | 未確認 |
-| Windows の tmux 互換（psmux 3.3.8） | `$env:TMUX` があれば、上の tmux と同じ判断 | 使う tmux コマンド（`new-window -d`、`split-window -d`、`list-windows` の `#{window_name}`、`select-layout tiled`）が通ることを確認。普段の起動（`new-window`）は通しで動き、ListAgents に出ることも確認済み（別のセッションが確認）。分割の指定は通しでは未確認。psmux では `#{window_panes}` が実際の数と合わないことがあった |
+| Windows の tmux 互換（psmux 3.3.8） | `$env:TMUX` があれば、上の tmux と同じ判断 | 使う tmux コマンド（`new-window -d`、`split-window -d`、`list-windows` の `#{window_name}`、`select-layout tiled`）が通ることを確認。普段の起動（`new-window`）は通しで動き、ListAgents に出ることも確認済み（別のセッションが確認）。分割の指定は通しでは未確認。psmux では `#{window_panes}` が実際の数と合わないことがあった。2026/10/21 に psmux 3.4.0 で、`-Switch` で起動したウィンドウに切り替わることを確認 |
 | WezTerm | `wezterm cli spawn --cwd <フォルダ> -- sh <起動用スクリプト>` | 未確認（公式ドキュメントで構文を確認） |
 | kitty | `kitten @ launch --type=tab --cwd <フォルダ> ...`。kitty.conf でリモート制御を有効にする必要がある | 未確認（公式ドキュメントで構文を確認） |
 | iTerm2 | AppleScript の `create tab with default profile command` | 未確認（公式ドキュメントで構文を確認） |
