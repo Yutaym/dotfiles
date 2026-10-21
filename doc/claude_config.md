@@ -10,6 +10,9 @@ claude_config/
 ├── settings.json        # ~/.claude/settings.json にリンク（ユーザー設定）
 ├── keybindings.json     # ~/.claude/keybindings.json にリンク（キーバインド）
 ├── local-paths.md       # ~/.claude/local-paths.md にコピー（環境固有のパス。CLAUDE.md から読み込む）
+├── statusline.sh        # statusLine から呼ぶ。node を探して statusline.mjs を実行する
+├── statusline.mjs       # ステータスラインの表示（使用リミット・コンテキスト使用率・モデル）
+├── subagent-statusline.mjs # エージェント一覧のサブエージェントの行（トークン数・直近の増え・ctx・経過時間）
 ├── install_claude.ps1   # インストーラー（Windows）
 ├── install_claude.sh    # インストーラー（Linux / macOS）
 └── skills/
@@ -145,6 +148,8 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 | `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `"1"`                                     | エージェントチーム（実験的機能）を有効にする                                                                 |
 | `teammateMode`                        | `"auto"`                                       | チームメイトの表示方法。tmux の中か、iTerm2 + `it2` CLI のときは分割ペイン、それ以外は同じ画面内（in-process） |
 
+| `statusLine`                          | `sh ~/dotfiles/claude_config/statusline.sh`（60 秒ごと） | 入力欄の下に使用リミットなどを 1 行で出す。下記参照                                                          |
+| `subagentStatusLine`                  | `sh ~/dotfiles/claude_config/statusline.sh subagent-statusline.mjs` | エージェント一覧のサブエージェントの行を書き換える。下記参照 |
 | `hooks`                               | 10 イベント                                    | iTerm2 の Claude Code 連携（`~/.config/iterm2/cc-status`）を呼ぶ。下記参照                                   |
 
 ### フック（hooks）
@@ -157,6 +162,41 @@ f="$HOME/.config/iterm2/cc-status"; [ -x "$f" ] || exit 0; exec "$f"
 ```
 
 - `cc-status` が無い（実行できない）環境（Linux・WSL・Windows）では、何もせずに `exit 0` で終わる。設定ファイルを全環境で共通にするため
+
+### ステータスライン（statusLine）
+Claude Code が stdin に渡す JSON から、次の形で 1 行に出す（`statusline.mjs`）。
+
+```text
+5h 60% ~22:42 ⚠  21:52 │ 週 47% ~10/22 21:00 │ ctx 17% │ cache 52m │ med │ Opus 5.5
+```
+
+- `5h` / `週`: プランの 5 時間枠・週の上限の使用率（`rate_limits.five_hour` / `seven_day`）と、`~` の後がリセットされる時刻。Pro / Max のみで、セッションの最初の応答が届くまでは出ない
+- `⚠  時刻`: 今のペース（使用率 ÷ 枠の経過時間）のままだとリセット前に 100% に届くとき、その予測時刻を赤で出す。枠の経過が 10% 未満のうちは予測しない
+- `ctx`: コンテキストの使用率（`context_window.used_percentage`）
+- `cache`: プロンプトキャッシュが切れるまでの分数（`prompt_cache.expires_at`）。5 分以下で黄、切れたら灰色の `cache cold`（次の応答でコンテキスト全体を読み直す）。分数を減らすため、`refreshInterval` を 60 秒にしている
+- 状態: effort（`low` / `med` / `high` / `xhigh` / `max`）、思考がオフなら `no-think`、fast モードなら `fast`
+- 色: 50% 未満は緑、80% 未満は黄、それ以上は赤
+- 項目が JSON に無いときは、その項目だけ出さない
+- 右揃え: Claude Code が渡す `COLUMNS`（画面の幅）から左に空白を詰めて出す。Claude Code は行頭の空白を詰めるので、先頭に `\x1b[0m` を置いている。右端の余白は `RIGHT_MARGIN`（既定 4。Claude Code の左の字下げ 2 を含み、右に 2 空く）で調整する
+- `statusline.sh` は、`node` が PATH に無いとき（zsh の nvm 遅延読み込みなど）に `~/.nvm/versions/node` の一番新しい node を使う。node は `scripts/install_essentials.*` で入れる
+- Windows では Git Bash 経由で実行される（Git Bash が無いと PowerShell で実行され、`sh` が無いので動かない）
+- カスタムのステータスラインを入れると、フッターのキーのヒント（`esc to interrupt` など）の多くが出なくなる
+
+### サブエージェントの行（subagentStatusLine）
+入力欄の下のエージェント一覧で、サブエージェントの行を次の形にする（`subagent-statusline.mjs`）。
+
+```text
+文字だけの行の表示テスト [Explore] · 29.2k (+1.0k) · ctx 3% · 15s
+```
+
+- 進み具合の要約（`label`、無ければ説明。40 桁で … で切る）と種類（`general-purpose` 以外）
+- トークン数と、動いている間は直近の refresh での増え（`tokenSamples` の最後の 2 つの差）を緑で
+- コンテキスト使用率（`tokenCount ÷ contextWindowSize`）、経過時間。`failed` / `killed` は赤で状態を足す。終わった行は全体を灰色
+- 文字だけを左から詰めて並べる。最初は右端まで空白で寄せて ▁▂▄█ のグラフを出していたが、後ろが切れて見えないことがあったのでやめた
+- `statusline.sh` は引数でスクリプト名を受け取る（省略時は `statusline.mjs`）
+- 名前を付けて起動したエージェント（エージェントチームが有効なときのチームメイト）の行は書き換わらず、既定の表示のまま（2026/10/21 に確認）
+
+参考: [Customize your status line](https://code.claude.com/docs/en/statusline)
 
 ### 補足
 - `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` は zsh 側（`zshrc_main.sh`）でも export しているが、`settings.json` の `env` で設定しているので PowerShell や VS Code 拡張から起動したときも有効になる
