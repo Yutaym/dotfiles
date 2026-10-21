@@ -19,6 +19,9 @@ claude_config/
     ├── spawn-session/   # ~/.claude/skills/spawn-session にリンク（新しいタブで別セッションを起動して作業を頼むスキル）
     │   ├── SKILL.md
     │   └── scripts/
+    ├── spawn-ssh/       # ~/.claude/skills/spawn-ssh にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
     └── vault-sync/
         └── SKILL.md     # ~/.claude/skills/vault-sync にリンク（vault の同期スキル）
 ```
@@ -220,6 +223,24 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 - Claude のツールから `claude` をそのまま起動すると、`CLAUDE_CODE_CHILD_SESSION` などを引き継いで子セッション扱いになり、会話の記録が保存されない。そのため、変数を消してから起動する
 - `wt` はコマンドの中の `;` を区切り記号として扱う（引用符の中でも分割される）ので、`-Command "...; claude"` ではなく `-File` でスクリプトを渡す
 - 動作を確認したのは Windows Terminal と tmux（WSL）だけ。ほかのターミナルは公式ドキュメントで構文を確認しただけ（SKILL.md の「ターミナルごとの対応」）
+
+### spawn-ssh
+`~/.ssh/config` の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウ `ssh-sessions` を分割して並べる）で ssh 接続した状態を作るユーザースキル。複数の接続先を一度に開ける。「新しいタブで ssh して」「〜に ssh 接続したタブを開いて」などと言われたときに、Claude が自動で使う。
+
+```text
+/spawn-ssh [接続先 ...]
+```
+
+| ファイル                    | 内容                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `scripts/list-ssh-hosts.py` | `~/.ssh/config`（`Include` 先も含む）の Host の別名を No・Host・HostName・User・Port の表で出す。`*` `?` `!` を含むパターンは除く |
+| `scripts/launch-ssh.ps1`    | Windows 用。起動先の判断は spawn-session の `launch-session.ps1` と同じ                                 |
+| `scripts/start-ssh.ps1`     | Windows の新しいタブの中で `ssh <接続先>` を実行。失敗したときはエラーを残して Enter を待つ              |
+| `scripts/launch-ssh.sh`     | macOS / Linux / WSL 用。起動先の判断は spawn-session の `launch-session.sh` と同じ                       |
+
+- 接続先は、指定がなければ `AskUserQuestion`（複数選択）で選んでもらう。候補が 5 つ以上なら一覧の表を出し、選択肢にないものは Other に書いてもらう
+- tmux の中では、既定で開いたウィンドウ（複数なら最後のもの）に画面を切り替える。`-Background`（sh は `-b`）で切り替えない。ウィンドウは `new-window -P` で受け取った番号で指定する（psmux は `.` を含む名前を `-t` で取り違えるため）
+- 動作を確認したのは psmux（Windows）だけ。Windows Terminal はタブが開くところまで。ほかのターミナルは spawn-session と同じ方法を使っているだけで未確認
 
 ### session-overview
 同じマシンで動いている Claude Code のセッションを一覧にし、それぞれが何をしているかを会話記録から要約するユーザースキル。相手のセッションには何も送らない。「セッションの一覧を出して」「今どのセッションが何をしているか」などと言われたときに、Claude が自動で使う。
