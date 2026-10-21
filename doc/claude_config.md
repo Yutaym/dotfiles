@@ -61,7 +61,7 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
    - `~/.claude/skills` には管理対象外のスキルも置くので、フォルダごとではなくスキルごとにリンクする
 4. `local-paths.md` を `~/.claude` にコピーする（既にあれば上書きしない）。コピーしたら、この環境に合わせてパスを書き換える
 
-> Windows でシンボリックリンクを作るには、「開発者モード」の有効化か管理者権限での実行が必要。
+> Windows でシンボリックリンクを作るには、管理者権限での実行が必要（開発者モードで作ったリンクは読めないことがある。README を参照）。
 
 - Windows 版はリンクの確認に `Test-Path` ではなく `Get-Item -Force` を使う（`Test-Path` はリンク切れのシンボリックリンクを検出できないため）
 - `settings.local.json`（`~/.claude` 直下、各プロジェクトの `.claude/` 下）は管理対象外。このリポジトリでも `.claude/settings.json` / `.claude/settings.local.json` は `.gitignore` で除外している

@@ -51,7 +51,7 @@ neovim_config/
    - Linux: `${XDG_CONFIG_HOME:-~/.config}/nvim`
    - リンク先に既存ファイルがある場合は警告してスキップ
 
-> Windows でシンボリックリンクを作るには「開発者モード」の有効化か管理者権限が必要。
+> Windows でシンボリックリンクを作るには管理者権限が必要（開発者モードで作ったリンクは読めないことがある。README を参照）。
 
 外部依存: `git`（lazy.nvim の取得）、`deno`（Denops 系）、C コンパイラ（treesitter パーサーのビルド）、`lazygit`（任意）、`npm`（markdown-preview のビルド）、`zk`。
 

@@ -1,5 +1,5 @@
 # tmux (psmux) の設定ファイルのリンクを行う (Windows 向け)
-# シンボリックリンク作成には「開発者モード」の有効化、または管理者権限での実行が必要
+# シンボリックリンク作成には管理者権限での実行が必要 (開発者モードで一般ユーザーが作ったリンクは、Windows のバージョンによっては「信頼されていないマウントポイント」として読めない)
 # psmux は ~/.psmux.conf → ~/.psmuxrc → ~/.tmux.conf → ~/.config/psmux/psmux.conf の順に探し、最初に見つけたものだけを読む
 # プラグインは ppm で管理する (ppm だけをここで入れ、プラグイン本体は psmux の中で Prefix + I で入れる)
 $ErrorActionPreference = 'Stop'

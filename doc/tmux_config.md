@@ -32,7 +32,7 @@ pwsh ~/dotfiles/tmux_config/install_tmux.ps1     # Windows（psmux）
 
 - Linux で `~/.config/tmux/tmux.conf` に置くのは、設定の中のリロード（`Prefix + r`）と tpm の読み込みがこのパスを前提にしているため
 - psmux は `~/.psmux.conf` → `~/.psmuxrc` → `~/.tmux.conf` → `~/.config/psmux/psmux.conf` の順に探し、最初に見つけた 1 つだけ読む（[psmux docs/configuration.md](https://github.com/marlocarlo/psmux/blob/master/docs/configuration.md)）
-- Windows でシンボリックリンクを作るには、「開発者モード」の有効化か管理者権限での実行が必要
+- Windows でシンボリックリンクを作るには、管理者権限での実行が必要（開発者モードで作ったリンクは読めないことがある。README を参照）
 
 ---
 

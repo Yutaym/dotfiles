@@ -62,7 +62,7 @@ if (Get-Command npm -ErrorAction SilentlyContinue) {
         "textlint",
         "textlint-filter-rule-comments",
         "textlint-filter-rule-whitelist",
-        "textlint-rule-preset-icsmedia",
+        "github:ics-creative/textlint-rule-preset-icsmedia",  # npm レジストリには公開されていない
         "textlint-rule-preset-ja-technical-writing",
         "textlint-rule-prh",
         "textlint-rule-spellcheck-tech-word",

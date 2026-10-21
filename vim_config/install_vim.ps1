@@ -1,12 +1,15 @@
 # Vim の設定ファイルのリンクを行う (Windows 向け)
-# シンボリックリンク作成には「開発者モード」の有効化、または管理者権限での実行が必要
+# シンボリックリンク作成には管理者権限での実行が必要 (開発者モードで一般ユーザーが作ったリンクは、Windows のバージョンによっては「信頼されていないマウントポイント」として読めない)
 $ErrorActionPreference = 'Stop'
 
 $ScriptDir = $PSScriptRoot
 $VimRootDir = Join-Path $env:ProgramFiles 'Vim'
+# winget の vim.vim はユーザー単位で入り、バージョンのフォルダーを作らない
+$VimUserDir = Join-Path $env:LOCALAPPDATA 'Programs\Vim'
 
-# Program Files\Vim\vimXX のうち最新版のディレクトリを返す
+# ユーザー単位のインストール先、なければ Program Files\Vim\vimXX のうち最新版のディレクトリを返す
 function Get-VimBinDir {
+    if (Test-Path (Join-Path $VimUserDir 'vim.exe')) { return $VimUserDir }
     if (-not (Test-Path $VimRootDir)) { return $null }
     Get-ChildItem -Path $VimRootDir -Directory -Filter 'vim*' |
         Where-Object { Test-Path (Join-Path $_.FullName 'vim.exe') } |

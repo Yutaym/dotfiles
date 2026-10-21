@@ -39,7 +39,7 @@ pwsh ~/dotfiles/winterminal_config/install_winterminal.ps1
 pwsh ~/dotfiles/tmux_config/install_tmux.ps1          # psmux 用（~/.psmux.conf にリンク）
 ```
 
-> シンボリックリンクを作るインストーラーは、「開発者モード」の有効化か管理者権限での実行が必要。
+> シンボリックリンクを作るインストーラーは、管理者権限の PowerShell で実行する。開発者モードで一般ユーザーが作ったリンクは、Windows のバージョンによっては「信頼されていないマウントポイント」として扱われ、Claude Code や Neovim から読めない（Git Bash からは読める）。その場合は、既存のリンクを削除してから管理者権限でインストーラーを再実行する。
 
 ### Linux / macOS
 

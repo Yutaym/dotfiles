@@ -1,5 +1,5 @@
 # Windows Terminal の settings.json のリンクを行う (Windows 向け)
-# シンボリックリンク作成には「開発者モード」の有効化、または管理者権限での実行が必要
+# シンボリックリンク作成には管理者権限での実行が必要 (開発者モードで一般ユーザーが作ったリンクは、Windows のバージョンによっては「信頼されていないマウントポイント」として読めない)
 # 既存の settings.json が実ファイルの場合は settings.json.bak.<日時> に退避してからリンクする
 $ErrorActionPreference = 'Stop'
 
