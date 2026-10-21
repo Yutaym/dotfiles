@@ -1,13 +1,13 @@
 ---
-name: spawn-ssh
+name: ssh-generate
 description: ~/.ssh/config の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）で ssh 接続した状態を作る。複数の接続先を一度に開ける。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいタブで ssh して」「〜に ssh 接続したタブを開いて」「サーバーにつないだウィンドウを作って」などと言われたときに使う。
 argument-hint: "[接続先 ...]"
 ---
 
-# spawn-ssh
+# ssh-generate
 
 `~/.ssh/config` の Host から接続先を選んでもらい、新しいタブで `ssh <接続先>` を実行する。
-起動先の判断は session-spawn スキルと同じ（同じ方式でタブ・ウィンドウを開く）。
+起動先の判断は session-generate スキルと同じ（同じ方式でタブ・ウィンドウを開く）。
 
 ## 1. 接続先を決める
 
@@ -52,14 +52,14 @@ pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\launch-ssh.ps1" 
 sh "<このスキルのフォルダ>/scripts/launch-ssh.sh" [-s] [-b] <接続先> [<接続先> ...]
 ```
 
-- 起動先は、session-spawn と同じくスクリプトが環境変数で判断する（下の「ターミナルごとの対応」）。
+- 起動先は、session-generate と同じくスクリプトが環境変数で判断する（下の「ターミナルごとの対応」）。
 - **tmux の中（`$TMUX` がある）では、ほかの判断より先に tmux を使う。**
   - 普段は、接続先の名前を付けた新しいウィンドウで開く（`new-window -d`）。
   - **既定では、開いたウィンドウに画面を切り替える。** 全部開いてから、最後に開いたウィンドウ（分割なら `ssh-sessions`）に `select-window` で移る。スクリプトは `switched: <セッション名>:<ウィンドウ番号>` と出す。
     - ユーザーが「後ろで開いて」「画面はそのまま」などと言ったときだけ、`-b`（Windows は `-Background`）を付けて、呼び出し元のウィンドウのままにする。
     - 接続先の名前に `.` が入る（IP アドレスなど）と psmux の `-t` が取り違えるので、ウィンドウは名前ではなく `new-window -P` で受け取った番号で指定する。
   - **ユーザーがペイン分割を指定したときだけ** `-s`（Windows は `-Split`）を付ける。名前が `ssh-sessions` の専用ウィンドウがなければ作り、あれば分割して `select-layout tiled` で並べ直す。
-  - psmux では、session-spawn と同じく `-t` に `@ID` / `%ID` を使わず、`-t セッション名:ウィンドウ名` で指定する。
+  - psmux では、session-generate と同じく `-t` に `@ID` / `%ID` を使わず、`-t セッション名:ウィンドウ名` で指定する。
 - 新しいタブでは、`start-ssh.ps1`（Windows）または一時ファイルの起動用スクリプトが `ssh <接続先>` を実行する。
   - ssh が 0 以外で終わったとき（接続の失敗、ホスト鍵の拒否など）は、エラーを残したまま「Enter で閉じます」と表示して待つ。正常に切断したときは、そのままタブを閉じる。
   - ホスト鍵の確認・パスワード・パスフレーズの入力は、新しいタブでユーザーが行う。Claude からは答えない。
@@ -78,9 +78,9 @@ sh "<このスキルのフォルダ>/scripts/launch-ssh.sh" [-s] [-b] <接続先
 |---|---|---|
 | Windows Terminal | `wt -w 0 new-tab --title <接続先> --suppressApplicationTitle pwsh -NoProfile -File start-ssh.ps1 -Target <接続先>` | 2026/10/21 にタブが開くところまで確認（`launched:` が出た）。タブの中身は未確認 |
 | tmux の互換（psmux、Windows） | `$env:TMUX` があれば `tmux new-window -d -n <接続先>`。`-Split` のときは専用ウィンドウ `ssh-sessions` を作成 / `split-window` → `select-layout tiled` | 2026/10/21 に確認（新しいウィンドウでホスト鍵の確認が出ること、拒否すると終了コードと「Enter で閉じます」が出て Enter で閉じること、`-Split` で 2 つ開くと専用ウィンドウに 2 ペインで並ぶこと）。既定で開いたウィンドウに切り替わること（`new-window -P -F` で番号を受け取り `select-window`）も確認。`-Split` と `-Background` の切り替えは未確認 |
-| tmux（WSL / Linux / macOS） | `tmux new-window -d -c ~ -n <接続先> "sh <起動用スクリプト>"`。`-s` のときは上と同じ | 未確認（session-spawn の同じ処理は WSL の tmux 3.2a で確認済み） |
+| tmux（WSL / Linux / macOS） | `tmux new-window -d -c ~ -n <接続先> "sh <起動用スクリプト>"`。`-s` のときは上と同じ | 未確認（session-generate の同じ処理は WSL の tmux 3.2a で確認済み） |
 | Windows で Windows Terminal がない | `Start-Process pwsh`（新しいウィンドウ。タブではない） | 未確認 |
-| WezTerm / kitty / iTerm2 / Ghostty / macOS のターミナル / GNOME Terminal / Konsole / WSL の中の Windows Terminal | session-spawn の `launch-session.sh` と同じ方法で、起動用スクリプトを `sh` で実行する | 未確認 |
+| WezTerm / kitty / iTerm2 / Ghostty / macOS のターミナル / GNOME Terminal / Konsole / WSL の中の Windows Terminal | session-generate の `launch-session.sh` と同じ方法で、起動用スクリプトを `sh` で実行する | 未確認 |
 | 上のどれでもない | 自動では開かない。手で実行する `ssh <接続先>` を表示する | — |
 
 未確認の環境で初めて使って、うまく動かなかったときは、このスキルを直す。
