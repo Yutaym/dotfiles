@@ -13,7 +13,6 @@ Windows / Linux / macOS で使うエディタ・シェル・ツールの設定�
 | `claude_config/`      | Claude Code（`CLAUDE.md` / `settings.json` など） | `install_claude.ps1` / `install_claude.sh`          | シンボリックリンク |
 | `winterminal_config/` | Windows Terminal の `settings.json`（Store 版）  | `install_winterminal.ps1`                           | シンボリックリンク |
 | `tmux_config/`        | tmux / psmux（`.tmux.conf`）                  | `install_tmux.ps1` / `install_tmux.sh`              | シンボリックリンク |
-| `python_config/`      | Miniconda のインストール・conda パッケージ導入 | `install_miniconda.sh` / `python_init.bat`          | —                |
 | `scripts/`            | 必須アプリ（nvm と Node.js の LTS、uv）のインストール | `install_essentials.ps1` / `install_essentials.sh` | —                |
 | `doc/`                | 設定のドキュメント                            | —                                                   | —                |
 | `tmp/`                | 使わなくなった旧設定の置き場                  | —                                                   | —                |
