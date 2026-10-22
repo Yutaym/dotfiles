@@ -71,10 +71,14 @@ def proc_info(pid):
                 capture_output=True, text=True, errors="replace",
             )
         else:
-            r = subprocess.run(["ps", "-o", "comm=,ppid=", "-p", str(pid)], capture_output=True, text=True)
+            # comm は macOS で 16 文字に切られる (/Users/yuta/.loc) ので、args の最初の語 (実行ファイルのパス) を使う
+            r = subprocess.run(["ps", "-o", "ppid=,args=", "-p", str(pid)], capture_output=True, text=True)
             if r.stdout.strip():
-                name, ppid = r.stdout.strip().rsplit(None, 1)
-                return base(name), int(ppid)
+                ppid, args = r.stdout.strip().split(None, 1)
+                exe = args.split(None, 1)[0]
+                # ネイティブ版の claude は ~/.local/share/claude/versions/<版> という名前で動く
+                name = "claude" if "/claude/versions/" in exe else base(exe)
+                return name, int(ppid)
             return None
         line = r.stdout.strip()
         if not line:
