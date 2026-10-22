@@ -106,12 +106,14 @@ class Local:
     def collect(self):
         sessions = self.ov.load_sessions(set())
         procs, panes = self.ov.process_table(), self.ov.tmux_panes()
+        alive = [s for s in sessions if self.ov.is_alive(s, procs)]
+        # No は session-overview・session-kill と同じ番号の表 (~/.claude/session-numbers.json) から取る
+        numbers = self.ov.session_numbers([s.get("sessionId", "") for s in alive], scope="")
         out = []
-        for s in sessions:
-            if not self.ov.is_alive(s, procs):
-                continue
+        for s in alive:
             item = {
-                "name": s.get("name"), "status": s.get("status"), "cwd": s.get("cwd"),
+                "name": s.get("name"), "sessionId": s.get("sessionId"), "number": numbers.get(s.get("sessionId", "")),
+                "status": s.get("status"), "cwd": s.get("cwd"),
                 "location": self.ov.location(int(s.get("pid") or 0), procs, panes),
                 "startedAt": s.get("startedAt"), "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
                 "transcript": False, "title": None, "lastTime": None, "prompts": [], "lastReply": None,
@@ -144,7 +146,8 @@ class Remote(threading.Thread):
     def fetch(self, host):
         if host not in self.shells:
             self.shells[host] = self.ro.remote_shell(host)
-        args = "--json --prompts 1 --chars 200"
+        # 番号は接続先では振らず、このマシンの番号の表で振る (render)
+        args = "--json --prompts 1 --chars 200 --no-number"
         if self.shells[host] == "pwsh":
             remote = f"$env:PYTHONIOENCODING = 'utf-8'; uv run --no-project python $HOME/{REMOTE_SCRIPT[2:]} {args}"
         else:
@@ -222,7 +225,64 @@ def one_line(text, limit):
 
 
 CONTINUED = "This session is being continued"
-QUESTION_RE = re.compile(r"(？|\?|ますか。?|でしょうか。?|ください。?|教えて.{0,10})\s*$")
+# 返答の終わり方から「返事待ち?」と推定する言葉。「ください」は、ユーザーの返事を求めるもの (教えて・選んで など) だけにする。
+# 「確認してください」「実行してください」などの作業のお願いは、返事が要らないので含めない (2026/10/22 にユーザーが決めた)
+QUESTION_RE = re.compile(
+    r"(？|\?|ますか|ですか|でしょうか"
+    r"|(?:教えて|選んで|決めて|知らせて|お知らせ|返信して|回答して|指示して|返事を|回答を|指示を|ご指示|ご返信|ご回答)"
+    r"(?:ください|下さい))"
+    r"[。．.!！]?[)）」』]?\s*$"
+)
+WAIT_LOG = os.path.join(STATE_DIR, "waiting.log")
+
+
+def judge_waiting(item):
+    """返事待ちかどうかを (種類, 判断の材料) で返す。返事待ちでなければ None。
+    種類は "状態" (sessions/*.json の status が waiting / requires_action。確か) か
+    "推定" (idle で、24 時間以内の最後の返答が QUESTION_RE で終わる)。"""
+    status = item.get("status")
+    if status in WAITING:
+        return "状態", f"status={status}"
+    reply = item.get("lastReply")
+    last = item.get("lastTime") or item.get("statusUpdatedAt")
+    if status != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
+        return None
+    # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
+    tail = reply.get("tail") or " ".join((reply.get("text") or "").split())[-100:]
+    m = QUESTION_RE.search(tail)
+    return ("推定", f"「{m.group(1)}」で終わる") if m else None
+
+
+class WaitLog:
+    """返事待ちと判定したものを ~/.claude/session-observation/waiting.log に 1 行ずつ書く。
+    同じセッションの同じ返答 (または同じ状態) は 1 回だけ書く。あとで誤判定を調べるため。"""
+
+    def __init__(self):
+        self.seen = set()
+        try:
+            with open(WAIT_LOG, encoding="utf-8") as f:
+                for line in f.readlines()[-500:]:
+                    self.seen.add(line.split("\t")[1] if "\t" in line else "")
+        except OSError:
+            pass
+
+    def write(self, item, host, kind, reason):
+        reply = item.get("lastReply") or {}
+        mark = reply.get("time") if kind == "推定" else item.get("statusUpdatedAt")
+        sig = f"{host or ''}|{item.get('sessionId')}|{kind}|{mark}"
+        if sig in self.seen:
+            return
+        self.seen.add(sig)
+        tail = reply.get("tail") or " ".join((reply.get("text") or "").split())[-80:]
+        where = f"{host}:{item.get('name')}" if host else item.get("name")
+        line = "\t".join([datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), sig, where, kind, reason,
+                          f"最後の会話 {hm(item.get('lastTime'))}", tail[-80:].replace("\t", " ")])
+        try:
+            os.makedirs(STATE_DIR, exist_ok=True)
+            with open(WAIT_LOG, "a", encoding="utf-8") as f:
+                f.write(line + "\n")
+        except OSError:
+            pass
 PLACE_RE = re.compile(r"^tmux \((\S+)")
 
 
@@ -249,8 +309,8 @@ WAITING = {"waiting", "requires_action"}
 
 
 def row(item, host=None, windows=None):
-    """(並べ替えの鍵, セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。
-    並びは優先度の高い順: 返事待ち (状態が waiting / requires_action のもの、最後の返答が質問で終わるもの)
+    """(並べ替えの鍵, 返事待ちの判定, No, セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。
+    並びは優先度の高い順: 返事待ち (状態が waiting / requires_action のもの) → 返事待ち? (最後の返答が質問で終わるもの)
     → busy → そのほかの状態 → idle (最近動いたものから) → 1 時間以上動きのない idle。同じ組の中は最近動いたものから。"""
     from rich.text import Text
 
@@ -273,8 +333,9 @@ def row(item, host=None, windows=None):
 
     reply = item.get("lastReply")
     last = item.get("lastTime") or item.get("statusUpdatedAt")
+    waiting = judge_waiting(item)
     group = 3
-    if status in WAITING:
+    if waiting and waiting[0] == "状態":
         group, state, style = 0, status, "bold red"
         move = Text(f"返事待ち（{ago(item.get('statusUpdatedAt'))}から）", style="bold red")
     elif status == "busy":
@@ -286,10 +347,10 @@ def row(item, host=None, windows=None):
     elif not item.get("transcript"):
         state, style = "idle", "green"
         move = Text("記録なし", style="dim")
-    # 最後の会話から 24 時間を過ぎたものは、質問で終わっていても返事待ちにしない (古い会話を開いたままのことが多い)
-    elif reply and QUESTION_RE.search(reply.get("text") or "") and time.time() - (to_epoch(last) or 0) < 86400:
-        group, state, style = 0, "idle", "green"
-        move = Text(f"返事待ち {hm(last)}（{ago(last)}）", style="bold red")
+    # 返答の終わり方からの推定は、確かな返事待ち (状態) と分けて「返事待ち?」として、太字にしない
+    elif waiting:
+        group, state, style = 0.5, "idle", "green"
+        move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
     else:
         state, style = "idle", "green"
         move = Text(f"完了 {hm(last)}（{ago(last)}）", style="green")
@@ -302,10 +363,11 @@ def row(item, host=None, windows=None):
     if stale and group == 3:
         group = 4
     key = (group, -(t or 0))
-    return key, name, Text(state, style=style), place(item, host, windows), doing, move, "dim" if stale else ""
+    no = str(item.get("number") or "-")
+    return key, waiting, no, name, Text(state, style=style), place(item, host, windows), doing, move, "dim" if stale else ""
 
 
-def render(console, view, local, remote_result, remote_updated, args):
+def render(console, view, local, remote_result, remote_updated, args, overview, wait_log):
     """画面全体を作る。表は画面に収まる分だけを、view["offset"] 行目から切り出す (キーでスクロールする)。"""
     from io import StringIO
 
@@ -322,7 +384,7 @@ def render(console, view, local, remote_result, remote_updated, args):
     counts = {}
     notes = []
     for item in local:
-        rows.append(row(item))
+        rows.append((row(item), item, None))
         counts[item.get("status")] = counts.get(item.get("status"), 0) + 1
     for host, r in sorted(remote_result.items()):
         if r["sessions"] is None:
@@ -332,15 +394,20 @@ def render(console, view, local, remote_result, remote_updated, args):
         if r["sessions"] and not any("remoteControl" in item for item in r["sessions"]):
             notes.append(f"{host}: 接続先の session-overview.py が古く、Remote Control につながっているか分からない。表には入れていない")
             continue
-        for item in r["sessions"]:
-            if not item.get("alive") or not item.get("remoteControl"):
-                continue
-            rows.append(row(item, host, r["windows"]))
+        shown_items = [item for item in r["sessions"] if item.get("alive") and item.get("remoteControl")]
+        # 番号は、このマシンの番号の表で「接続先|sessionId」を鍵にして振る (session-overview の remote-overview.py と同じ)
+        keys = [f"{host}|{item.get('sessionId')}" for item in shown_items]
+        numbers = overview.session_numbers(keys, scope=f"{host}|")
+        for item, key in zip(shown_items, keys):
+            item = dict(item, number=numbers.get(key))
+            rows.append((row(item, host, r["windows"]), item, host))
             counts[item.get("status")] = counts.get(item.get("status"), 0) + 1
-    # No は、優先度の高い順に並べたあとで 1 から振る
-    rows.sort(key=lambda r: r[0])
-    for no, (_, *cells, style) in enumerate(rows, 1):
-        table.add_row(str(no), *cells, style=style)
+    # 並びは優先度の高い順。No は並びとは関係なく、セッションごとに決まった番号 (session-overview と同じ)
+    rows.sort(key=lambda r: r[0][0])
+    for (_, waiting, *cells, style), item, host in rows:
+        if waiting:
+            wait_log.write(item, host, *waiting)
+        table.add_row(*cells, style=style)
 
     # 表を今の画面の幅で描いて行に分け、画面に収まる分だけを切り出す
     width, height = console.size
@@ -496,6 +563,7 @@ def main():
     keys = Keys()
     keys.start()
     view = {"offset": 0}
+    wait_log = WaitLog()
     try:
         with Live(console=console, screen=True, auto_refresh=False) as live:
             data, next_collect = [], 0.0
@@ -504,7 +572,7 @@ def main():
                     data = local.collect()
                     next_collect = time.time() + args.interval
                 result, updated = remote.snapshot() if remote else ({}, None)
-                live.update(render(console, view, data, result, updated, args), refresh=True)
+                live.update(render(console, view, data, result, updated, args, overview, wait_log), refresh=True)
                 # キーが押されたらすぐ描き直す。止める指示にもすぐ気づけるように、0.5 秒より長くは待たない
                 keys.event.wait(max(0.05, min(0.5, next_collect - time.time())))
                 keys.event.clear()
