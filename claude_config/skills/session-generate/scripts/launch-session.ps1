@@ -1,7 +1,7 @@
 # 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (Windows ネイティブ用)
 #
 # 使い方:
-#   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split] [-Switch]
+#   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split] [-Switch] [-Resume <セッションID>]
 #   -Switch: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
 #
 # 起動先の選び方:
@@ -20,7 +20,9 @@ param(
     # tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
     [switch]$Split,
     # tmux の中で、起動したウィンドウに画面を切り替える (tmux 以外では無視する)
-    [switch]$Switch
+    [switch]$Switch,
+    # 新しく始めずに、この ID の会話を開く (claude --resume <ID>)
+    [string]$Resume = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -29,6 +31,9 @@ $ErrorActionPreference = 'Stop'
 # (wt は ; を区切り記号として扱うので、引数に ; を含めない意味もある)
 if ($Name -and $Name -notmatch '^[A-Za-z0-9_-]+$') {
     Write-Error "セッション名には英数字・ハイフン・アンダースコアだけを使ってください: $Name"
+}
+if ($Resume -and $Resume -notmatch '^[0-9a-fA-F-]+$') {
+    Write-Error "-Resume にはセッション ID (UUID) を指定してください: $Resume"
 }
 $Dir = (Resolve-Path -LiteralPath $Dir).Path
 if ($Dir.Contains(';')) {
@@ -39,6 +44,7 @@ $Inner = Join-Path $PSScriptRoot 'start-claude.ps1'
 $Shell = if (Get-Command pwsh -ErrorAction SilentlyContinue) { 'pwsh' } else { 'powershell' }
 $InnerArgs = @('-NoExit', '-File', $Inner, '-Dir', $Dir)
 if ($Name) { $InnerArgs += @('-Name', $Name) }
+if ($Resume) { $InnerArgs += @('-Resume', $Resume) }
 
 if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
     # 普段は new-window。どの場合も -d を付けて作り、-Switch のときだけ最後にそのウィンドウへ切り替える。-Split のときは専用ウィンドウ (名前が cc-sessions のもの) に並べる。

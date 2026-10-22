@@ -1,7 +1,9 @@
 # 新しいタブの中で実行される。Claude のセッション固有の環境変数を消してから claude を起動する。
 param(
     [Parameter(Mandatory)][string]$Dir,
-    [string]$Name = ''
+    [string]$Name = '',
+    # 新しく始めずに、この ID の会話を開く (claude --resume <ID>)
+    [string]$Resume = ''
 )
 
 # 親セッションから引き継ぐと困る変数 (子セッション扱い・親のセッション ID や受信口の取り違えの原因になる)
@@ -13,4 +15,7 @@ $vars = @(
 foreach ($v in $vars) { Remove-Item "env:$v" -ErrorAction SilentlyContinue }
 
 Set-Location -LiteralPath $Dir
-if ($Name) { claude -n $Name } else { claude }
+$claudeArgs = @()
+if ($Name) { $claudeArgs += @('-n', $Name) }
+if ($Resume) { $claudeArgs += @('--resume', $Resume) }
+claude @claudeArgs
