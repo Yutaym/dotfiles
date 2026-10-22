@@ -136,42 +136,93 @@ TERMINALS = {
 
 
 def base(name):
-    """プロセス名を小文字にし、パスと .exe を除く。"""
-    name = (name or "").lower().replace("\\", "/").rsplit("/", 1)[-1]
+    """プロセス名を小文字にし、パスと .exe と、ログインシェルの先頭の - (例: -zsh) を除く。"""
+    name = (name or "").lower().replace("\\", "/").rsplit("/", 1)[-1].lstrip("-")
     return name[:-4] if name.endswith(".exe") else name
 
 
 def process_table():
     """{PID: (名前, 親の PID, 開始時刻)} を 1 回のコマンドで取る。取れなければ空。
-    開始時刻は Windows だけ取る (FILETIME。sessions/*.json の procStart と同じ形式)。それ以外は None。"""
+    開始時刻はエポック秒 (取れなければ None)。Windows は CreationDate、macOS / Linux は ps の lstart を UTC で読む。"""
+    env = None
     try:
         if sys.platform == "win32":
             cmd = ["powershell", "-NoProfile", "-NonInteractive", "-Command",
                    "Get-CimInstance Win32_Process | ForEach-Object { \"$($_.ProcessId)`t$($_.ParentProcessId)`t$($_.Name)`t$(if ($_.CreationDate) { $_.CreationDate.ToFileTimeUtc() })\" }"]
         else:
-            cmd = ["ps", "-A", "-o", "pid=,ppid=,comm="]
-        out = subprocess.run(cmd, capture_output=True, text=True, errors="replace").stdout
+            # lstart は「Thu Oct 15 01:53:08 2026」の 5 語。sessions/*.json の procStart (macOS) と同じく UTC・英語で出させる
+            cmd = ["ps", "-A", "-o", "pid=,ppid=,lstart=,comm="]
+            env = dict(os.environ, TZ="UTC", LC_ALL="C")
+        out = subprocess.run(cmd, capture_output=True, text=True, errors="replace", env=env).stdout
     except OSError:
         return {}
     table = {}
     for line in out.splitlines():
-        parts = line.split("	") if "	" in line else line.split(None, 2)
-        if len(parts) >= 3 and parts[0].strip().isdigit() and parts[1].strip().isdigit():
-            start = parts[3].strip() if len(parts) > 3 else ""
-            table[int(parts[0])] = (base(parts[2].strip()), int(parts[1]), int(start) if start.isdigit() else None)
+        if "	" in line:
+            parts = line.split("	")
+            if len(parts) < 3:
+                continue
+            pid, ppid, name = parts[0].strip(), parts[1].strip(), parts[2].strip()
+            start = parse_start(parts[3].strip() if len(parts) > 3 else "")
+        else:
+            parts = line.split(None, 7)
+            if len(parts) < 8:
+                continue
+            pid, ppid, name = parts[0], parts[1], parts[7].strip()
+            start = parse_start(" ".join(parts[2:7]))
+        if pid.isdigit() and ppid.isdigit():
+            table[int(pid)] = (base(name), int(ppid), start)
     return table
+
+
+FILETIME_EPOCH = 11644473600  # 1601/01/01 から 1970/01/01 までの秒数
+
+
+def parse_start(value):
+    """プロセスの開始時刻をエポック秒にする。Windows の FILETIME (100 ナノ秒単位の整数) と、
+    macOS の procStart・ps の lstart の形式 (UTC の「Thu Oct 15 01:53:08 2026」) を読む。読めなければ None。"""
+    value = " ".join(str(value or "").split())
+    if value.isdigit() and len(value) >= 17:
+        return int(value) / 10_000_000 - FILETIME_EPOCH
+    try:
+        dt = datetime.datetime.strptime(value, "%a %b %d %H:%M:%S %Y")
+    except ValueError:
+        return None
+    return dt.replace(tzinfo=datetime.timezone.utc).timestamp()
+
+
+def linux_ticks(pid):
+    """Linux の /proc/<pid>/stat の starttime (起動からのクロック数)。読めなければ None。"""
+    try:
+        with open(f"/proc/{pid}/stat", encoding="utf-8") as f:
+            return int(f.read().rsplit(")", 1)[1].split()[19])
+    except (OSError, ValueError, IndexError):
+        return None
+
+
+VERSION_RE = re.compile(r"^\d+\.\d+\.\d+")
 
 
 def is_alive(s, procs):
     """sessions/*.json のセッションのプロセスが今も動いているか。sessions/ には終了したセッションのファイルも残る。
-    Windows では、PID の使い回しで取り違えないように、開始時刻 (procStart) も 1 秒以内で一致するかを見る。"""
-    me = procs.get(int(s.get("pid") or 0))
+    PID の使い回しで取り違えないように、プロセスの開始時刻が procStart と 2 秒以内で一致するかを見る
+    (Windows は FILETIME、macOS は UTC の ctime 形式。2026/10/22 に確かめた)。
+    procStart の形式が分からないときは、プロセス名が claude らしいか (claude / node / バージョン番号の名前) で判断する。"""
+    pid = int(s.get("pid") or 0)
+    me = procs.get(pid)
     if not me:
         return False
-    proc_start = str(s.get("procStart") or "")
-    if me[2] is not None and proc_start.isdigit():
-        return abs(me[2] - int(proc_start)) < 10_000_000
-    return True
+    proc_start = str(s.get("procStart") or "").strip()
+    expected = parse_start(proc_start)
+    if expected is not None and me[2] is not None:
+        return abs(me[2] - expected) <= 2
+    # Linux で procStart が /proc/<pid>/stat の starttime の形式なら、それと比べる (形式は未確認)
+    if proc_start.isdigit():
+        ticks = linux_ticks(pid)
+        if ticks is not None:
+            return ticks == int(proc_start)
+    name = me[0]
+    return "claude" in name or name == "node" or bool(VERSION_RE.match(name))
 
 
 def tmux_panes():
@@ -260,6 +311,9 @@ def print_json(sessions, procs, panes, n, chars):
             "name": s.get("name"), "sessionId": sid, "self": bool(sid and sid == SELF_ID),
             "status": s.get("status"), "kind": s.get("kind"), "cwd": s.get("cwd"),
             "alive": is_alive(s, procs), "location": location(int(s.get("pid") or 0), procs, panes),
+            # Remote Control につながっているセッションには bridgeSessionId がある (2026/10/22 に、ListAgents の
+            # Remote Control の行と数が合うことを確かめた。ListAgents の名前は自動で付いた別の名前のことがある)
+            "remoteControl": bool(s.get("bridgeSessionId")),
             "startedAt": s.get("startedAt"), "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
             "transcript": False, "title": None, "lastTime": None, "promptCount": 0, "prompts": [], "lastReply": None,
         }
