@@ -6,7 +6,7 @@
 # エラーで終わったときは、ペインやタブがすぐ閉じて原因が見えなくなるので、Enter を押すまで待つ
 
 param(
-    [double]$Interval = 3,
+    [double]$Interval = 10,
     [double]$RemoteInterval = 60,
     [switch]$NoRemote
 )

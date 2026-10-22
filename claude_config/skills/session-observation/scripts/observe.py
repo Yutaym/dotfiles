@@ -4,7 +4,7 @@
     uv run --no-project --with rich python observe.py [--interval 秒] [--remote-interval 秒] [--no-remote]
     uv run --no-project python observe.py --stop     # 動いている監視を止める (ほかのセッションからも使える)
 
-- このマシンのセッションは --interval (既定 3 秒) ごと、ssh の接続先のセッションは --remote-interval
+- このマシンのセッションは --interval (既定 10 秒) ごと、ssh の接続先のセッションは --remote-interval
   (既定 60 秒) ごとに読み直す。ssh は重いので、別のスレッドで読み、表示は止めない。
 - 材料は session-overview スキルの session-overview.py から取る (このマシンは import して直接呼び、
   ssh の接続先では session-overview.py --json を実行する)。表に入れる・入れないの決まりも session-overview に合わせる。
@@ -245,8 +245,13 @@ def place(item, host=None, windows=None):
     return f"{folder} / 不明"
 
 
+WAITING = {"waiting", "requires_action"}
+
+
 def row(item, host=None, windows=None):
-    """(セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。"""
+    """(並べ替えの鍵, セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。
+    並びは優先度の高い順: 返事待ち (状態が waiting / requires_action のもの、最後の返答が質問で終わるもの)
+    → busy → そのほかの状態 → idle (最近動いたものから) → 1 時間以上動きのない idle。同じ組の中は最近動いたものから。"""
     from rich.text import Text
 
     status = item.get("status") or "?"
@@ -268,17 +273,22 @@ def row(item, host=None, windows=None):
 
     reply = item.get("lastReply")
     last = item.get("lastTime") or item.get("statusUpdatedAt")
-    if status == "busy":
-        state, style = "busy", "bold yellow"
+    group = 3
+    if status in WAITING:
+        group, state, style = 0, status, "bold red"
+        move = Text(f"返事待ち（{ago(item.get('statusUpdatedAt'))}から）", style="bold red")
+    elif status == "busy":
+        group, state, style = 1, "busy", "bold yellow"
         move = Text(f"作業中（{ago(item.get('statusUpdatedAt'))}から）", style="yellow")
     elif status != "idle":
-        state, style = status, "bold magenta"
+        group, state, style = 2, status, "bold magenta"
         move = Text(f"{status}（{ago(item.get('statusUpdatedAt'))}から）", style="magenta")
     elif not item.get("transcript"):
         state, style = "idle", "green"
         move = Text("記録なし", style="dim")
-    elif reply and QUESTION_RE.search(reply.get("text") or ""):
-        state, style = "idle", "green"
+    # 最後の会話から 24 時間を過ぎたものは、質問で終わっていても返事待ちにしない (古い会話を開いたままのことが多い)
+    elif reply and QUESTION_RE.search(reply.get("text") or "") and time.time() - (to_epoch(last) or 0) < 86400:
+        group, state, style = 0, "idle", "green"
         move = Text(f"返事待ち {hm(last)}（{ago(last)}）", style="bold red")
     else:
         state, style = "idle", "green"
@@ -289,11 +299,17 @@ def row(item, host=None, windows=None):
     # 1 時間以上動きのない idle のセッションは、全体を薄くする
     t = to_epoch(last)
     stale = status == "idle" and t and time.time() - t > 3600
-    return name, Text(state, style=style), place(item, host, windows), doing, move, "dim" if stale else ""
+    if stale and group == 3:
+        group = 4
+    key = (group, -(t or 0))
+    return key, name, Text(state, style=style), place(item, host, windows), doing, move, "dim" if stale else ""
 
 
-def render(local, remote_result, remote_updated, args):
-    from rich.console import Group
+def render(console, view, local, remote_result, remote_updated, args):
+    """画面全体を作る。表は画面に収まる分だけを、view["offset"] 行目から切り出す (キーでスクロールする)。"""
+    from io import StringIO
+
+    from rich.console import Console, Group
     from rich.table import Table
     from rich.text import Text
 
@@ -302,25 +318,44 @@ def render(local, remote_result, remote_updated, args):
                     ("場所", {"ratio": 3}), ("何をしているか", {"ratio": 4}), ("最後の動き", {"ratio": 4})]:
         table.add_column(col, overflow="fold", **kw)
 
-    no = 0
+    rows = []
     counts = {}
     notes = []
     for item in local:
-        no += 1
-        *cells, style = row(item)
+        rows.append(row(item))
         counts[item.get("status")] = counts.get(item.get("status"), 0) + 1
-        table.add_row(str(no), *cells, style=style)
     for host, r in sorted(remote_result.items()):
         if r["sessions"] is None:
             notes.append(f"{host}: 読めなかった（{r['error']}）。表には入れていない")
             continue
+        # ssh の接続先は、Remote Control につながっているものだけを出す (session-overview に合わせる)
+        if r["sessions"] and not any("remoteControl" in item for item in r["sessions"]):
+            notes.append(f"{host}: 接続先の session-overview.py が古く、Remote Control につながっているか分からない。表には入れていない")
+            continue
         for item in r["sessions"]:
-            if not item.get("alive"):
+            if not item.get("alive") or not item.get("remoteControl"):
                 continue
-            no += 1
-            *cells, style = row(item, host, r["windows"])
+            rows.append(row(item, host, r["windows"]))
             counts[item.get("status")] = counts.get(item.get("status"), 0) + 1
-            table.add_row(str(no), *cells, style=style)
+    # No は、優先度の高い順に並べたあとで 1 から振る
+    rows.sort(key=lambda r: r[0])
+    for no, (_, *cells, style) in enumerate(rows, 1):
+        table.add_row(str(no), *cells, style=style)
+
+    # 表を今の画面の幅で描いて行に分け、画面に収まる分だけを切り出す
+    width, height = console.size
+    buf = StringIO()
+    Console(file=buf, width=width, force_terminal=True, color_system=console.color_system or "standard",
+            legacy_windows=False).print(table)
+    lines = buf.getvalue().rstrip("\n").split("\n")
+    body = max(3, height - 2 - len(notes))
+    view["page"] = body
+    view["offset"] = max(0, min(view["offset"], len(lines) - body))
+    shown = lines[view["offset"]:view["offset"] + body]
+    position = ""
+    if len(lines) > body:
+        first = view["offset"] + 1
+        position = f"  {first}〜{first + len(shown) - 1} 行目 / 全 {len(lines)} 行"
 
     now = datetime.datetime.now().strftime("%H:%M:%S")
     summary = "  ".join(f"{k} {v}" for k, v in sorted(counts.items(), key=lambda kv: str(kv[0])))
@@ -332,18 +367,111 @@ def render(local, remote_result, remote_updated, args):
         remote_info = "ssh: 読み込み中…"
     header = Text.assemble(
         ("session-observation", "bold"), f"  更新 {now}  このマシン: {args.interval:g}秒ごと  {remote_info}  ",
-        (summary, "cyan"),
+        (summary, "cyan"), (position, "bold magenta"), no_wrap=True, overflow="ellipsis",
     )
-    footer = Text("止める: Ctrl+C、またはほかのセッションから observe.py --stop", style="dim")
-    parts = [header, table]
-    parts += [Text("・" + n, style="red") for n in notes]
+    footer = Text("スクロール: ↑↓ PgUp/PgDn Home/End (j/k)  止める: q / Ctrl+C / observe.py --stop",
+                  style="dim", no_wrap=True, overflow="ellipsis")
+    parts = [header, Text.from_ansi("\n".join(shown))]
+    parts += [Text("・" + n, style="red", no_wrap=True, overflow="ellipsis") for n in notes]
     parts.append(footer)
     return Group(*parts)
 
 
+# ---------- キー入力 ----------
+
+# Windows の msvcrt.getwch が返す、矢印などの 2 文字目 (1 文字目は \x00 か \xe0)
+SCAN_CODES = {"H": "up", "P": "down", "I": "pgup", "Q": "pgdn", "G": "home", "O": "end"}
+# 端末のエスケープシーケンス (Esc の後ろ)
+ESCAPES = {
+    "[A": "up", "[B": "down", "[5~": "pgup", "[6~": "pgdn",
+    "[H": "home", "[1~": "home", "OH": "home", "[F": "end", "[4~": "end", "OF": "end",
+}
+LETTERS = {"k": "up", "j": "down", " ": "pgdn", "b": "pgup", "g": "home", "G": "end", "q": "quit", "\x03": "quit"}
+
+
+class Keys(threading.Thread):
+    """監視画面にフォーカスがあるときのキーを読み、self.queue に up / down / pgup / pgdn / home / end / quit を積む。
+    Windows は msvcrt、それ以外は termios で端末を 1 文字ずつ読めるようにする。"""
+
+    def __init__(self):
+        super().__init__(daemon=True)
+        self.queue = []
+        self.event = threading.Event()
+        self.restore = None
+
+    def push(self, key):
+        if key:
+            self.queue.append(key)
+            self.event.set()
+
+    def run(self):
+        try:
+            if sys.platform == "win32":
+                self.run_windows()
+            else:
+                self.run_posix()
+        except Exception:  # キーが読めない環境 (端末でないなど) では、スクロールなしで表示だけ続ける
+            pass
+
+    def run_windows(self):
+        import msvcrt
+
+        while True:
+            ch = msvcrt.getwch()
+            if ch in ("\x00", "\xe0"):
+                self.push(SCAN_CODES.get(msvcrt.getwch()))
+            elif ch == "\x1b":
+                self.push(self.escape(msvcrt.getwch))
+            else:
+                self.push(LETTERS.get(ch))
+
+    def run_posix(self):
+        import select
+        import termios
+        import tty
+
+        fd = sys.stdin.fileno()
+        old = termios.tcgetattr(fd)
+        self.restore = lambda: termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        tty.setcbreak(fd)
+
+        def read1():
+            return os.read(fd, 1).decode("utf-8", "replace")
+
+        while True:
+            ch = read1()
+            if ch == "\x1b":
+                # Esc だけが押されたときに待ち続けないように、続きが来るかを少しだけ待つ
+                if select.select([fd], [], [], 0.05)[0]:
+                    self.push(self.escape(read1))
+            else:
+                self.push(LETTERS.get(ch))
+
+    @staticmethod
+    def escape(read1):
+        """Esc の後ろを読み、ESCAPES のどれかに当たればその名前を返す。当たらなければ None。"""
+        seq = read1()
+        while any(k.startswith(seq) for k in ESCAPES):
+            if seq in ESCAPES:
+                return ESCAPES[seq]
+            seq += read1()
+        return None
+
+
+def scroll(view, key):
+    page = max(1, view.get("page", 10) - 1)
+    step = {"up": -1, "down": 1, "pgup": -page, "pgdn": page}.get(key)
+    if step:
+        view["offset"] = max(0, view["offset"] + step)
+    elif key == "home":
+        view["offset"] = 0
+    elif key == "end":
+        view["offset"] = 10 ** 9  # render で最後のページに切り詰める
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--interval", type=float, default=3, help="このマシンのセッションを読み直す間隔 (秒)")
+    parser.add_argument("--interval", type=float, default=10, help="このマシンのセッションを読み直す間隔 (秒)")
     parser.add_argument("--remote-interval", type=float, default=60, help="ssh の接続先を読み直す間隔 (秒)")
     parser.add_argument("--no-remote", action="store_true", help="ssh の接続先を読まない")
     parser.add_argument("--stop", action="store_true", help="動いている監視を止める")
@@ -365,18 +493,31 @@ def main():
 
     token = take_lock()
     console = Console()
+    keys = Keys()
+    keys.start()
+    view = {"offset": 0}
     try:
         with Live(console=console, screen=True, auto_refresh=False) as live:
+            data, next_collect = [], 0.0
             while still_owner(token):
+                if time.time() >= next_collect:
+                    data = local.collect()
+                    next_collect = time.time() + args.interval
                 result, updated = remote.snapshot() if remote else ({}, None)
-                live.update(render(local.collect(), result, updated, args), refresh=True)
-                # 止める指示にすぐ気づけるように、間隔を細かく分けて待つ
-                end = time.time() + args.interval
-                while time.time() < end and still_owner(token):
-                    time.sleep(0.5)
+                live.update(render(console, view, data, result, updated, args), refresh=True)
+                # キーが押されたらすぐ描き直す。止める指示にもすぐ気づけるように、0.5 秒より長くは待たない
+                keys.event.wait(max(0.05, min(0.5, next_collect - time.time())))
+                keys.event.clear()
+                while keys.queue:
+                    key = keys.queue.pop(0)
+                    if key == "quit":
+                        raise KeyboardInterrupt
+                    scroll(view, key)
     except KeyboardInterrupt:
         pass
     finally:
+        if keys.restore:
+            keys.restore()
         if still_owner(token):
             try:
                 os.remove(LOCK)

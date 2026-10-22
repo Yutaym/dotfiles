@@ -15,24 +15,32 @@ argument-hint: "[stop] [間隔の秒数]"
 
 - Windows（ネイティブ）:
   ```bash
-  pwsh -NoProfile -File "<このスキルのフォルダ>/scripts/launch-observer.ps1" [-Interval 秒] [-RemoteInterval 秒] [-NoRemote] [-Horizontal] [-Here]
+  pwsh -NoProfile -File "<このスキルのフォルダ>/scripts/launch-observer.ps1" [-Interval 秒] [-RemoteInterval 秒] [-NoRemote] [-Vertical] [-Here]
   ```
 - macOS / Linux / WSL:
   ```bash
-  sh "<このスキルのフォルダ>/scripts/launch-observer.sh" [-i 秒] [-r 秒] [-n] [-h] [-H]
+  sh "<このスキルのフォルダ>/scripts/launch-observer.sh" [-i 秒] [-r 秒] [-n] [-v] [-H]
   ```
 
 | 指定 | .ps1 | .sh | 意味 |
 |---|---|---|---|
-| このマシンの間隔 | `-Interval` | `-i` | 既定 3 秒 |
+| このマシンの間隔 | `-Interval` | `-i` | 既定 10 秒 |
 | ssh の接続先の間隔 | `-RemoteInterval` | `-r` | 既定 60 秒。ssh は 1 回に 10 秒ほどかかるので長めにする |
 | ssh を読まない | `-NoRemote` | `-n` | |
-| 左右に分割 | `-Horizontal` | `-h` | 既定は上下（表の幅を広く取るため） |
+| 上下に分割 | `-Vertical` | `-v` | 既定は左右（横に並べる。2026/10/22 にユーザーが決めた） |
 | そのまま実行 | `-Here` | `-H` | 新しいペインやタブを開かず、そのターミナルで動かす |
 
-- tmux / psmux の中では、呼び出し元のウィンドウを `split-window -d` で分割する（画面は切り替えない）。場所は「セッション名:ウィンドウ番号」で指定する（psmux は `@ID` / `%ID` を取り違えることがあるため）。
+- tmux / psmux の中では、呼び出し元のウィンドウを `split-window -d -h` で左右に分割する（画面は切り替えない）。場所は「セッション名:ウィンドウ番号」で指定する（psmux は `@ID` / `%ID` を取り違えることがあるため）。
 - tmux の外では、新しいタブで開く（Windows Terminal、WezTerm、kitty、iTerm2、macOS のターミナル、GNOME Terminal、Konsole）。開けないターミナルでは、手で実行するコマンドを表示して終了コード 2 で終わるので、それをユーザーに伝える。
 - 開いたら、どこに開いたか（スクリプトの `launched:` の行）をユーザーに伝える。
+
+## 監視画面の操作
+
+監視画面にフォーカスがあるとき、表が画面の高さに収まらなければキーでスクロールできる。描き直しは続ける。
+- ↑↓（j / k）: 1 行、PgUp / PgDn（b / スペース）: 1 ページ、Home / End（g / G）: 先頭 / 最後
+- 収まらないときは、1 行目の右に「12〜30 行目 / 全 45 行」のように今の位置を出す。
+- q（または Ctrl+C）で終わる。
+- キーは Windows は msvcrt、それ以外は termios で読む。
 
 ## 止める
 
@@ -48,8 +56,11 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe.py"
 - 表の列と、表に入れる・入れないの決まりは session-overview に合わせる。違うところ:
   - 生きているかどうかは `ListAgents` ではなく、`~/.claude/sessions/*.json` の `pid` のプロセスが動いているか（Windows では開始時刻 `procStart` も一致するか）で判断する（session-overview.py の `is_alive`）。状態（busy / idle）は同じファイルの `status` を使う。
   - 「何をしているか」は LLM で要約しない。自動で付いたタイトルと最後の依頼をそのまま短く出す。タイトルがセッション名と同じときは、最後の依頼を出す。
-  - 「返事待ち」は、最後の返答が「？」「ますか」「ください」などで終わっているかで機械的に判断するので、外れることがある。
-  - No は起動の早い順に振る。ListAgents の順と違うことがあるので、session-kill で番号を使うときは session-kill の一覧で確かめる。
+  - 「返事待ち」は、最後の返答が「？」「ますか」「ください」などで終わっているかで機械的に判断するので、外れることがある。最後の会話から 24 時間を過ぎたものは、返事待ちにしない（2026/10/22 にユーザーが決めた。7 日前の「…確認してください。」が返事待ちになっていた）。
+  - **並びは優先度の高い順**（2026/10/22 にユーザーが決めた）: 返事待ち（状態が `waiting` / `requires_action` のもの、最後の返答が質問で終わるもの）→ busy → そのほかの状態 → idle（最近動いたものから）→ 1 時間以上動きのない idle。同じ組の中は最近動いたものから並べる。
+  - No は、この並びの順に 1 から振る。更新のたびに変わり、ListAgents の順とも違うので、session-kill で番号を使うときは session-kill の一覧で確かめる。
 - 色: busy は黄、idle は緑、返事待ちは赤、そのほかの状態は紫。1 時間以上動きのない idle のセッションは薄く出す。tmux の中のセッションは名前を太字にする。
 - ssh の接続先は、このマシンの tmux で `@ssh_host` の付いたペイン（ssh-generate / session-ssh で開いたもの）から探し、接続先で `session-overview.py --json` を実行する。接続先の session-overview.py が古い（`--json` がない）と読めないので、接続先の dotfiles を更新してもらう。読めなかった接続先は、表には入れずに表の下に理由を 1 行出す。
+  - **ssh の接続先は、Remote Control につながっているセッションだけを出す**（session-overview に合わせる。2026/10/22 にユーザーが決めた）。見分けには `sessions/*.json` の `bridgeSessionId` を使う（JSON の `remoteControl`）。名前を付けずに Remote Control につないだセッションは、ListAgents では自動で付いた別の名前（例 `macbookpro-velvety-owl`）で出るので、session-overview の表と名前が合わないことがある。
+  - このマシンのセッションは、Remote Control につながっているかにかかわらず全部出す。
 - 材料の読み取りは session-overview の `scripts/session-overview.py` を import して使う。Claude Code の内部形式が変わって項目が取れなくなったら、session-overview.py を直す。

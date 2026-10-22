@@ -2,12 +2,12 @@
 # session-observation の監視画面を開く (macOS / Linux / WSL 用)
 #
 # 使い方:
-#   sh launch-observer.sh [-i 秒] [-r 秒] [-n] [-h] [-H]
+#   sh launch-observer.sh [-i 秒] [-r 秒] [-n] [-v] [-H]
 #   sh launch-observer.sh -x
-#   -i: このマシンのセッションを読み直す間隔 (既定 3 秒)
+#   -i: このマシンのセッションを読み直す間隔 (既定 10 秒)
 #   -r: ssh の接続先を読み直す間隔 (既定 60 秒)
 #   -n: ssh の接続先を読まない
-#   -h: tmux の中で、左右に分割する (既定は上下。表の幅を広く取るため)
+#   -v: tmux の中で、上下に分割する (既定は左右。2026/10/22 にユーザーが決めた)
 #   -H: 新しいペインやタブを開かず、このターミナルでそのまま実行する
 #   -x: 動いている監視を止める (ほかのセッションからも使える)
 #
@@ -27,20 +27,20 @@
 set -eu
 
 HERE=$(cd "$(dirname "$0")" && pwd)
-INTERVAL=3
+INTERVAL=10
 REMOTE=60
 NOREMOTE=''
-SPLIT=-v
+SPLIT=-h
 INPLACE=0
-while getopts 'i:r:nhHx' opt; do
+while getopts 'i:r:nvHx' opt; do
     case "$opt" in
         i) INTERVAL=$OPTARG ;;
         r) REMOTE=$OPTARG ;;
         n) NOREMOTE='--no-remote' ;;
-        h) SPLIT=-h ;;
+        v) SPLIT=-v ;;
         H) INPLACE=1 ;;
         x) exec uv run --no-project python "$HERE/observe.py" --stop ;;
-        *) echo "usage: $0 [-i sec] [-r sec] [-n] [-h] [-H] [-x]" >&2; exit 64 ;;
+        *) echo "usage: $0 [-i sec] [-r sec] [-n] [-v] [-H] [-x]" >&2; exit 64 ;;
     esac
 done
 case "$INTERVAL$REMOTE" in

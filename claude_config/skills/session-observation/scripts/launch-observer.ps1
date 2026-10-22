@@ -1,9 +1,9 @@
 # session-observation の監視画面を開く (Windows ネイティブ用)
 #
 # 使い方:
-#   pwsh -NoProfile -File launch-observer.ps1 [-Interval 秒] [-RemoteInterval 秒] [-NoRemote] [-Horizontal] [-Here]
+#   pwsh -NoProfile -File launch-observer.ps1 [-Interval 秒] [-RemoteInterval 秒] [-NoRemote] [-Vertical] [-Here]
 #   pwsh -NoProfile -File launch-observer.ps1 -Stop
-#   -Horizontal: tmux の中で、左右に分割する (既定は上下。表の幅を広く取るため)
+#   -Vertical: tmux の中で、上下に分割する (既定は左右。2026/10/22 にユーザーが決めた)
 #   -Here: 新しいペインやタブを開かず、このターミナルでそのまま実行する
 #   -Stop: 動いている監視を止める (ほかのセッションからも使える)
 #
@@ -15,10 +15,10 @@
 # 監視は同時に 1 つだけ動く。すでに動いていれば、新しく開いたほうに置き換わり、古いほうは閉じる (observe.py が判断する)。
 
 param(
-    [double]$Interval = 3,
+    [double]$Interval = 10,
     [double]$RemoteInterval = 60,
     [switch]$NoRemote,
-    [switch]$Horizontal,
+    [switch]$Vertical,
     [switch]$Here,
     [switch]$Stop
 )
@@ -42,9 +42,25 @@ if ($Here) {
 
 if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
     # psmux は -t の @ID / %ID を別のセッションのものとして解決することがあるので、
-    # 場所は「セッション名:ウィンドウ番号」で指定する
-    $target = & tmux display-message -p '#{session_name}:#{window_index}'
-    $dir = if ($Horizontal) { '-h' } else { '-v' }
+    # 場所は「セッション名:ウィンドウ番号」で指定する。
+    # 呼び出し元のウィンドウは、このスクリプトの親プロセスをたどって、ペインの最初のプロセス (pane_pid) に
+    # 当たるものから探す。display-message -p は、呼び出し元ではなくユーザーが今見ているウィンドウを返すため
+    # (2026/10/22 に、見ていた別のウィンドウを分割してしまった)
+    $panes = @{}
+    foreach ($line in (& tmux list-panes -a -F "#{pane_pid}`t#{session_name}:#{window_index}")) {
+        $panePid, $where = $line -split "`t", 2
+        if ($panePid -match '^\d+$') { $panes[[int]$panePid] = $where }
+    }
+    $parents = @{}
+    Get-CimInstance Win32_Process | ForEach-Object { $parents[[int]$_.ProcessId] = [int]$_.ParentProcessId }
+    $target = $null
+    $cur = $PID
+    for ($i = 0; $i -lt 20 -and $cur -and -not $target; $i++) {
+        $target = $panes[$cur]
+        $cur = $parents[$cur]
+    }
+    if (-not $target) { $target = & tmux display-message -p '#{session_name}:#{window_index}' }
+    $dir = if ($Vertical) { '-v' } else { '-h' }
     & tmux split-window -d $dir -t $target -c $HOME $Shell @RunArgs
     $how = "tmux split-window $dir ($target)"
 }
