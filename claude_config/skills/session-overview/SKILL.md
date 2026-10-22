@@ -36,6 +36,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/session-ove
 - 最後の返答
 
 `--prompts` と `--chars` で、表示する量を増やせる。要約するのに材料が足りないときに使う。
+`--json` を付けると、同じ材料と、プロセスが生きているか（`alive`）を JSON で出す（session-observation スキルが使う）。
 
 会話記録と `sessions/*.json` は Claude Code の内部形式で、バージョンが上がると変わることがある。項目が取れないときは、スクリプトを直す。
 

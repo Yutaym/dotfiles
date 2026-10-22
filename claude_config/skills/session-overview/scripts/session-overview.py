@@ -1,12 +1,14 @@
 """同じマシンの Claude Code のセッションを一覧にし、要約の材料を会話記録から抜き出す。
 
 使い方:
-    uv run --no-project python session-overview.py [セッション名 ...] [--prompts N] [--chars N]
+    uv run --no-project python session-overview.py [セッション名 ...] [--prompts N] [--chars N] [--json]
 
 セッション名を指定しなければ、~/.claude/sessions/*.json にあるセッションをすべて出す。
 各セッションについて、状態・フォルダ・場所 (tmux / terminal / other)・起動時刻・最後に動いた時刻・自動で付いたタイトル・
 依頼 (ユーザーが入力したもの / 別のセッションから届いたもの) の最初と最後の N 件・最後の返答を表示する。
 要約そのものは、この出力を読んだ Claude が書く。
+--json を付けると、同じ材料を JSON で出す (session-observation スキルが、ssh の接続先でも読むのに使う)。
+JSON には、プロセスが生きているかどうか (alive) も入る。
 
 注意: sessions/*.json と会話の記録の形式は Claude Code の内部形式で、公式には
 「バージョンによって変わる」とされている。項目が取れなくなったら、このスクリプトを直す。
@@ -140,11 +142,12 @@ def base(name):
 
 
 def process_table():
-    """{PID: (名前, 親の PID)} を 1 回のコマンドで取る。取れなければ空。"""
+    """{PID: (名前, 親の PID, 開始時刻)} を 1 回のコマンドで取る。取れなければ空。
+    開始時刻は Windows だけ取る (FILETIME。sessions/*.json の procStart と同じ形式)。それ以外は None。"""
     try:
         if sys.platform == "win32":
             cmd = ["powershell", "-NoProfile", "-NonInteractive", "-Command",
-                   "Get-CimInstance Win32_Process | ForEach-Object { \"$($_.ProcessId)`t$($_.ParentProcessId)`t$($_.Name)\" }"]
+                   "Get-CimInstance Win32_Process | ForEach-Object { \"$($_.ProcessId)`t$($_.ParentProcessId)`t$($_.Name)`t$(if ($_.CreationDate) { $_.CreationDate.ToFileTimeUtc() })\" }"]
         else:
             cmd = ["ps", "-A", "-o", "pid=,ppid=,comm="]
         out = subprocess.run(cmd, capture_output=True, text=True, errors="replace").stdout
@@ -153,9 +156,22 @@ def process_table():
     table = {}
     for line in out.splitlines():
         parts = line.split("	") if "	" in line else line.split(None, 2)
-        if len(parts) == 3 and parts[0].strip().isdigit() and parts[1].strip().isdigit():
-            table[int(parts[0])] = (base(parts[2].strip()), int(parts[1]))
+        if len(parts) >= 3 and parts[0].strip().isdigit() and parts[1].strip().isdigit():
+            start = parts[3].strip() if len(parts) > 3 else ""
+            table[int(parts[0])] = (base(parts[2].strip()), int(parts[1]), int(start) if start.isdigit() else None)
     return table
+
+
+def is_alive(s, procs):
+    """sessions/*.json のセッションのプロセスが今も動いているか。sessions/ には終了したセッションのファイルも残る。
+    Windows では、PID の使い回しで取り違えないように、開始時刻 (procStart) も 1 秒以内で一致するかを見る。"""
+    me = procs.get(int(s.get("pid") or 0))
+    if not me:
+        return False
+    proc_start = str(s.get("procStart") or "")
+    if me[2] is not None and proc_start.isdigit():
+        return abs(me[2] - int(proc_start)) < 10_000_000
+    return True
 
 
 def tmux_panes():
@@ -193,10 +209,14 @@ def main():
     parser.add_argument("names", nargs="*", help="出すセッションの名前 (ListAgents の名前)。省略時はすべて")
     parser.add_argument("--prompts", type=int, default=2, help="最初と最後から出す依頼の件数")
     parser.add_argument("--chars", type=int, default=300, help="依頼・返答を切り詰める文字数")
+    parser.add_argument("--json", action="store_true", help="材料を JSON で出す")
     args = parser.parse_args()
 
     sessions = load_sessions(set(args.names))
     procs, panes = process_table(), tmux_panes()
+    if args.json:
+        print_json(sessions, procs, panes, args.prompts, args.chars)
+        return
     found = {s.get("name") for s in sessions}
     for name in args.names:
         if name not in found:
@@ -231,5 +251,32 @@ def main():
         print()
 
 
+def print_json(sessions, procs, panes, n, chars):
+    """セッションごとの材料を JSON の配列で出す。時刻はミリ秒のエポック時刻か ISO 形式のまま。"""
+    out = []
+    for s in sessions:
+        sid = s.get("sessionId", "")
+        item = {
+            "name": s.get("name"), "sessionId": sid, "self": bool(sid and sid == SELF_ID),
+            "status": s.get("status"), "kind": s.get("kind"), "cwd": s.get("cwd"),
+            "alive": is_alive(s, procs), "location": location(int(s.get("pid") or 0), procs, panes),
+            "startedAt": s.get("startedAt"), "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
+            "transcript": False, "title": None, "lastTime": None, "promptCount": 0, "prompts": [], "lastReply": None,
+        }
+        transcripts = glob.glob(os.path.join(CONFIG_DIR, "projects", "*", f"{sid}.jsonl"))
+        if transcripts:
+            prompts, last_reply, title, last_time = read_transcript(transcripts[0])
+            picked = prompts if len(prompts) <= n * 2 else prompts[:n] + prompts[-n:]
+            item.update({
+                "transcript": True, "title": title, "lastTime": last_time, "promptCount": len(prompts),
+                "prompts": [{"time": ts, "origin": o, "text": shorten(t, chars)} for ts, o, t in picked],
+                "lastReply": {"time": last_reply[0], "text": shorten(last_reply[1], chars * 2)} if last_reply else None,
+            })
+        out.append(item)
+    print(json.dumps(out, ensure_ascii=False))
+
+
 if __name__ == "__main__":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     main()
