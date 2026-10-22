@@ -27,6 +27,9 @@ claude_config/
     ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）
     │   ├── SKILL.md
     │   └── scripts/
+    ├── session-ssh/      # ~/.claude/skills/session-ssh にリンク（ssh の接続先で Remote Control つきの Claude を起動するスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
     ├── ssh-generate/     # ~/.claude/skills/ssh-generate にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
     │   ├── SKILL.md
     │   └── scripts/
