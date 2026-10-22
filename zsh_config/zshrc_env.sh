@@ -1,6 +1,26 @@
 # conda初期化はdotfiles(zshrc_main.sh)の遅延ロードに一本化。ここでは何もしない。
 # compinitはoh-my-zsh側(zshrc_main.sh -> zshrc_ohmyzsh.sh)で実行されるため、ここでは呼ばない。
 
+# ロケールが UTF-8 になっていなければ LANG を設定する。
+# Windows の ssh は LANG を送らず、macOS ではログインシェルでも LANG が空のままになる
+# (ターミナル.app はアプリ側で LANG を設定している)。LANG が空だと tmux がクライアントを
+# UTF-8 非対応とみなし、日本語や Claude Code のロゴなどの幅の広い文字を "_" に置き換える。
+# 入っていないロケールを設定すると警告が出るため、locale -a にあるものから選ぶ。
+if [[ "${LC_ALL:-${LC_CTYPE:-$LANG}}" != *[Uu][Tt][Ff]8* && "${LC_ALL:-${LC_CTYPE:-$LANG}}" != *[Uu][Tt][Ff]-8* ]]; then
+    () {
+        local -a avail=(${(f)"$(locale -a 2>/dev/null)"})
+        local l
+        for l in ja_JP.UTF-8 ja_JP.utf8 en_US.UTF-8 en_US.utf8 C.UTF-8 C.utf8; do
+            if (( ${avail[(Ie)$l]} )); then
+                export LANG=$l
+                [[ -n "$LC_ALL" ]] && export LC_ALL=$l
+                [[ -n "$LC_CTYPE" ]] && export LC_CTYPE=$l
+                break
+            fi
+        done
+    }
+fi
+
 # JAVA_HOME が未設定なら JDK の場所を求める。
 # macOS の /usr/bin/javac は実体へのリンクではないスタブのため、/usr/libexec/java_home を使う。
 # JDK が無い環境では何もしない(以前は空の JAVA_HOME から PATH に "/bin" を足していた)。
