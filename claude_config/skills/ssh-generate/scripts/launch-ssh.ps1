@@ -12,6 +12,8 @@
 #
 # どの起動先でも start-ssh.ps1 が ssh を実行する。ssh が失敗したときは、タブを閉じずにエラーを残す。
 
+# 接続先だけを位置で受け取る (-RemoteCommand / -Title は名前を付けて渡す。位置で受け取ると、接続先がそちらに入ってしまう)
+[CmdletBinding(PositionalBinding = $false)]
 param(
     [switch]$NewWindow,
     # tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
@@ -23,7 +25,7 @@ param(
     [string]$RemoteCommand = '',
     # タブ・ウィンドウの名前 (指定しなければ接続先)
     [string]$Title = '',
-    [Parameter(Mandatory, ValueFromRemainingArguments)][string[]]$Targets
+    [Parameter(Mandatory, Position = 0, ValueFromRemainingArguments)][string[]]$Targets
 )
 
 $ErrorActionPreference = 'Stop'
