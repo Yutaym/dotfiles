@@ -35,6 +35,17 @@ if ($Name -and $Name -notmatch '^[A-Za-z0-9_-]+$') {
 if ($Resume -and $Resume -notmatch '^[0-9a-fA-F-]+$') {
     Write-Error "-Resume にはセッション ID (UUID) を指定してください: $Resume"
 }
+# フォルダの指定がなく、今のフォルダがホームなら ~/claudeWS にする
+# (ホームは信頼の確認が保存されず、起動のたびに聞かれるため)。それ以外は今のフォルダを引き継ぐ
+if (-not $PSBoundParameters.ContainsKey('Dir')) {
+    $full = { param($p) [IO.Path]::GetFullPath($p).TrimEnd('\', '/') }
+    if ((& $full $Dir) -ieq (& $full $HOME)) { $Dir = Join-Path $HOME 'claudeWS' }
+}
+# フォルダがなければ作る
+if (-not (Test-Path -LiteralPath $Dir)) {
+    New-Item -ItemType Directory -Force -Path $Dir | Out-Null
+    Write-Output "created: $Dir"
+}
 $Dir = (Resolve-Path -LiteralPath $Dir).Path
 if ($Dir.Contains(';')) {
     Write-Error "フォルダのパスに ; が含まれていると wt で起動できません: $Dir"

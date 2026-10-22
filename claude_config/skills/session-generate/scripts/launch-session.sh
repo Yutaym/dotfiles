@@ -25,12 +25,13 @@
 set -eu
 
 DIR=$(pwd)
+DIRSET=0
 NAME=''
 SPLIT=0
 SWITCH=0
 while getopts 'd:n:sw' opt; do
     case "$opt" in
-        d) DIR=$OPTARG ;;
+        d) DIR=$OPTARG; DIRSET=1 ;;
         n) NAME=$OPTARG ;;
         s) SPLIT=1 ;;
         w) SWITCH=1 ;;
@@ -42,6 +43,16 @@ done
 case "$NAME" in
     *[!A-Za-z0-9_-]*) echo "セッション名には英数字・ハイフン・アンダースコアだけを使ってください: $NAME" >&2; exit 64 ;;
 esac
+# フォルダの指定がなく、今のフォルダがホームなら ~/claudeWS にする
+# (ホームは信頼の確認が保存されず、起動のたびに聞かれるため)。それ以外は今のフォルダを引き継ぐ
+if [ "$DIRSET" = 0 ] && [ "$(pwd -P)" = "$(cd "$HOME" && pwd -P)" ]; then
+    DIR=$HOME/claudeWS
+fi
+# フォルダがなければ作る
+if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    echo "created: $DIR"
+fi
 DIR=$(cd "$DIR" && pwd)
 
 # 新しいタブで実行する起動用スクリプト。実行後に自分自身を消す
