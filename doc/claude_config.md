@@ -36,6 +36,9 @@ claude_config/
     ├── ssh-generate/     # ~/.claude/skills/ssh-generate にリンク（~/.ssh/config の接続先を選んで新しいタブで ssh するスキル）
     │   ├── SKILL.md
     │   └── scripts/
+    ├── sync-dotfiles/    # ~/.claude/skills/sync-dotfiles にリンク（dotfiles を push し、ssh の接続先でも pull するスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
     ├── sync-vaults/      # ~/.claude/skills/sync-vaults にリンク（vault の同期スキル）
     │   └── SKILL.md
     └── window-generate/  # ~/.claude/skills/window-generate にリンク（新しいタブでシェルを開いて移動するスキル）
