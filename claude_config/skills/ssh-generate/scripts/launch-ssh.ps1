@@ -1,7 +1,7 @@
 # 新しいターミナルのタブで、ssh で接続した状態を作る (Windows ネイティブ用)
 #
 # 使い方:
-#   pwsh -NoProfile -File launch-ssh.ps1 [-NewWindow] [-Split] [-Background] <接続先> [<接続先> ...]
+#   pwsh -NoProfile -File launch-ssh.ps1 [-NewWindow] [-Split] [-Background] [-RemoteCommand <コマンド>] [-Title <名前>] <接続先> [<接続先> ...]
 #   接続先は ~/.ssh/config の Host の別名 (または user@host)。複数書くと、1 つずつ別のタブで開く。
 #   tmux の中では、開いたウィンドウ (複数なら最後のもの) に画面を切り替える。-Background を付けると呼び出し元のまま。
 #
@@ -18,6 +18,11 @@ param(
     [switch]$Split,
     # tmux の中で、開いたウィンドウに画面を切り替えない (tmux 以外では無視する)
     [switch]$Background,
+    # 接続先で実行するコマンド (session-ssh スキルが使う)。start-ssh.ps1 には Base64 にして渡す
+    # (tmux / wt を通るときに引用符や ; が崩れないように)
+    [string]$RemoteCommand = '',
+    # タブ・ウィンドウの名前 (指定しなければ接続先)
+    [string]$Title = '',
     [Parameter(Mandatory, ValueFromRemainingArguments)][string[]]$Targets
 )
 
@@ -30,6 +35,9 @@ foreach ($t in $Targets) {
         Write-Error "接続先には英数字と . _ @ : % - だけを使ってください: $t"
     }
 }
+if ($Title -and $Title -notmatch '^[A-Za-z0-9._@:%-]+$') {
+    Write-Error "名前には英数字と . _ @ : % - だけを使ってください: $Title"
+}
 
 $Inner = Join-Path $PSScriptRoot 'start-ssh.ps1'
 $Shell = if (Get-Command pwsh -ErrorAction SilentlyContinue) { 'pwsh' } else { 'powershell' }
@@ -40,6 +48,11 @@ $LastWindow = $null
 
 foreach ($t in $Targets) {
     $InnerArgs = @('-NoProfile', '-File', $Inner, '-Target', $t)
+    if ($RemoteCommand) {
+        $InnerArgs += @('-RemoteCommandB64', [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RemoteCommand)))
+    }
+    if ($Title) { $InnerArgs += @('-Title', $Title) }
+    $name = if ($Title) { $Title } else { $t }
 
     if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
         # 作るときは -d を付けて画面をそのままにし、全部開いてから最後のウィンドウに切り替える。
@@ -61,14 +74,14 @@ foreach ($t in $Targets) {
             }
         }
         else {
-            $LastWindow = & tmux new-window -d -P -F '#{session_name}:#{window_index}' -c $Dir -n $t $Shell @InnerArgs
+            $LastWindow = & tmux new-window -d -P -F '#{session_name}:#{window_index}' -c $Dir -n $name $Shell @InnerArgs
             $how = 'tmux new-window'
         }
     }
     elseif (Get-Command wt -ErrorAction SilentlyContinue) {
         $window = if ($NewWindow) { 'new' } else { '0' }
         # --suppressApplicationTitle: start-ssh.ps1 や接続先のシェルがタイトルを書き換えても、接続先の名前を残す
-        & wt -w $window new-tab --title $t --suppressApplicationTitle -d $Dir $Shell @InnerArgs
+        & wt -w $window new-tab --title $name --suppressApplicationTitle -d $Dir $Shell @InnerArgs
         $how = 'Windows Terminal (wt new-tab)'
     }
     else {

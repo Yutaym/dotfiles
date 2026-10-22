@@ -2,10 +2,12 @@
 # 新しいターミナルのタブで、ssh で接続した状態を作る (macOS / Linux / WSL 用)
 #
 # 使い方:
-#   sh launch-ssh.sh [-s] [-b] <接続先> [<接続先> ...]
+#   sh launch-ssh.sh [-s] [-b] [-c <コマンド>] [-t <名前>] <接続先> [<接続先> ...]
 #   接続先は ~/.ssh/config の Host の別名 (または user@host)。複数書くと、1 つずつ別のタブで開く。
 #   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
 #   -b: tmux の中で、開いたウィンドウに画面を切り替えない (指定しなければ、最後に開いたウィンドウに切り替える)
+#   -c: 接続先で実行するコマンド (session-ssh スキルが使う)。ssh -t <接続先> <コマンド> を実行する
+#   -t: タブ・ウィンドウの名前 (指定しなければ接続先)
 #
 # 起動先の選び方 (session-generate の launch-session.sh と同じ。上から順に、当てはまった最初のもの):
 #   1. tmux の中 ($TMUX がある)                → tmux new-window (-s のときは専用ウィンドウを分割)
@@ -27,15 +29,22 @@ set -eu
 
 SPLIT=0
 BACKGROUND=0
-while getopts 'sb' opt; do
+REMOTE_CMD=
+TITLE=
+while getopts 'sbc:t:' opt; do
     case "$opt" in
         s) SPLIT=1 ;;
         b) BACKGROUND=1 ;;
-        *) echo "usage: $0 [-s] [-b] target..." >&2; exit 64 ;;
+        c) REMOTE_CMD=$OPTARG ;;
+        t) TITLE=$OPTARG ;;
+        *) echo "usage: $0 [-s] [-b] [-c command] [-t title] target..." >&2; exit 64 ;;
     esac
 done
 shift $((OPTIND - 1))
-[ $# -gt 0 ] || { echo "usage: $0 [-s] [-b] target..." >&2; exit 64; }
+[ $# -gt 0 ] || { echo "usage: $0 [-s] [-b] [-c command] [-t title] target..." >&2; exit 64; }
+case "$TITLE" in
+    *[!A-Za-z0-9._@:%-]*) echo "名前には英数字と . _ @ : % - だけを使ってください: $TITLE" >&2; exit 64 ;;
+esac
 
 # 接続先はコマンドラインにそのまま渡すので、ホスト名に使う文字だけにする
 for t in "$@"; do
@@ -51,6 +60,8 @@ RC=0
 LAST_WINDOW=
 
 have() { command -v "$1" >/dev/null 2>&1; }
+# ' で囲んだときに崩れないように、中の ' を '"'"' にする
+sq() { printf '%s' "$1" | sed "s/'/'\"'\"'/g"; }
 
 # 新しいタブで実行する起動用スクリプトを作る。実行後に自分自身を消す
 make_inner() {
@@ -58,10 +69,15 @@ make_inner() {
     {
         echo '#!/bin/sh'
         echo 'rm -f -- "$0"'
-        printf 'printf "\\033]0;%%s\\007" %s\n' "$1"
+        printf 'printf "\\033]0;%%s\\007" %s\n' "${TITLE:-$1}"
         # tmux の中では、接続先をペインのオプション @ssh_host に入れ、ステータスバーに 🌐 (接続先) と出す
         printf '[ -n "$TMUX_PANE" ] && tmux set -p -t "$TMUX_PANE" @ssh_host %s 2>/dev/null\n' "$1"
-        printf 'ssh %s\n' "$1"
+        if [ -n "$REMOTE_CMD" ]; then
+            # コマンドは ' で囲んで書く (中の ' は '"'"' にする)
+            printf "ssh -t %s '%s'\n" "$1" "$(sq "$REMOTE_CMD")"
+        else
+            printf 'ssh %s\n' "$1"
+        fi
         echo 'rc=$?'
         echo '[ -n "$TMUX_PANE" ] && tmux set -pu -t "$TMUX_PANE" @ssh_host 2>/dev/null'
         echo 'if [ "$rc" -ne 0 ]; then'
@@ -79,7 +95,11 @@ launched() {
 manual() {
     rm -f -- "$INNER"
     echo "このターミナルでは自動でタブを開けませんでした ($1)。新しいタブで次を実行してください:" >&2
-    echo "  ssh $T" >&2
+    if [ -n "$REMOTE_CMD" ]; then
+        echo "  ssh -t $T '$(sq "$REMOTE_CMD")'" >&2
+    else
+        echo "  ssh $T" >&2
+    fi
     RC=2
     return 0
 }
@@ -106,7 +126,7 @@ launch_one() {
                 && { launched 'tmux new-window (専用ウィンドウを作成)'; return; }
             manual 'tmux new-window が失敗した'; return
         fi
-        LAST_WINDOW=$(tmux new-window -d -P -F '#{session_name}:#{window_index}' -c "$DIR" -n "$T" "sh '$INNER'") && { launched 'tmux new-window'; return; }
+        LAST_WINDOW=$(tmux new-window -d -P -F '#{session_name}:#{window_index}' -c "$DIR" -n "${TITLE:-$T}" "sh '$INNER'") && { launched 'tmux new-window'; return; }
         manual 'tmux new-window が失敗した'; return
     fi
 
