@@ -12,7 +12,7 @@ set -eu
 
 TARGET=
 NAME=
-DIR='~'
+DIR='~/claudeWS'
 NOTMUX=0
 PASS=
 while getopts 'h:n:d:Tsb' opt; do
@@ -42,9 +42,9 @@ esac
 
 CLAUDE="claude --name $NAME --remote-control"
 if [ "$NOTMUX" = 1 ]; then
-    BODY="cd $DIR || exit 1; $CLAUDE"
+    BODY="mkdir -p $DIR && cd $DIR || exit 1; $CLAUDE"
 else
-    BODY="cd $DIR || exit 1; if command -v tmux >/dev/null 2>&1; then exec tmux new-session -A -s $NAME \"\$SHELL -lic \\\"$CLAUDE\\\"\"; else $CLAUDE; fi"
+    BODY="mkdir -p $DIR && cd $DIR || exit 1; if command -v tmux >/dev/null 2>&1; then exec tmux new-session -A -s $NAME \"\$SHELL -lic \\\"$CLAUDE\\\"\"; else $CLAUDE; fi"
 fi
 REMOTE="exec \"\$SHELL\" -lic '$BODY'"
 

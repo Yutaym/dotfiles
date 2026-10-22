@@ -5,6 +5,7 @@
 #        [-RemoteShell auto|posix|pwsh] [-NoTmux] [-Split] [-Background]
 #
 # タブ・ウィンドウの開き方は ssh-generate の launch-ssh.ps1 に任せる (起動先の判断・-Split・-Background も同じ)。
+# フォルダの既定は ~/claudeWS (ホームは信頼の確認が保存されないため)。なければ作る (-Dir で指定したときも)。
 # 接続先に tmux (Windows では psmux) があれば、セッション名と同じ名前の tmux セッションの中で起動する。
 # ssh が切れても claude が動き続け、同じ名前でもう一度実行すると、そのセッションにつなぎ直す (tmux new-session -A)。
 #
@@ -16,7 +17,7 @@
 param(
     [Parameter(Mandatory)][string]$Target,
     [Parameter(Mandatory)][string]$Name,
-    [string]$Dir = '~',
+    [string]$Dir = '~/claudeWS',
     [ValidateSet('auto', 'posix', 'pwsh')][string]$RemoteShell = 'auto',
     [switch]$NoTmux,
     [switch]$Split,
@@ -44,19 +45,19 @@ if ($RemoteShell -eq 'auto') {
 $Claude = "claude --name $Name --remote-control"
 if ($RemoteShell -eq 'pwsh') {
     if ($NoTmux) {
-        $Remote = "Set-Location $Dir; $Claude"
+        $Remote = "New-Item -ItemType Directory -Force $Dir | Out-Null; Set-Location $Dir; $Claude"
     }
     else {
-        $Remote = "Set-Location $Dir; if (Get-Command tmux -ErrorAction SilentlyContinue) { tmux new-session -A -s $Name '$Claude' } else { $Claude }"
+        $Remote = "New-Item -ItemType Directory -Force $Dir | Out-Null; Set-Location $Dir; if (Get-Command tmux -ErrorAction SilentlyContinue) { tmux new-session -A -s $Name '$Claude' } else { $Claude }"
     }
 }
 else {
     if ($NoTmux) {
-        $Body = "cd $Dir || exit 1; $Claude"
+        $Body = "mkdir -p $Dir && cd $Dir || exit 1; $Claude"
     }
     else {
         # tmux が動かすコマンドは sh -c で実行されるので、もう一度ログインシェルを対話モードで起動してから claude を実行する
-        $Body = "cd $Dir || exit 1; if command -v tmux >/dev/null 2>&1; then exec tmux new-session -A -s $Name " +
+        $Body = "mkdir -p $Dir && cd $Dir || exit 1; if command -v tmux >/dev/null 2>&1; then exec tmux new-session -A -s $Name " +
             '"$SHELL -lic \"' + $Claude + '\""' + "; else $Claude; fi"
     }
     $Remote = 'exec "$SHELL" -lic ''' + $Body + ''''
