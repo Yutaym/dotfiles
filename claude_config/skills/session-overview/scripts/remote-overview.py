@@ -15,6 +15,8 @@ ssh <接続先> 'exec "$SHELL" -lic "uv run ... session-overview.py <名前> ...
 """
 
 import argparse
+import importlib.util
+import os
 import re
 import shutil
 import subprocess
@@ -22,6 +24,17 @@ import sys
 
 SCRIPT = "~/.claude/skills/session-overview/scripts/session-overview.py"
 NOT_FOUND = "に見つからない"
+ID_RE = re.compile(r"(?m)^番号: \S+ / ID: (\S+)$")
+
+
+def load_overview():
+    """同じフォルダの session-overview.py を読み込む (番号の表 session_numbers を使うため)。"""
+    sys.dont_write_bytecode = True
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "session-overview.py")
+    spec = importlib.util.spec_from_file_location("session_overview", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def ssh_hosts():
@@ -63,10 +76,11 @@ def remote_shell(host):
     return "pwsh" if last in ("Core", "Desktop") else "posix"
 
 
-def run_remote(host, names, prompts, chars):
-    """接続先で session-overview.py を動かして、出力をセッションごとの塊に分ける。失敗したら (None, 理由)。"""
+def run_remote(host, names, prompts, chars, no_number=True):
+    """接続先で session-overview.py を動かして、出力をセッションごとの塊に分ける。失敗したら (None, 理由)。
+    接続先の session-overview.py が古くて --no-number を知らないときは、付けずに実行し直す。"""
     quoted = " ".join("'" + n + "'" for n in names)
-    args = f"{quoted} --prompts {prompts} --chars {chars}"
+    args = f"{quoted} --prompts {prompts} --chars {chars}" + (" --no-number" if no_number else "")
     if remote_shell(host) == "pwsh":
         # PowerShell は ~ をネイティブのコマンドの引数で展開しないことがあるので $HOME を使う。
         # 出力は UTF-8 にそろえる (このスクリプトは UTF-8 として読む)
@@ -82,6 +96,8 @@ def run_remote(host, names, prompts, chars):
     except (OSError, subprocess.SubprocessError) as e:
         return None, str(e)
     blocks = [b for b in re.split(r"(?m)^(?=## )", res.stdout) if b.startswith("## ")]
+    if not blocks and no_number and "--no-number" in res.stderr:
+        return run_remote(host, names, prompts, chars, no_number=False)
     if not blocks:
         reason = (res.stderr.strip().splitlines() or [f"終了コード {res.returncode}"])[-1]
         reason = re.sub(r"\x1b\[[0-9;]*m", "", reason)
@@ -103,6 +119,7 @@ def main():
     names = [n for n in args.names if not re.search(r"['\"$`\\]", n)]
     skipped = [n for n in args.names if n not in names]
 
+    overview = load_overview()
     hosts = ssh_hosts()
     if not hosts:
         print("ssh で開いたウィンドウ (@ssh_host の付いたペイン) が見つからない。")
@@ -118,6 +135,11 @@ def main():
             if NOT_FOUND in b or name in found:
                 continue
             found.add(name)
+            # 番号はこのマシンの番号の表で振る (鍵は「接続先|sessionId」)。接続先の session-overview.py が古いと ID がない
+            m = ID_RE.search(b)
+            if m:
+                no = overview.session_numbers([f"{host}|{m.group(1)}"])[f"{host}|{m.group(1)}"]
+                b = ID_RE.sub(f"番号: {no} / ID: {m.group(1)}", b, count=1)
             print(f"# 接続先: {host} (ssh を開いているこのマシンのウィンドウ: {', '.join(windows)})")
             print(b.rstrip() + "\n")
     rest = [n for n in names if n not in found] + skipped

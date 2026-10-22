@@ -255,18 +255,72 @@ def location(pid, procs, panes):
     return f"other ({host})"
 
 
+NUMBERS = os.path.join(CONFIG_DIR, "session-numbers.json")
+NUMBER_TTL = 7 * 86400  # この期間見かけなかった番号は捨てる (ssh の接続先を開かなくなったときなど)
+
+
+def session_numbers(keys, scope=None):
+    """セッションの番号 (No) を {鍵: 番号} で返す。session-overview・session-kill・session-observation で同じ番号を使う。
+
+    番号は ~/.claude/session-numbers.json に記録し、セッションが終わるまで変えない。新しいセッションには、
+    空いている一番小さい番号を振る。鍵は、このマシンのセッションは sessionId、ssh の接続先は「接続先|sessionId」。
+    scope に "" (このマシン) か "接続先|" を渡すと、keys がその範囲で生きているセッションのすべてだとみなし、
+    範囲の中で keys にない番号を捨てる。一部の名前だけを調べたときは scope を渡さない。"""
+    try:
+        with open(NUMBERS, encoding="utf-8") as f:
+            entries = json.load(f)
+    except (OSError, ValueError):
+        entries = {}
+    before = json.dumps(entries, sort_keys=True)
+    now = int(datetime.datetime.now().timestamp())
+    for key in list(entries):
+        local = "|" not in key
+        in_scope = scope is not None and (local if scope == "" else key.startswith(scope))
+        if (in_scope and key not in keys) or now - entries[key].get("seen", 0) > NUMBER_TTL:
+            del entries[key]
+    used = {e["no"] for e in entries.values()}
+    for key in keys:
+        if key not in entries:
+            no = 1
+            while no in used:
+                no += 1
+            used.add(no)
+            entries[key] = {"no": no, "seen": now}
+        elif now - entries[key].get("seen", 0) > 3600:
+            entries[key]["seen"] = now
+    if json.dumps(entries, sort_keys=True) != before:
+        # ほかのスクリプトと同時に書いても壊れないように、別のファイルに書いてから置き換える
+        tmp = f"{NUMBERS}.{os.getpid()}.tmp"
+        try:
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(entries, f)
+            os.replace(tmp, NUMBERS)
+        except OSError:
+            pass
+    return {key: entries[key]["no"] for key in keys}
+
+
+def local_numbers(procs):
+    """このマシンの生きているセッションすべてに番号を振り、{sessionId: 番号} を返す。"""
+    alive = [s for s in load_sessions(set()) if is_alive(s, procs) and s.get("sessionId")]
+    return session_numbers([s["sessionId"] for s in alive], scope="")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("names", nargs="*", help="出すセッションの名前 (ListAgents の名前)。省略時はすべて")
     parser.add_argument("--prompts", type=int, default=2, help="最初と最後から出す依頼の件数")
     parser.add_argument("--chars", type=int, default=300, help="依頼・返答を切り詰める文字数")
     parser.add_argument("--json", action="store_true", help="材料を JSON で出す")
+    parser.add_argument("--no-number", action="store_true",
+                        help="番号を振らない (ssh の接続先で動かすとき。番号は ssh を開いた側のマシンで振る)")
     args = parser.parse_args()
 
     sessions = load_sessions(set(args.names))
     procs, panes = process_table(), tmux_panes()
+    numbers = {} if args.no_number else local_numbers(procs)
     if args.json:
-        print_json(sessions, procs, panes, args.prompts, args.chars)
+        print_json(sessions, procs, panes, args.prompts, args.chars, numbers)
         return
     found = {s.get("name") for s in sessions}
     for name in args.names:
@@ -277,6 +331,7 @@ def main():
         sid = s.get("sessionId", "")
         me = " (このセッション)" if sid and sid == SELF_ID else ""
         print(f"## {s.get('name')}{me}")
+        print(f"番号: {numbers.get(sid, '-')} / ID: {sid}")
         print(f"状態: {s.get('status')} / 種類: {s.get('kind')} / フォルダ: {s.get('cwd')}")
         print(f"場所: {location(int(s.get('pid') or 0), procs, panes)}")
         print(f"起動: {local_time(s.get('startedAt'))} / 状態の更新: {local_time(s.get('statusUpdatedAt') or s.get('updatedAt'))}")
@@ -302,13 +357,14 @@ def main():
         print()
 
 
-def print_json(sessions, procs, panes, n, chars):
-    """セッションごとの材料を JSON の配列で出す。時刻はミリ秒のエポック時刻か ISO 形式のまま。"""
+def print_json(sessions, procs, panes, n, chars, numbers):
+    """セッションごとの材料を JSON の配列で出す。時刻はミリ秒のエポック時刻か ISO 形式のまま。
+    lastReply.tail は、返答の最後の 100 文字 (切り詰めない)。返事待ちかどうかを、返答の終わり方で判断するのに使う。"""
     out = []
     for s in sessions:
         sid = s.get("sessionId", "")
         item = {
-            "name": s.get("name"), "sessionId": sid, "self": bool(sid and sid == SELF_ID),
+            "name": s.get("name"), "sessionId": sid, "number": numbers.get(sid), "self": bool(sid and sid == SELF_ID),
             "status": s.get("status"), "kind": s.get("kind"), "cwd": s.get("cwd"),
             "alive": is_alive(s, procs), "location": location(int(s.get("pid") or 0), procs, panes),
             # Remote Control につながっているセッションには bridgeSessionId がある (2026/10/22 に、ListAgents の
@@ -324,7 +380,8 @@ def print_json(sessions, procs, panes, n, chars):
             item.update({
                 "transcript": True, "title": title, "lastTime": last_time, "promptCount": len(prompts),
                 "prompts": [{"time": ts, "origin": o, "text": shorten(t, chars)} for ts, o, t in picked],
-                "lastReply": {"time": last_reply[0], "text": shorten(last_reply[1], chars * 2)} if last_reply else None,
+                "lastReply": {"time": last_reply[0], "text": shorten(last_reply[1], chars * 2),
+                              "tail": " ".join(last_reply[1].split())[-100:]} if last_reply else None,
             })
         out.append(item)
     print(json.dumps(out, ensure_ascii=False))
