@@ -22,6 +22,9 @@ claude_config/
     ├── session-kill/     # ~/.claude/skills/session-kill にリンク（別セッションを選んで終了するスキル）
     │   ├── SKILL.md
     │   └── scripts/
+    ├── session-observation/ # ~/.claude/skills/session-observation にリンク（ほかのセッションの様子を一定間隔で表示し続けるスキル）
+    │   ├── SKILL.md
+    │   └── scripts/
     ├── session-order/    # ~/.claude/skills/session-order にリンク（動いている別セッションを選んで作業を頼むスキル）
     │   └── SKILL.md
     ├── session-overview/ # ~/.claude/skills/session-overview にリンク（同じマシンのセッションを一覧にして要約するスキル）

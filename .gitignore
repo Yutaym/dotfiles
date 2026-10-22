@@ -20,3 +20,4 @@ test.txt
 .claude/settings.local.json
 .claude/settings.json
 neovim_config/lazy-lock.json
+__pycache__/
