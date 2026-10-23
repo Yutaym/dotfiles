@@ -1,6 +1,7 @@
 ---
 name: ssh-generate
 description: ~/.ssh/config の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）で ssh 接続した状態を作る。複数の接続先を一度に開ける。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいタブで ssh して」「〜に ssh 接続したタブを開いて」「サーバーにつないだウィンドウを作って」などと言われたときに使う。
+effort: low
 argument-hint: "[接続先 ...]"
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: sync-vaults
 description: vault（VAULT_DIR、既定 ~/vaults）を同期する。90_Meta（META_DIR、private を含む）を SMB 共有先と双方向同期し、vault 全体（90_Meta 以外）を git で commit / pull --rebase / push する。どのディレクトリで作業していても使える。「vault を同期」「vault を push」「メモを同期」「90_Meta を同期」などと言われたとき、または VAULT_DIR（90_Meta 以外）のファイルを編集した作業の区切りで git の同期に使う。
+effort: medium
 argument-hint: "[meta | git]（省略時は両方）"
 ---
 

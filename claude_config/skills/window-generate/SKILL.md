@@ -1,6 +1,7 @@
 ---
 name: window-generate
 description: 新しいターミナルのタブ（tmux の中では新しいウィンドウ。ペイン分割を指定されたら専用ウィンドウを分割して並べる）でシェルを開き、指定したフォルダに移った状態を作る。既定では開いたウィンドウに画面を切り替える。Claude Code は起動しない。Windows Terminal・macOS のターミナル / iTerm2 / Ghostty・WezTerm・kitty・GNOME Terminal・Konsole・tmux に対応する。「新しいウィンドウを作って」「新しいタブでシェルを開いて」「〜のフォルダでウィンドウを開いて移動して」などと言われたときに使う。
+effort: low
 argument-hint: "[作業フォルダ] [ウィンドウ名]"
 ---
 

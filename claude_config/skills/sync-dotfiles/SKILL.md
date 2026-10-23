@@ -1,6 +1,7 @@
 ---
 name: sync-dotfiles
 description: dotfiles（~/dotfiles）を同期する。このマシンの変更を内容ごとに分けてコミットし、pull --rebase / push してから、ssh の接続先（Home_Mac_1・Home_Desktop_PC_1_win など）の ~/dotfiles を pull し、Claude の設定のリンクを張り直す。「dotfiles を同期して」「dotfiles を push して」「接続先も pull して」「変更を push して接続先に反映して」などと言われたときに使う。
+effort: medium
 argument-hint: "[local | remote]（省略時は両方）[接続先 ...]"
 ---
 
