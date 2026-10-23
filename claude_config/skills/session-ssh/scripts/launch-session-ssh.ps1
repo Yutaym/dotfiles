@@ -2,7 +2,8 @@
 #
 # 使い方:
 #   pwsh -NoProfile -File launch-session-ssh.ps1 -Target <接続先> -Name <セッション名> [-Dir <接続先のフォルダ>]
-#        [-RemoteShell auto|posix|pwsh] [-NoTmux] [-Split] [-Background]
+#        [-RemoteShell auto|posix|pwsh] [-NoTmux] [-Split] [-Background] [-Model <モデル>] [-Effort <effort>]
+#   -Model / -Effort: 接続先の claude --model / --effort に渡す (省略すると接続先の Claude Code の既定)
 #
 # タブ・ウィンドウの開き方は ssh-generate の launch-ssh.ps1 に任せる (起動先の判断・-Split・-Background も同じ)。
 # フォルダの既定は ~/claudeWS (ホームは信頼の確認が保存されないため)。なければ作る (-Dir で指定したときも)。
@@ -21,7 +22,11 @@ param(
     [ValidateSet('auto', 'posix', 'pwsh')][string]$RemoteShell = 'auto',
     [switch]$NoTmux,
     [switch]$Split,
-    [switch]$Background
+    [switch]$Background,
+    # モデル (claude --model)。fable / opus / sonnet / haiku の短い名前なら、いつも最新版になる
+    [string]$Model = '',
+    # effort (claude --effort)
+    [ValidateSet('', 'low', 'medium', 'high', 'xhigh', 'max')][string]$Effort = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -33,6 +38,9 @@ if ($Name -notmatch '^[A-Za-z0-9_-]+$') {
 if ($Dir -notmatch '^~?[A-Za-z0-9._/-]*$') {
     Write-Error "フォルダには英数字と . _ / - (先頭の ~) だけを使ってください: $Dir"
 }
+if ($Model -and $Model -notmatch '^[A-Za-z0-9._-]+$') {
+    Write-Error "-Model には英数字と . _ - だけを使ってください (例: opus, claude-opus-5-5): $Model"
+}
 
 if ($RemoteShell -eq 'auto') {
     # PowerShell なら Core / Desktop と出る。sh 系では $PSVersionTable が空なので .PSEdition と出る。
@@ -43,6 +51,8 @@ if ($RemoteShell -eq 'auto') {
 }
 
 $Claude = "claude --name $Name --remote-control"
+if ($Model) { $Claude += " --model $Model" }
+if ($Effort) { $Claude += " --effort $Effort" }
 if ($RemoteShell -eq 'pwsh') {
     if ($NoTmux) {
         $Remote = "New-Item -ItemType Directory -Force $Dir | Out-Null; Set-Location $Dir; $Claude"

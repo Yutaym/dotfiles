@@ -1,7 +1,8 @@
 # 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (Windows ネイティブ用)
 #
 # 使い方:
-#   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split] [-Switch] [-Resume <セッションID>]
+#   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split] [-Switch] [-Resume <セッションID>] [-Model <モデル>] [-Effort <effort>]
+#   -Model / -Effort: claude --model / --effort に渡す (省略すると Claude Code の既定)。モデルは opus などの短い名前を使う
 #   -Switch: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
 #
 # 起動先の選び方:
@@ -22,7 +23,11 @@ param(
     # tmux の中で、起動したウィンドウに画面を切り替える (tmux 以外では無視する)
     [switch]$Switch,
     # 新しく始めずに、この ID の会話を開く (claude --resume <ID>)
-    [string]$Resume = ''
+    [string]$Resume = '',
+    # モデル (claude --model)。fable / opus / sonnet / haiku の短い名前なら、いつも最新版になる
+    [string]$Model = '',
+    # effort (claude --effort)
+    [ValidateSet('', 'low', 'medium', 'high', 'xhigh', 'max')][string]$Effort = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -34,6 +39,9 @@ if ($Name -and $Name -notmatch '^[A-Za-z0-9_-]+$') {
 }
 if ($Resume -and $Resume -notmatch '^[0-9a-fA-F-]+$') {
     Write-Error "-Resume にはセッション ID (UUID) を指定してください: $Resume"
+}
+if ($Model -and $Model -notmatch '^[A-Za-z0-9._-]+$') {
+    Write-Error "-Model には英数字と . _ - だけを使ってください (例: opus, claude-opus-5-5): $Model"
 }
 # フォルダの指定がなく、今のフォルダがホームなら ~/claudeWS にする
 # (ホームは信頼の確認が保存されず、起動のたびに聞かれるため)。それ以外は今のフォルダを引き継ぐ
@@ -56,6 +64,8 @@ $Shell = if (Get-Command pwsh -ErrorAction SilentlyContinue) { 'pwsh' } else { '
 $InnerArgs = @('-NoExit', '-File', $Inner, '-Dir', $Dir)
 if ($Name) { $InnerArgs += @('-Name', $Name) }
 if ($Resume) { $InnerArgs += @('-Resume', $Resume) }
+if ($Model) { $InnerArgs += @('-Model', $Model) }
+if ($Effort) { $InnerArgs += @('-Effort', $Effort) }
 
 if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
     # 普段は new-window。どの場合も -d を付けて作り、-Switch のときだけ最後にそのウィンドウへ切り替える。-Split のときは専用ウィンドウ (名前が cc-sessions のもの) に並べる。
@@ -102,5 +112,5 @@ else {
     $how = "$Shell の新しいウィンドウ"
 }
 
-Write-Output "launched: $how / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' })"
+Write-Output "launched: $how / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })"
 if ($switched) { Write-Output "switched: $switched" }

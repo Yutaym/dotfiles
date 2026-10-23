@@ -3,7 +3,10 @@ param(
     [Parameter(Mandatory)][string]$Dir,
     [string]$Name = '',
     # 新しく始めずに、この ID の会話を開く (claude --resume <ID>)
-    [string]$Resume = ''
+    [string]$Resume = '',
+    # モデル (claude --model) と effort (claude --effort)。空なら Claude Code の既定
+    [string]$Model = '',
+    [string]$Effort = ''
 )
 
 # 親セッションから引き継ぐと困る変数 (子セッション扱い・親のセッション ID や受信口の取り違えの原因になる)
@@ -18,4 +21,6 @@ Set-Location -LiteralPath $Dir
 $claudeArgs = @()
 if ($Name) { $claudeArgs += @('-n', $Name) }
 if ($Resume) { $claudeArgs += @('--resume', $Resume) }
+if ($Model) { $claudeArgs += @('--model', $Model) }
+if ($Effort) { $claudeArgs += @('--effort', $Effort) }
 claude @claudeArgs

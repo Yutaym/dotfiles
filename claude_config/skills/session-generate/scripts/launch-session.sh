@@ -2,7 +2,8 @@
 # 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (macOS / Linux / WSL 用)
 #
 # 使い方:
-#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-s] [-w]
+#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-m <モデル>] [-e <effort>] [-s] [-w]
+#   -m / -e: claude --model / --effort に渡す (省略すると Claude Code の既定)。モデルは opus などの短い名前を使う
 #   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
 #   -w: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
 #
@@ -29,13 +30,17 @@ DIRSET=0
 NAME=''
 SPLIT=0
 SWITCH=0
-while getopts 'd:n:sw' opt; do
+MODEL=''
+EFFORT=''
+while getopts 'd:n:m:e:sw' opt; do
     case "$opt" in
         d) DIR=$OPTARG; DIRSET=1 ;;
         n) NAME=$OPTARG ;;
+        m) MODEL=$OPTARG ;;
+        e) EFFORT=$OPTARG ;;
         s) SPLIT=1 ;;
         w) SWITCH=1 ;;
-        *) echo "usage: $0 [-d dir] [-n name] [-s] [-w]" >&2; exit 64 ;;
+        *) echo "usage: $0 [-d dir] [-n name] [-m model] [-e effort] [-s] [-w]" >&2; exit 64 ;;
     esac
 done
 
@@ -43,6 +48,16 @@ done
 case "$NAME" in
     *[!A-Za-z0-9_-]*) echo "セッション名には英数字・ハイフン・アンダースコアだけを使ってください: $NAME" >&2; exit 64 ;;
 esac
+# モデルと effort は起動用スクリプトにそのまま書くので、使える文字を絞る
+case "$MODEL" in
+    -*|*[!A-Za-z0-9._-]*) echo "-m には英数字と . _ - だけを使ってください (例: opus, claude-opus-5-5): $MODEL" >&2; exit 64 ;;
+esac
+case "$EFFORT" in
+    ''|low|medium|high|xhigh|max) ;;
+    *) echo "-e は low / medium / high / xhigh / max のどれかにしてください: $EFFORT" >&2; exit 64 ;;
+esac
+# claude に渡すオプション (セッション名・モデル・effort)
+CLAUDE_OPTS="${NAME:+ -n $NAME}${MODEL:+ --model $MODEL}${EFFORT:+ --effort $EFFORT}"
 # フォルダの指定がなく、今のフォルダがホームなら ~/claudeWS にする
 # (ホームは信頼の確認が保存されず、起動のたびに聞かれるため)。それ以外は今のフォルダを引き継ぐ
 if [ "$DIRSET" = 0 ] && [ "$(pwd -P)" = "$(cd "$HOME" && pwd -P)" ]; then
@@ -62,11 +77,7 @@ INNER=$(mktemp "${TMPDIR:-/tmp}/cc-launch.XXXXXX")
     echo 'rm -f -- "$0"'
     echo 'unset CLAUDECODE CLAUDE_PID CLAUDE_CODE_CHILD_SESSION CLAUDE_CODE_ENTRYPOINT CLAUDE_CODE_SESSION_ID CLAUDE_CODE_SESSION_ATTENDED CLAUDE_CODE_MESSAGING_SOCKET CLAUDE_CODE_MESSAGING_TOKEN CLAUDE_CODE_BRIDGE_SESSION_ID'
     printf 'cd %s || exit 1\n' "'$(printf '%s' "$DIR" | sed "s/'/'\\\\''/g")'"
-    if [ -n "$NAME" ]; then
-        printf 'claude -n %s\n' "$NAME"
-    else
-        echo 'claude'
-    fi
+    echo "claude$CLAUDE_OPTS"
     # claude を終了してもタブを閉じずに、ログインシェルを残す
     echo 'exec "${SHELL:-/bin/sh}" -l'
 } > "$INNER"
@@ -75,7 +86,7 @@ chmod +x "$INNER"
 have() { command -v "$1" >/dev/null 2>&1; }
 
 launched() {
-    echo "launched: $1 / dir=$DIR / name=${NAME:-(自動)}"
+    echo "launched: $1 / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}"
     exit 0
 }
 
@@ -90,11 +101,7 @@ switch_to() {
 manual() {
     rm -f -- "$INNER"
     echo "このターミナルでは自動でタブを開けませんでした ($1)。新しいタブで次を実行してください:" >&2
-    if [ -n "$NAME" ]; then
-        echo "  cd '$DIR' && env -u CLAUDECODE -u CLAUDE_CODE_CHILD_SESSION -u CLAUDE_CODE_SESSION_ID claude -n $NAME" >&2
-    else
-        echo "  cd '$DIR' && env -u CLAUDECODE -u CLAUDE_CODE_CHILD_SESSION -u CLAUDE_CODE_SESSION_ID claude" >&2
-    fi
+    echo "  cd '$DIR' && env -u CLAUDECODE -u CLAUDE_CODE_CHILD_SESSION -u CLAUDE_CODE_SESSION_ID claude$CLAUDE_OPTS" >&2
     exit 2
 }
 

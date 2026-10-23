@@ -1,6 +1,7 @@
 ---
 name: session-ssh
 description: ~/.ssh/config の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ）で ssh 接続して、接続先で Remote Control つきの Claude Code を名前付きで起動する。このマシンのセッションと同じように ListAgents / SendMessage で作業を頼める。「リモートで Claude を起動して」「〜のマシンでセッションを開いて」「ssh 先で Claude を動かして」などと言われたときに使う。
+effort: medium
 argument-hint: "[接続先] [フォルダ] [作業]"
 ---
 
@@ -35,19 +36,21 @@ ssh の接続先（別のマシン）で Claude Code を起動し、このマシ
    - まだ信頼していないフォルダでは、Claude の起動時に信頼の確認が出る（`~/claudeWS` も、接続先ごとに最初の 1 回だけ出る）。ホームフォルダ（`~`）は信頼が保存されず毎回出るので、ユーザーに言われない限り `~` は使わない。
 3. セッション名は session-generate と同じ決まりで決める（英数字・`-`・`_` だけ、今の `ListAgents` にない名前）。指定がなければ `<接続先を短くしたもの>-<作業を表す英単語>`（例: `mac-review`）にする。フォルダを指定したときは、作業を表す英単語の代わりにフォルダ名を使ってもよい（例: `~/dotfiles` なら `mac-dotfiles`）。
    - 接続先の tmux のセッション名にも同じ名前を使う。同じ名前ですでに動いていれば、新しく起動せずにそのセッションにつなぎ直す。
+4. モデルと effort は、session-generate の「モデルと effort を決める」と同じ決め方で決める（頼む作業から自動で選ぶ。ユーザーの指定が優先。モデルは `opus` などの短い名前）。接続先の Claude Code で `--model` / `--effort` として渡す。
+   - 同じ名前の tmux セッションにつなぎ直すときは、すでに動いている Claude にはモデルと effort は効かない。
 
 ## 2. 起動する
 
 **Windows（ネイティブ）:** PowerShell ツールで実行する。
 
 ```powershell
-pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\launch-session-ssh.ps1" -Target <接続先> -Name <セッション名> [-Dir <接続先のフォルダ>] [-RemoteShell auto|posix|pwsh] [-NoTmux] [-Split] [-Background]
+pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\launch-session-ssh.ps1" -Target <接続先> -Name <セッション名> [-Dir <接続先のフォルダ>] [-RemoteShell auto|posix|pwsh] [-NoTmux] [-Split] [-Background] [-Model <モデル>] [-Effort <effort>]
 ```
 
 **macOS / Linux / WSL:** Bash ツールで実行する。
 
 ```bash
-sh "<このスキルのフォルダ>/scripts/launch-session-ssh.sh" -h <接続先> -n <セッション名> [-d <接続先のフォルダ>] [-T] [-s] [-b]
+sh "<このスキルのフォルダ>/scripts/launch-session-ssh.sh" -h <接続先> -n <セッション名> [-d <接続先のフォルダ>] [-m <モデル>] [-e <effort>] [-T] [-s] [-b]
 ```
 
 - タブ・ウィンドウの開き方は ssh-generate の `launch-ssh` スクリプトに任せる（起動先の判断、ペイン分割の `-Split` / `-s`、tmux の扱いは同じ）。ウィンドウの名前はセッション名になる。
