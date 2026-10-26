@@ -322,8 +322,8 @@ def row(item, host=None, windows=None):
     if waiting and waiting[0] == "状態":
         group, state, style = 0, status, "bold red"
         move = Text(f"返事待ち（{ago(item.get('statusUpdatedAt'))}から）", style="bold red")
-    elif status == "busy":
-        group, state, style = 1, "busy", "bold yellow"
+    elif status in _OVERVIEW.BUSY:
+        group, state, style = 1, status, "bold yellow"
         move = Text(f"作業中（{ago(item.get('statusUpdatedAt'))}から）", style="yellow")
     elif status != "idle":
         group, state, style = 2, status, "bold magenta"

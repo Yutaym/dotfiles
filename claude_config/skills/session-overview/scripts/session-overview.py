@@ -389,6 +389,8 @@ QUESTION_RE = re.compile(
 # 元に戻すときは、judge_waiting の COND_RE を使っている条件を消す (~/vaults/90_Meta の session-observation メモも参照)
 COND_RE = re.compile(r"(?:たら|れば|なら|場合は|ときは)[^。．.!！？?]*$")
 WAITING = {"waiting", "requires_action"}
+# 作業中の状態。shell は Claude Code がシェルのコマンドを動かしている間の状態で、本体も busy と同じ「作業中」として出す (2026/10/26 に claude.exe 2.1.310 で確認)
+BUSY = {"busy", "shell"}
 
 
 def judge_waiting(item):
