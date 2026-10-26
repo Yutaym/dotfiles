@@ -1,6 +1,8 @@
 // Claude Code の statusLine 用スクリプト。stdin の JSON から次を 1 行にまとめて右揃えで出す
 //   使用リミット（5 時間・週）と、このペースで上限に届く時刻 / コンテキスト使用率 / キャッシュの残り時間 / effort などの状態 / モデル
 // rate_limits は Pro / Max のみ、セッションの最初の応答の後から入る。各項目は欠けることがあるので、あるものだけ出す
+import { spawnSync } from 'node:child_process';
+
 let raw = '';
 for await (const chunk of process.stdin) raw += chunk;
 let d = {};
@@ -73,3 +75,27 @@ const width = (s) =>
   );
 const cols = Number(process.env.COLUMNS) || 0;
 console.log('\x1b[0m' + ' '.repeat(Math.max(0, cols - RIGHT_MARGIN - width(line))) + line);
+
+// tmux（psmux）の中なら、ウィンドウ名をセッション名（--name や /rename で付けた名前）にそろえる
+// 自動で付いたタイトル（日本語や空白を含む）は使わないよう、英数字と - _ だけの名前のときに限る
+// 同じウィンドウで Claude（psmux では node、tmux では claude か node）が 2 つ以上動いていれば変えない
+// psmux は -t %ID を取り違えることがあるので、list-panes で「セッション名:ウィンドウ番号」に直して指定する
+const syncTmuxWindowName = () => {
+  const name = d.session_name;
+  const pane = process.env.TMUX_PANE;
+  if (!process.env.TMUX || !pane || !name || !/^[A-Za-z0-9_-]+$/.test(name)) return;
+  const r = spawnSync('tmux', ['list-panes', '-a', '-F', '#{pane_id}\t#{session_name}:#{window_index}\t#{window_name}\t#{pane_current_command}'], {
+    encoding: 'utf8',
+    timeout: 2000,
+  });
+  if (r.status !== 0 || !r.stdout) return;
+  const rows = r.stdout.trim().split(/\r?\n/).map((l) => l.split('\t'));
+  const me = rows.find((x) => x[0] === pane);
+  if (!me || me[2] === name) return;
+  const claudes = rows.filter((x) => x[1] === me[1] && /^(claude|node)(\.exe)?$/.test(x[3] ?? ''));
+  if (claudes.length > 1) return;
+  spawnSync('tmux', ['rename-window', '-t', me[1], name], { timeout: 2000 });
+};
+try {
+  syncTmuxWindowName();
+} catch {}
