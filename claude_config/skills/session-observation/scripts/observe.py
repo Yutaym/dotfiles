@@ -225,32 +225,19 @@ def one_line(text, limit):
 
 
 CONTINUED = "This session is being continued"
-# 返答の終わり方から「返事待ち?」と推定する言葉。「ください」は、ユーザーの返事を求めるもの (教えて・選んで など) だけにする。
-# 「確認してください」「実行してください」などの作業のお願いは、返事が要らないので含めない (2026/10/22 にユーザーが決めた)
-QUESTION_RE = re.compile(
-    r"(？|\?|ますか|ですか|でしょうか"
-    r"|(?:教えて|選んで|決めて|知らせて|お知らせ|返信して|回答して|指示して|返事を|回答を|指示を|ご指示|ご返信|ご回答)"
-    r"(?:ください|下さい))"
-    r"[。．.!！]?[)）」』]?\s*$"
-)
-WAIT_LOG = os.path.join(STATE_DIR, "waiting.log")
+# 返事待ちの判定 (QUESTION_RE / COND_RE / judge_waiting) は session-overview.py に置いてある。
+# session-overview の表と同じ基準にするため、ここでは持たずにそれを呼ぶ。基準を変えるときは session-overview.py を直す。
+_OVERVIEW = None
 
 
 def judge_waiting(item):
-    """返事待ちかどうかを (種類, 判断の材料) で返す。返事待ちでなければ None。
-    種類は "状態" (sessions/*.json の status が waiting / requires_action。確か) か
-    "推定" (idle で、24 時間以内の最後の返答が QUESTION_RE で終わる)。"""
-    status = item.get("status")
-    if status in WAITING:
-        return "状態", f"status={status}"
-    reply = item.get("lastReply")
-    last = item.get("lastTime") or item.get("statusUpdatedAt")
-    if status != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
-        return None
-    # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
-    tail = reply.get("tail") or " ".join((reply.get("text") or "").split())[-100:]
-    m = QUESTION_RE.search(tail)
-    return ("推定", f"「{m.group(1)}」で終わる") if m else None
+    global _OVERVIEW
+    if _OVERVIEW is None:
+        _OVERVIEW = load_module("session_overview", "session-overview.py")
+    return _OVERVIEW.judge_waiting(item)
+
+
+WAIT_LOG = os.path.join(STATE_DIR, "waiting.log")
 
 
 class WaitLog:
@@ -305,9 +292,6 @@ def place(item, host=None, windows=None):
     return f"{folder} / 不明"
 
 
-WAITING = {"waiting", "requires_action"}
-
-
 def row(item, host=None, windows=None):
     """(並べ替えの鍵, 返事待ちの判定, No, セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。
     並びは優先度の高い順: 返事待ち (状態が waiting / requires_action のもの) → 返事待ち? (最後の返答が質問で終わるもの)
@@ -349,7 +333,7 @@ def row(item, host=None, windows=None):
         move = Text("記録なし", style="dim")
     # 返答の終わり方からの推定は、確かな返事待ち (状態) と分けて「返事待ち?」として、太字にしない
     elif waiting:
-        group, state, style = 0.5, "idle", "green"
+        group, state, style = 0.5, "idle", "red"
         move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
     else:
         state, style = "idle", "green"

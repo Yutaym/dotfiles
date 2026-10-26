@@ -23,6 +23,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 
 CONFIG_DIR = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.join(os.path.expanduser("~"), ".claude")
 SELF_ID = os.environ.get("CLAUDE_CODE_SESSION_ID", "")
@@ -354,12 +355,82 @@ def main():
             print(f"  [{local_time(ts)} {who}] {shorten(text, args.chars)}")
         if last_reply:
             print(f"  最後の返答 [{local_time(last_reply[0])}] {shorten(last_reply[1], args.chars * 2)}")
+        item = {"status": s.get("status"), "lastTime": last_time, "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
+                "lastReply": {"time": last_reply[0], "text": last_reply[1]} if last_reply else None}
+        w = judge_waiting(item)
+        print(f"判定: {wait_label(item)}" + (f"（{w[1]}）" if w else "") + " ← 表の「最後の動き」の返事待ちは、この判定に従う")
         print()
+
+
+def to_epoch(value):
+    """ミリ秒のエポック時刻か ISO 形式の文字列を、秒のエポック時刻にする。"""
+    if not value:
+        return None
+    if isinstance(value, (int, float)):
+        return value / 1000
+    try:
+        return datetime.datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return None
+
+
+# 返事待ちかどうかの判定は、session-overview (この出力の「判定:」行) と session-observation の監視画面 (observe.py) の
+# 両方がこの関数を使う。基準を変えるときはここだけを直す。
+# 返答の終わり方から「返事待ち?」と推定する言葉。「ください」は、ユーザーの返事を求めるもの (教えて・選んで など) だけにする。
+# 「確認してください」「実行してください」などの作業のお願いは、返事が要らないので含めない (2026/10/22 にユーザーが決めた)
+QUESTION_RE = re.compile(
+    r"(？|\?|ますか|ですか|でしょうか"
+    r"|(?:教えて|選んで|決めて|知らせて|お知らせ|返信して|回答して|指示して|返事を|回答を|指示を|ご指示|ご返信|ご回答)"
+    r"(?:ください|下さい))"
+    r"[。．.!！]?[)）」』]?\s*$"
+)
+# 「崩れていたら教えてください」のような、条件付きの依頼は返事待ちにしない (2026/10/26 にユーザーが決めた。案 A)。
+# 条件の言葉 (たら・れば・なら・場合は・ときは) と「教えて・知らせて」の依頼が同じ文にあるものを除く。
+# 元に戻すときは、judge_waiting の COND_RE を使っている条件を消す (~/vaults/90_Meta の session-observation メモも参照)
+COND_RE = re.compile(r"(?:たら|れば|なら|場合は|ときは)[^。．.!！？?]*$")
+WAITING = {"waiting", "requires_action"}
+
+
+def judge_waiting(item):
+    """返事待ちかどうかを (種類, 判断の材料) で返す。返事待ちでなければ None。
+    種類は "状態" (sessions/*.json の status が waiting / requires_action。確か) か
+    "推定" (idle で、24 時間以内の最後の返答が QUESTION_RE で終わる)。
+    item は status・lastTime・statusUpdatedAt・lastReply ({time, text, tail}) を持つ辞書 (--json の 1 要素と同じ形)。"""
+    status = item.get("status")
+    if status in WAITING:
+        return "状態", f"status={status}"
+    reply = item.get("lastReply")
+    last = item.get("lastTime") or item.get("statusUpdatedAt")
+    if status != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
+        return None
+    # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
+    tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
+    # 最後の数行のどれかが質問で終わっていれば返事待ち (質問のあとに「次の手順」などの行が続く返答がある)
+    for line in reversed(tail.splitlines()):
+        m = QUESTION_RE.search(line)
+        if m and not (m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(line[:m.end()].rstrip("。．.!！)）」』 "))):
+            return "推定", f"「{m.group(1)}」で終わる"
+    return None
+
+
+def wait_label(item):
+    """judge_waiting の結果を「返事待ち」「返事待ち?」「なし」にする。"""
+    w = judge_waiting(item)
+    return "なし" if not w else "返事待ち" if w[0] == "状態" else "返事待ち?"
+
+
+def tail_for_judging(text, n=3):
+    """返事待ちの判断に使う、返答の最後の n 行 (改行は残す)。末尾の「※ 〜」で始まる補足の行は、質問ではないので除く
+    (2026/10/26 に、質問のあとに補足が付いた返答が「完了」と出た)。"""
+    lines = text.rstrip().splitlines()
+    while lines and (not lines[-1].strip() or lines[-1].lstrip().startswith("※")):
+        lines.pop()
+    return "\n".join(" ".join(ln.split())[-100:] for ln in lines[-n:] if ln.strip())
 
 
 def print_json(sessions, procs, panes, n, chars, numbers):
     """セッションごとの材料を JSON の配列で出す。時刻はミリ秒のエポック時刻か ISO 形式のまま。
-    lastReply.tail は、返答の最後の 100 文字 (切り詰めない)。返事待ちかどうかを、返答の終わり方で判断するのに使う。"""
+    lastReply.tail は、返答の最後の 3 行 (※ の補足行を除く。1 行 100 文字まで)。返事待ちかどうかを、返答の終わり方で判断するのに使う。"""
     out = []
     for s in sessions:
         sid = s.get("sessionId", "")
@@ -381,8 +452,9 @@ def print_json(sessions, procs, panes, n, chars, numbers):
                 "transcript": True, "title": title, "lastTime": last_time, "promptCount": len(prompts),
                 "prompts": [{"time": ts, "origin": o, "text": shorten(t, chars)} for ts, o, t in picked],
                 "lastReply": {"time": last_reply[0], "text": shorten(last_reply[1], chars * 2),
-                              "tail": " ".join(last_reply[1].split())[-100:]} if last_reply else None,
+                              "tail": tail_for_judging(last_reply[1])} if last_reply else None,
             })
+        item["wait"] = wait_label(item)
         out.append(item)
     print(json.dumps(out, ensure_ascii=False))
 
