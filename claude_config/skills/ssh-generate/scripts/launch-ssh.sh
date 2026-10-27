@@ -79,6 +79,9 @@ make_inner() {
             printf 'ssh %s\n' "$1"
         fi
         echo 'rc=$?'
+        # 接続が切れると、接続先の tmux などがオンにしたマウスの報告などのモードが残り、
+        # マウスを動かすたびに ^[[<35;x;yM のような文字が入力に入るので、ここで戻す
+        echo "printf '\\033[?1000l\\033[?1002l\\033[?1003l\\033[?1005l\\033[?1006l\\033[?1015l\\033[?1004l\\033[?2004l'"
         echo '[ -n "$TMUX_PANE" ] && tmux set -pu -t "$TMUX_PANE" @ssh_host 2>/dev/null'
         echo 'if [ "$rc" -ne 0 ]; then'
         echo '    echo; echo "ssh が終了しました (終了コード $rc)。Enter で閉じます。"; read _'

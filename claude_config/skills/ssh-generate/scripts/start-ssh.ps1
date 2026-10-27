@@ -18,6 +18,11 @@ else {
     ssh $Target
 }
 $code = $LASTEXITCODE
+# 接続が切れると、接続先の tmux などがオンにしたマウスの報告・フォーカスの報告・括弧付き貼り付けのモードが残り、
+# マウスを動かすたびに ^[[<35;x;yM のような文字が入力に入る。ここで戻し、もう入った分は読み捨てる
+$e = [char]27
+[Console]::Write("$e[?1000l$e[?1002l$e[?1003l$e[?1005l$e[?1006l$e[?1015l$e[?1004l$e[?2004l")
+try { while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) } } catch {}
 if ($InTmux) { tmux set -pu -t $env:TMUX_PANE '@ssh_host' 2>$null }
 if ($code -ne 0) {
     Write-Host ""
