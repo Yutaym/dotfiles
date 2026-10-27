@@ -335,6 +335,10 @@ def row(item, host=None, windows=None):
     elif waiting:
         group, state, style = 0.5, "idle", "red"
         move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
+    elif _OVERVIEW.judge_closable(item)[0]:
+        # もう閉じてもかまわないセッション (判定は session-overview.py の judge_closable。表の ⚪ と同じ) は灰色
+        state, style = "idle", "bright_black"
+        move = Text(f"完了（閉じてよい） {hm(last)}（{ago(last)}）", style="bright_black")
     else:
         state, style = "idle", "green"
         move = Text(f"完了 {hm(last)}（{ago(last)}）", style="green")
