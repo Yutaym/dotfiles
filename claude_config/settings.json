@@ -65,6 +65,15 @@
             "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
           }
         ]
+      },
+      {
+        "matcher": "Bash|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/pretool-guard.mjs\""
+          }
+        ]
       }
     ],
     "SessionEnd": [

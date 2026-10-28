@@ -41,19 +41,25 @@ for (let i = entries.length - 1; i >= 0; i--) {
 if (start < 0) process.exit(0);
 
 const prompt = entries[start].message.content;
+// ほかのセッションからのメッセージ（origin.kind が "peer" など）は、長さや言葉では止めない
+const fromHuman = (entries[start].origin?.kind ?? "human") === "human";
 let researched = false;
 let wroteMeta = false;
+let lastText = "";
 for (const e of entries.slice(start + 1)) {
   if (e.type !== "assistant" || e.isSidechain || !Array.isArray(e.message?.content)) continue;
   for (const c of e.message.content) {
+    if (c.type === "text") lastText = c.text;
     if (c.type !== "tool_use") continue;
     if (RESEARCH_TOOLS.has(c.name)) researched = true;
     if (WRITE_TOOLS.has(c.name) && JSON.stringify(c.input ?? {}).includes("90_Meta")) wroteMeta = true;
   }
 }
 
-const informative = prompt.length > LONG_PROMPT || KEYWORDS.some((k) => prompt.includes(k));
-if (wroteMeta || !(researched || informative)) process.exit(0);
+// 最後の返答で、もう保存するかを判断していれば止めない
+const judged = /保存(しない|しません|しなかった|済み|しました)|90_Meta\s*(に|へ|には)/.test(lastText);
+const informative = fromHuman && (prompt.length > LONG_PROMPT || KEYWORDS.some((k) => prompt.includes(k)));
+if (wroteMeta || judged || !(researched || informative)) process.exit(0);
 
 const why = researched ? "このターンで調べもの（WebFetch / WebSearch / サブエージェント）をした" : "ユーザーのメッセージに覚えておく情報がありそう";
 console.log(JSON.stringify({
