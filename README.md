@@ -35,6 +35,7 @@ pwsh ~/dotfiles/powershell_config/install_powershell.ps1
 pwsh ~/dotfiles/neovim_config/install_nvim.ps1
 pwsh ~/dotfiles/vim_config/install_vim.ps1
 pwsh ~/dotfiles/claude_config/install_claude.ps1
+pwsh ~/dotfiles/claude_config/install_agy.ps1         # Antigravity CLI（agy）。公式インストーラを取得して確認してから実行する。ログインは導入後に対話型の agy で行う
 pwsh ~/dotfiles/winterminal_config/install_winterminal.ps1
 pwsh ~/dotfiles/tmux_config/install_tmux.ps1          # psmux 用（~/.psmux.conf にリンク）
 ```
@@ -49,6 +50,7 @@ bash ~/dotfiles/zsh_config/install_zsh.sh
 bash ~/dotfiles/neovim_config/install_nvim.sh   # Neovim 本体のインストールは Linux x86_64 のみ
 bash ~/dotfiles/vim_config/install_vim.sh
 bash ~/dotfiles/claude_config/install_claude.sh
+bash ~/dotfiles/claude_config/install_agy.sh          # Antigravity CLI（agy）。公式インストーラを取得して確認してから実行する。ログインは導入後に対話型の agy で行う
 bash ~/dotfiles/tmux_config/install_tmux.sh   # ~/.config/tmux/tmux.conf にリンクし、tpm を clone する
 ```
 
