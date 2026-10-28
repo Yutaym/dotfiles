@@ -2,6 +2,9 @@
 //   使用リミット（5 時間・週）と、このペースで上限に届く時刻 / コンテキスト使用率 / キャッシュの残り時間 / effort などの状態 / モデル
 // rate_limits は Pro / Max のみ、セッションの最初の応答の後から入る。各項目は欠けることがあるので、あるものだけ出す
 import { spawnSync } from 'node:child_process';
+import { mkdirSync, renameSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 let raw = '';
 for await (const chunk of process.stdin) raw += chunk;
@@ -58,6 +61,21 @@ const badges = () => {
 
 const parts = [];
 const rl = d.rate_limits ?? {};
+
+// 使用リミットを ~/.claude/cache/rate_limits.json に書き出す（スキルなどが、使用率を見て作業の振り分けを決めるため）
+// 同じアカウントの値なので、どのセッションが書いても同じ。読み手が途中まで書かれたファイルを読まないよう、一時ファイルに書いてから置き換える
+const saveRateLimits = () => {
+  if (rl.five_hour?.used_percentage == null && rl.seven_day?.used_percentage == null) return;
+  const dir = join(homedir(), '.claude', 'cache');
+  const file = join(dir, 'rate_limits.json');
+  const tmp = `${file}.${process.pid}.tmp`;
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(tmp, JSON.stringify({ updated_at: now, ...rl }));
+  renameSync(tmp, file);
+};
+try {
+  saveRateLimits();
+} catch {}
 if (rl.five_hour?.used_percentage != null) parts.push(rateLimit('5h', rl.five_hour, 5 * 3600, false));
 if (rl.seven_day?.used_percentage != null) parts.push(rateLimit('週', rl.seven_day, 7 * 86400, true));
 if (d.context_window?.used_percentage != null) parts.push(pct('ctx', d.context_window.used_percentage));
