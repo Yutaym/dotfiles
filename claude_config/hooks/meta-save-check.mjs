@@ -64,5 +64,5 @@ if (wroteMeta || judged || !(researched || informative)) process.exit(0);
 const why = researched ? "このターンで調べもの（WebFetch / WebSearch / サブエージェント）をした" : "ユーザーのメッセージに覚えておく情報がありそう";
 console.log(JSON.stringify({
   decision: "block",
-  reason: `（Hook）${why}のに、90_Meta に何も書いていない。CLAUDE.md のナレッジベースの決まりに従い、保存するか判断する。残す価値があれば保存し、保存しないなら理由を返答に一言書いて終える。`,
+  reason: `（Hook）${why}のに、90_Meta に何も書いていない。CLAUDE.md のナレッジベースの決まりに従い、保存するか判断する。残す価値があれば保存してどこに保存したかを書き、保存しないなら何も書かずに終える。`,
 }));
