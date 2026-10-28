@@ -388,6 +388,8 @@ QUESTION_RE = re.compile(
 # 条件の言葉 (たら・れば・なら・場合は・ときは) と「教えて・知らせて」の依頼が同じ文にあるものを除く。
 # 元に戻すときは、judge_waiting の COND_RE を使っている条件を消す (~/vaults/90_Meta の session-observation メモも参照)
 COND_RE = re.compile(r"(?:たら|れば|なら|場合は|ときは)[^。．.!！？?]*$")
+# 質問のあとの「よければ、〜します。」の予告 (質問の文には「？」「ますか」などがない、質問のあとの 1 文だけを除く)
+PREVIEW_RE = re.compile(r"\s*(?:よければ|よろしければ|良ければ|問題なければ|問題ないなら|それでよければ|OK なら|OKなら)[^？?]*$")
 WAITING = {"waiting", "requires_action"}
 # 作業中の状態。shell は Claude Code がシェルのコマンドを動かしている間の状態で、本体も busy と同じ「作業中」として出す (2026/10/26 に claude.exe 2.1.310 で確認)
 BUSY = {"busy", "shell"}
@@ -409,9 +411,12 @@ def judge_waiting(item):
     tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
     # 最後の数行のどれかが質問で終わっていれば返事待ち (質問のあとに「次の手順」などの行が続く返答がある)
     for line in reversed(tail.splitlines()):
-        m = QUESTION_RE.search(line)
-        if m and not (m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(line[:m.end()].rstrip("。．.!！)）」』 "))):
-            return "推定", f"「{m.group(1)}」で終わる"
+        # 質問のあとに「よければ、〜します。」のような、答えたあとの予告の文が付いていても、質問で終わるものとして扱う
+        # (2026/10/28 に、「A で進めてよいですか？ よければ、直して commit・push します。」が完了と出た)
+        for text in (line, PREVIEW_RE.sub("", line)):
+            m = QUESTION_RE.search(text)
+            if m and not (m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(text[:m.end()].rstrip("。．.!！)）」』 "))):
+                return "推定", f"「{m.group(1)}」で終わる"
     return None
 
 
@@ -427,7 +432,7 @@ def tail_for_judging(text, n=3):
     lines = text.rstrip().splitlines()
     while lines and (not lines[-1].strip() or lines[-1].lstrip().startswith("※")):
         lines.pop()
-    return "\n".join(" ".join(ln.split())[-100:] for ln in lines[-n:] if ln.strip())
+    return "\n".join(" ".join(ln.split())[-160:] for ln in lines[-n:] if ln.strip())
 
 
 def print_json(sessions, procs, panes, n, chars, numbers):
