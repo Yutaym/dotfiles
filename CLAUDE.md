@@ -14,3 +14,10 @@
   - 今入れているもの: git（Linux / macOS は確認だけ）、nvm（Windows は nvm-windows）と Node.js の LTS、npm のグローバルパッケージ（`scripts/npm_global_packages.txt`。nvm の node に入れる）、uv、GitHub Copilot CLI（Windows は winget、Linux / macOS は npm）。
   - 新しく足すときは、`.sh` と `.ps1` の両方に書く（片方の OS でしか使わないものは、その OS のほうだけでよい）。入っていればスキップする形にして、何度実行してもよいようにする。
   - 足したら、`README.md` の構成とセットアップの説明、この一覧も更新する。
+
+## Claude の設定（settings.json）
+
+- `claude_config/settings.json`（`~/.claude/settings.json` の実体）は、全部の環境で共通に使う設定だけを書く。
+- そのマシンだけの設定（そのマシンのパスや、特定のリポジトリの説明を含む `autoMode`、そのマシンでだけ許可するコマンドなど）が `settings.json` に入っていたら、`~/.claude/settings.local.json`（git の管理外）に移して、`settings.json` からは外す。
+  - Claude Code が自動で `settings.json` に書き足した設定も、同じように扱う。
+  - 移したあとの `settings.json` が HEAD と中身が同じなら（並べ替えだけなら）、`git checkout -- claude_config/settings.json` で戻す。
