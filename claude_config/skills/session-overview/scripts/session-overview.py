@@ -359,8 +359,6 @@ def main():
                 "lastReply": {"time": last_reply[0], "text": last_reply[1]} if last_reply else None}
         w = judge_waiting(item)
         print(f"判定: {wait_label(item)}" + (f"（{w[1]}）" if w else "") + " ← 表の「最後の動き」の返事待ちは、この判定に従う")
-        ok, why = judge_closable(item)
-        print(f"閉じてよい: {'はい' if ok else 'いいえ'}（{why}） ← はい のときは、表の状態の絵文字を ⚪ にする")
         print()
 
 
@@ -423,31 +421,6 @@ def wait_label(item):
     return "なし" if not w else "返事待ち" if w[0] == "状態" else "返事待ち?"
 
 
-# 「もう閉じてもかまわない」セッションの判定 (2026/10/28 にユーザーが決めた: 返答を見て、これ以上続かなそうなもの)。
-# idle で、返事待ち (judge_waiting) でもなく、記録があり、最後の返答の終わりのほうに「まだ続く」ことを示す言葉がないもの。
-# 色も同じ: 表では ⚪ (灰)、監視画面では灰色。session-overview と observe.py の両方がこの関数を使う。
-CONTINUE_RE = re.compile(
-    r"次の手順|次に|次は|続き|続けて|このあと|この後|あとで|後で|したら|してから|待って|ください|下さい|お願い|ほしい|欲しい"
-    r"|ましょうか|いかがですか|どうでしょう|必要があります|未確認|これから|予定です"
-)
-
-
-def judge_closable(item):
-    """閉じてもかまわないかどうかを (True, 理由) か (False, 理由) で返す。"""
-    if item.get("status") != "idle":
-        return False, f"状態が {item.get('status')}"
-    if not item.get("transcript", True) or not item.get("lastReply"):
-        return False, "会話記録がない"
-    if judge_waiting(item):
-        return False, "返事待ち"
-    reply = item["lastReply"]
-    tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
-    m = CONTINUE_RE.search(tail)
-    if m:
-        return False, f"「{m.group(0)}」があり、続きがありそう"
-    return True, "完了の報告で終わり、続きを示す言葉がない"
-
-
 def tail_for_judging(text, n=3):
     """返事待ちの判断に使う、返答の最後の n 行 (改行は残す)。末尾の「※ 〜」で始まる補足の行は、質問ではないので除く
     (2026/10/26 に、質問のあとに補足が付いた返答が「完了」と出た)。"""
@@ -484,7 +457,6 @@ def print_json(sessions, procs, panes, n, chars, numbers):
                               "tail": tail_for_judging(last_reply[1])} if last_reply else None,
             })
         item["wait"] = wait_label(item)
-        item["closable"] = judge_closable(item)[0]
         out.append(item)
     print(json.dumps(out, ensure_ascii=False))
 
