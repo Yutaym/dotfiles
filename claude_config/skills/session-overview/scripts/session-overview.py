@@ -390,6 +390,13 @@ QUESTION_RE = re.compile(
 COND_RE = re.compile(r"(?:たら|れば|なら|場合は|ときは)[^。．.!！？?]*$")
 # 質問のあとの「よければ、〜します。」の予告 (質問の文には「？」「ますか」などがない、質問のあとの 1 文だけを除く)
 PREVIEW_RE = re.compile(r"\s*(?:よければ|よろしければ|良ければ|問題なければ|問題ないなら|それでよければ|OK なら|OKなら)[^？?]*$")
+# 疑問文でない、判断を頼む言い方 (「A か B を決めていただければ、そのとおりに作ります」など)。行のどこにあっても返事待ち?にする。
+# 返答の最後に、保存先や連絡の報告の段落が付いていても拾える (2026/10/28 に、この形が完了と出た)
+REQUEST_RE = re.compile(
+    r"(?:決めて|選んで|判断して|指示して|教えて|知らせて|返事して|回答して|返信して|お選び|お決め|ご指示|ご判断|ご返信|ご回答|ご連絡)"
+    r"(?:い)?ただければ"
+    r"|(?:どちら|どれ|どの案|どっち)(?:に|で)(?:する|進める|します|進めます)か(?:を|は)?(?:決めて|選んで|教えて|ご指示|お知らせ|指示して)"
+)
 WAITING = {"waiting", "requires_action"}
 # 作業中の状態。shell は Claude Code がシェルのコマンドを動かしている間の状態で、本体も busy と同じ「作業中」として出す (2026/10/26 に claude.exe 2.1.310 で確認)
 BUSY = {"busy", "shell"}
@@ -413,6 +420,9 @@ def judge_waiting(item):
     for line in reversed(tail.splitlines()):
         # 質問のあとに「よければ、〜します。」のような、答えたあとの予告の文が付いていても、質問で終わるものとして扱う
         # (2026/10/28 に、「A で進めてよいですか？ よければ、直して commit・push します。」が完了と出た)
+        m = REQUEST_RE.search(line)
+        if m:
+            return "推定", f"「{m.group(0)}」がある"
         for text in (line, PREVIEW_RE.sub("", line)):
             m = QUESTION_RE.search(text)
             if m and not (m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(text[:m.end()].rstrip("。．.!！)）」』 "))):
