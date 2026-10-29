@@ -72,6 +72,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/remote-over
   - このマシンのセッションは sessionId、ssh の接続先のセッションは「接続先|sessionId」で番号を振る（`remote-overview.py` がこのマシンの表で振る。接続先の session-overview.py は `--no-number` で動かし、接続先には番号を記録しない）。
   - `番号: -` のとき、または `番号:` の行がないとき（接続先の session-overview.py が古いなど）は `-` と書く。
   - 表の行は No の小さい順に並べる。このセッション自身は、番号を書いて最後の行に置く。
+  - ユーザーはこの番号を `SNo3` のように呼ぶ（CLAUDE.md の「セッション番号の書き方」）。本文で番号に触れるときは、`SNo3（dotfiles-overview-waiting）` のようにセッション名を添える。
 - **セッション:** tmux の中で開かれているセッション（`ListAgents` の行に `tmux ...` の位置が出るもの）は、名前を太字にする（例: `**claudews-psmux**`）。tmux の外のセッションは太字にしない。
 - **状態:** スクリプトの `状態:` の行の値（「1.」を参照）の前に、色の絵文字を付けて書く（session-observation の監視画面の色に合わせる）。`idle` 以外（`busy`、`waiting` など）は値を太字にする。`idle` は太字にしない。
   - 🟢 `idle`（例: `🟢 idle`）
