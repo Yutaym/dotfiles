@@ -395,6 +395,8 @@ PREVIEW_RE = re.compile(r"\s*(?:よければ|よろしければ|良ければ|問
 REQUEST_RE = re.compile(
     r"(?:決めて|選んで|判断して|指示して|教えて|知らせて|返事して|回答して|返信して|お選び|お決め|ご指示|ご判断|ご返信|ご回答|ご連絡)"
     r"(?:い)?ただければ"
+    r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事)(?:を)?(?:して)?(?:ください|下さい)"
+    r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事|ご指示|ご判断)を?(?:い)?ただい?(?:たら|ければ)"
     r"|(?:どちら|どれ|どの案|どっち)(?:に|で)(?:する|進める|します|進めます)か(?:を|は)?(?:決めて|選んで|教えて|ご指示|お知らせ|指示して)"
 )
 WAITING = {"waiting", "requires_action"}
@@ -436,13 +438,14 @@ def wait_label(item):
     return "なし" if not w else "返事待ち" if w[0] == "状態" else "返事待ち?"
 
 
-def tail_for_judging(text, n=3):
+def tail_for_judging(text, n=5):
     """返事待ちの判断に使う、返答の最後の n 行 (改行は残す)。末尾の「※ 〜」で始まる補足の行は、質問ではないので除く
     (2026/10/26 に、質問のあとに補足が付いた返答が「完了」と出た)。"""
     lines = text.rstrip().splitlines()
     while lines and (not lines[-1].strip() or lines[-1].lstrip().startswith("※")):
         lines.pop()
-    return "\n".join(" ".join(ln.split())[-160:] for ln in lines[-n:] if ln.strip())
+    lines = [ln for ln in lines if ln.strip()]
+    return "\n".join(" ".join(ln.split())[-160:] for ln in lines[-n:])
 
 
 def print_json(sessions, procs, panes, n, chars, numbers):
