@@ -105,6 +105,10 @@ argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
 
    `-Resume` を付けると、新しく始めずに、その ID の会話を `claude --resume` で開く（Windows 用のスクリプトだけ）。終わったセッションを開き直すときに使う。
 
+   `-Worktree <名前>`（sh は `-W`）を付けると、`claude --worktree <名前>` で git の worktree を作ってそこで起動する。
+
+   **session-initialize の台帳があるとき**（環境変数 `CC_LEDGER` があるセッション、つまり session-initialize から派生したセッション）は、起動の前に `node "<session-initialize のフォルダ>/scripts/ledger.mjs" add session <セッション名> <頼むことの要約> --cwd <作業フォルダ>` で記録し、返ってきた ID を `-TaskId <ID>`（sh は `-T`）で渡す。台帳のパス（`CC_LEDGER`）は、スクリプトが呼び出し元から自動で引き継ぐ。
+
    **macOS / Linux / WSL:** Bash ツールで実行する。
 
    ```bash

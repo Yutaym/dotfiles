@@ -2,10 +2,13 @@
 # 新しいターミナルのタブで、独立した Claude Code のセッションを起動する (macOS / Linux / WSL 用)
 #
 # 使い方:
-#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-m <モデル>] [-e <effort>] [-s] [-w]
+#   sh launch-session.sh [-d <作業フォルダ>] [-n <セッション名>] [-m <モデル>] [-e <effort>] [-s] [-w] [-W <worktree>] [-L <台帳>] [-T <作業の ID>]
 #   -m / -e: claude --model / --effort に渡す (省略すると Claude Code の既定)。モデルは opus などの短い名前を使う
 #   -s: tmux の中で、専用ウィンドウをペイン分割して並べる (tmux 以外では無視する)
 #   -w: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
+#   -W: claude --worktree <名前> で、git の worktree を作ってそこで起動する
+#   -L / -T: session-initialize の台帳。起動したセッションに CC_LEDGER / CC_TASK_ID / CC_PARENT_ADDR を設定する
+#            (-L を省略すると、呼び出し元の CC_LEDGER を引き継ぐ。CC_PARENT_ADDR は呼び出し元の受信口)
 #
 # 起動先の選び方 (上から順に、当てはまった最初のもの):
 #   1. tmux の中 ($TMUX がある)                → tmux new-window (-s のときは専用ウィンドウを分割)
@@ -32,7 +35,10 @@ SPLIT=0
 SWITCH=0
 MODEL=''
 EFFORT=''
-while getopts 'd:n:m:e:sw' opt; do
+WORKTREE=''
+LEDGER=${CC_LEDGER:-}
+TASKID=''
+while getopts 'd:n:m:e:swW:L:T:' opt; do
     case "$opt" in
         d) DIR=$OPTARG; DIRSET=1 ;;
         n) NAME=$OPTARG ;;
@@ -40,7 +46,10 @@ while getopts 'd:n:m:e:sw' opt; do
         e) EFFORT=$OPTARG ;;
         s) SPLIT=1 ;;
         w) SWITCH=1 ;;
-        *) echo "usage: $0 [-d dir] [-n name] [-m model] [-e effort] [-s] [-w]" >&2; exit 64 ;;
+        W) WORKTREE=$OPTARG ;;
+        L) LEDGER=$OPTARG ;;
+        T) TASKID=$OPTARG ;;
+        *) echo "usage: $0 [-d dir] [-n name] [-m model] [-e effort] [-s] [-w] [-W worktree] [-L ledger] [-T task-id]" >&2; exit 64 ;;
     esac
 done
 
@@ -56,8 +65,16 @@ case "$EFFORT" in
     ''|low|medium|high|xhigh|max) ;;
     *) echo "-e は low / medium / high / xhigh / max のどれかにしてください: $EFFORT" >&2; exit 64 ;;
 esac
-# claude に渡すオプション (セッション名・モデル・effort)
-CLAUDE_OPTS="${NAME:+ -n $NAME}${MODEL:+ --model $MODEL}${EFFORT:+ --effort $EFFORT}"
+case "$WORKTREE" in
+    -*|*[!A-Za-z0-9._-]*) echo "-W には英数字と . _ - だけを使ってください: $WORKTREE" >&2; exit 64 ;;
+esac
+case "$TASKID" in
+    *[!A-Za-z0-9_-]*) echo "-T には英数字・ハイフン・アンダースコアだけを使ってください: $TASKID" >&2; exit 64 ;;
+esac
+# claude に渡すオプション (セッション名・モデル・effort・worktree)
+CLAUDE_OPTS="${NAME:+ -n $NAME}${MODEL:+ --model $MODEL}${EFFORT:+ --effort $EFFORT}${WORKTREE:+ --worktree $WORKTREE}"
+# 起動用スクリプトに書くときの引用 ('...' で囲み、中の ' を逃がす)
+quote() { printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"; }
 # フォルダの指定がなく、今のフォルダがホームなら ~/claudeWS にする
 # (ホームは信頼の確認が保存されず、起動のたびに聞かれるため)。それ以外は今のフォルダを引き継ぐ
 if [ "$DIRSET" = 0 ] && [ "$(pwd -P)" = "$(cd "$HOME" && pwd -P)" ]; then
@@ -77,6 +94,13 @@ INNER=$(mktemp "${TMPDIR:-/tmp}/cc-launch.XXXXXX")
     echo 'rm -f -- "$0"'
     echo 'unset CLAUDECODE CLAUDE_PID CLAUDE_CODE_CHILD_SESSION CLAUDE_CODE_ENTRYPOINT CLAUDE_CODE_SESSION_ID CLAUDE_CODE_SESSION_ATTENDED CLAUDE_CODE_MESSAGING_SOCKET CLAUDE_CODE_MESSAGING_TOKEN CLAUDE_CODE_BRIDGE_SESSION_ID'
     printf 'cd %s || exit 1\n' "'$(printf '%s' "$DIR" | sed "s/'/'\\\\''/g")'"
+    # 台帳の変数は、指定があるときだけ設定する (返事の宛先は、名前ではなく呼び出し元の受信口のアドレス)
+    echo 'unset CC_LEDGER CC_TASK_ID CC_PARENT_ADDR'
+    if [ -n "$LEDGER" ]; then
+        printf 'export CC_LEDGER=%s\n' "$(quote "$LEDGER")"
+        if [ -n "$TASKID" ]; then printf 'export CC_TASK_ID=%s\n' "$TASKID"; fi
+        if [ -n "${CLAUDE_CODE_MESSAGING_SOCKET:-}" ]; then printf 'export CC_PARENT_ADDR=%s\n' "$(quote "uds:$CLAUDE_CODE_MESSAGING_SOCKET")"; fi
+    fi
     echo "claude$CLAUDE_OPTS"
     # claude を終了してもタブを閉じずに、ログインシェルを残す
     echo 'exec "${SHELL:-/bin/sh}" -l'
@@ -86,7 +110,7 @@ chmod +x "$INNER"
 have() { command -v "$1" >/dev/null 2>&1; }
 
 launched() {
-    echo "launched: $1 / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}"
+    echo "launched: $1 / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}${WORKTREE:+ / worktree=$WORKTREE}${LEDGER:+ / ledger=$LEDGER / task=$TASKID}"
     exit 0
 }
 

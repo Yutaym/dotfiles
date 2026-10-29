@@ -112,6 +112,14 @@
             "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/meta-save-check.mjs\" stop"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -n \"$CC_LEDGER\" ] || exit 0; command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-ledger.mjs\" stop"
+          }
+        ]
       }
     ],
     "StopFailure": [
@@ -148,6 +156,14 @@
           {
             "type": "command",
             "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/meta-save-check.mjs\" prompt"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -d \"$HOME/.claude/session-ledger\" ] || exit 0; command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-ledger.mjs\" prompt"
           }
         ]
       }

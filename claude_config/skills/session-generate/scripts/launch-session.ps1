@@ -2,6 +2,10 @@
 #
 # 使い方:
 #   pwsh -NoProfile -File launch-session.ps1 -Dir <作業フォルダ> [-Name <セッション名>] [-NewWindow] [-Split] [-Switch] [-Resume <セッションID>] [-Model <モデル>] [-Effort <effort>]
+#                                           [-Worktree <名前>] [-Ledger <台帳のパス>] [-TaskId <作業の ID>]
+#   -Worktree: claude --worktree <名前> で、git の worktree を作ってそこで起動する
+#   -Ledger / -TaskId: session-initialize の台帳。起動したセッションに CC_LEDGER / CC_TASK_ID / CC_PARENT_ADDR を設定する
+#                      (-Ledger を省略すると、呼び出し元の CC_LEDGER を引き継ぐ。CC_PARENT_ADDR は呼び出し元の受信口)
 #   -Model / -Effort: claude --model / --effort に渡す (省略すると Claude Code の既定)。モデルは opus などの短い名前を使う
 #   -Switch: tmux の中で、起動したウィンドウに画面を切り替える (頼む作業がないとき用。tmux 以外では無視する)
 #
@@ -27,7 +31,12 @@ param(
     # モデル (claude --model)。fable / opus / sonnet / haiku の短い名前なら、いつも最新版になる
     [string]$Model = '',
     # effort (claude --effort)
-    [ValidateSet('', 'low', 'medium', 'high', 'xhigh', 'max')][string]$Effort = ''
+    [ValidateSet('', 'low', 'medium', 'high', 'xhigh', 'max')][string]$Effort = '',
+    # git の worktree の名前 (claude --worktree)
+    [string]$Worktree = '',
+    # session-initialize の台帳のパスと作業の ID
+    [string]$Ledger = $env:CC_LEDGER,
+    [string]$TaskId = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -42,6 +51,15 @@ if ($Resume -and $Resume -notmatch '^[0-9a-fA-F-]+$') {
 }
 if ($Model -and $Model -notmatch '^[A-Za-z0-9._-]+$') {
     Write-Error "-Model には英数字と . _ - だけを使ってください (例: opus, claude-opus-5-5): $Model"
+}
+if ($Worktree -and $Worktree -notmatch '^[A-Za-z0-9._-]+$') {
+    Write-Error "-Worktree には英数字と . _ - だけを使ってください: $Worktree"
+}
+if ($TaskId -and $TaskId -notmatch '^[A-Za-z0-9_-]+$') {
+    Write-Error "-TaskId には英数字・ハイフン・アンダースコアだけを使ってください: $TaskId"
+}
+if ($Ledger -and $Ledger.Contains(';')) {
+    Write-Error "台帳のパスに ; が含まれていると wt で起動できません: $Ledger"
 }
 # フォルダの指定がなく、今のフォルダがホームなら ~/claudeWS にする
 # (ホームは信頼の確認が保存されず、起動のたびに聞かれるため)。それ以外は今のフォルダを引き継ぐ
@@ -66,6 +84,13 @@ if ($Name) { $InnerArgs += @('-Name', $Name) }
 if ($Resume) { $InnerArgs += @('-Resume', $Resume) }
 if ($Model) { $InnerArgs += @('-Model', $Model) }
 if ($Effort) { $InnerArgs += @('-Effort', $Effort) }
+if ($Worktree) { $InnerArgs += @('-Worktree', $Worktree) }
+if ($Ledger) {
+    # 返事の宛先は、名前ではなく呼び出し元の受信口のアドレスにする (同じ名前のセッションがあっても届くように)
+    $InnerArgs += @('-Ledger', $Ledger)
+    if ($TaskId) { $InnerArgs += @('-TaskId', $TaskId) }
+    if ($env:CLAUDE_CODE_MESSAGING_SOCKET) { $InnerArgs += @('-ParentAddr', "uds:$($env:CLAUDE_CODE_MESSAGING_SOCKET)") }
+}
 
 if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
     # 普段は new-window。どの場合も -d を付けて作り、-Switch のときだけ最後にそのウィンドウへ切り替える。-Split のときは専用ウィンドウ (名前が cc-sessions のもの) に並べる。
@@ -112,5 +137,5 @@ else {
     $how = "$Shell の新しいウィンドウ"
 }
 
-Write-Output "launched: $how / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })"
+Write-Output "launched: $how / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })$(if ($Worktree) { " / worktree=$Worktree" })$(if ($Ledger) { " / ledger=$Ledger / task=$TaskId" })"
 if ($switched) { Write-Output "switched: $switched" }
