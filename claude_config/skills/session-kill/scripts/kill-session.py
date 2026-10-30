@@ -11,14 +11,20 @@
 - それ以外 (VS Code など): claude だけを終了する。
         ただし、親が tmux のペインのシェルなら ($TMUX がない ssh 越し。session-ssh の接続先)、そのシェルも終了する。
 
+このスクリプトを実行しているセッション自身は、tmux の中のときだけ、ほかのセッションを終了したあとに最後に終了する。
+先に同じ tmux のセッションの一番小さい番号のウィンドウ (自分のウィンドウが閉じて番号が詰まったあとの 1 番) に
+切り替えてから終了する。何もしないで閉じると、直前に見ていたウィンドウに移るため。
+終了したあとは何も出力できないので、自分の行は終了する前に出す。
+
 使い方:
     uv run --no-project python kill-session.py <セッション名> [<セッション名> ...] [--dry-run] [--keep-window]
 
 出力 (1 セッションにつき 1 行):
     killed: <名前> pid=<PID> where=<tmux|terminal|other> closed=<閉じたもの> cwd=<フォルダ>
-    would kill: ...        (--dry-run のとき)
+    killing self: <名前> ... switch=<移る先のウィンドウ>  (自分自身。終了する直前に出す)
+    would kill: ...        (--dry-run のとき。自分自身なら switch= も付く)
     not found: <名前>      (動いているプロセスが見つからない)
-    skipped: <名前> ...    (claude のプロセスではない、など)
+    skipped: <名前> ...    (claude のプロセスではない、tmux の外で自分自身、など)
     failed: <名前> ...     (終了できなかった)
 終了コード: すべて killed (または would kill) なら 0、それ以外があれば 1。
 """
@@ -103,6 +109,32 @@ def tmux_pane_of(pid):
         if ppid.strip() == str(pid):
             return where
     return None
+
+
+def switch_target(pane):
+    """自分のウィンドウを閉じたあとに見せるウィンドウ ('セッション:番号') を返す。切り替えが要らなければ None。
+
+    pane は tmux_pane_of の戻り値 ('セッション:ウィンドウ番号 ウィンドウ名')。
+    自分のウィンドウ以外で一番小さい番号のウィンドウを選ぶ。自分が 1 番なら 2 番を選び、
+    閉じたあとに番号が詰まって 1 番になる。ペインがほかにもあって自分のウィンドウが残るなら、
+    自分のウィンドウも候補に入れる。-t は psmux で確実な「セッション名:番号」で指定する。
+    """
+    me = pane.split(" ", 1)[0]
+    session = me.rsplit(":", 1)[0]
+    r = subprocess.run(
+        ["tmux", "list-windows", "-t", session, "-F", "#{window_index}\t#{window_panes}"],
+        capture_output=True, text=True, errors="replace",
+    )
+    idx = []
+    for line in r.stdout.splitlines():
+        i, _, panes = line.partition("\t")
+        target = f"{session}:{i.strip()}"
+        if target != me or panes.strip() not in ("", "1"):
+            idx.append(int(i))
+    if not idx:
+        return None  # 最後のウィンドウ (tmux のセッションごと閉じる)
+    target = f"{session}:{min(idx)}"
+    return None if target == me else target
 
 
 def kill_tree(pid):
@@ -204,6 +236,7 @@ def main():
 
     sessions = load_sessions()
     ok = True
+    me = None
     for name in args.names:
         # 同じ名前の記録が複数あれば、動いているものだけを、更新の新しい順に見る
         cands = sorted((s for s in sessions if s["name"] == name), key=lambda s: s.get("updatedAt", 0), reverse=True)
@@ -226,8 +259,8 @@ def main():
             ok = False
             continue
         if s.get("sessionId") == os.environ.get("CLAUDE_CODE_SESSION_ID"):
-            print(f"skipped: {name} {desc} (このスクリプトを実行しているセッション自身)")
-            ok = False
+            # 自分を先に終わらせると、残りのセッションを終了できないので、最後に回す
+            me = (name, s, pid)
             continue
         kill_pid, where, closes = plan(pid, args.keep_window)
         shell = pane_shell(pid) if where == "other" and not args.keep_window else None
@@ -271,7 +304,34 @@ def main():
         else:
             print(f"failed: {name} {desc} ({msg})")
             ok = False
+    if me:
+        ok = kill_self(*me, args) and ok
     sys.exit(0 if ok else 1)
+
+
+def kill_self(name, s, pid, args):
+    """このスクリプトを実行しているセッション自身を終了する。tmux の中のときだけ。
+
+    先に 1 番のウィンドウ (switch_target) に切り替えてから、ペインのシェルごと終了する。
+    終了したあとは出力できないので、結果の行は終了する前に出す。
+    """
+    kill_pid, where, closes = plan(pid, args.keep_window)
+    if where != "tmux":
+        print(f"skipped: {name} pid={pid} cwd={s.get('cwd', '')} (このスクリプトを実行しているセッション自身。tmux の外では終了しない)")
+        return False
+    target = switch_target(closes.removeprefix("tmux "))
+    desc = f"pid={pid} where={where} closed={closes} switch={target or '-'} cwd={s.get('cwd', '')}"
+    if args.dry_run:
+        print(f"would kill: {name} {desc}")
+        return True
+    print(f"killing self: {name} {desc}", flush=True)
+    if target:
+        subprocess.run(["tmux", "select-window", "-t", target], capture_output=True)
+    done, msg = kill_tree(kill_pid)
+    # 終了できても、Windows ではこのプロセスが taskkill から外れて最後まで動くことがある (出力は誰にも届かない)
+    if not done:
+        print(f"failed: {name} {desc} ({msg})")
+    return done
 
 
 if __name__ == "__main__":
