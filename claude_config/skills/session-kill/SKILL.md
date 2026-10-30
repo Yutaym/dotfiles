@@ -58,7 +58,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/kill-sessio
 ```
 
 - `~/.claude/sessions/<pid>.json` でセッション名から PID を調べ、そのプロセスが動いていて、名前に `claude`（または `node`）が入ることを確かめてから終了する。PID が別のプロセスに使い回されていれば終了しない。
-  - Windows は `taskkill /PID <PID> /T /F`（MCP サーバーなどの子プロセスも一緒に終わる）、それ以外は `SIGTERM`。
+  - Windows は `taskkill /PID <PID> /T /F`（MCP サーバーなどの子プロセスも一緒に終わる）、それ以外は `SIGTERM`。続けて `SIGCONT` を送り、Ctrl+Z で suspend されていても終わるようにする（再開してもまた止まったままなら `SIGKILL`）。
   - 自分のセッションは、指定されても終了しない。
 - **開いていたウィンドウも閉じる。** どこで動いているかは、claude の親プロセスから判断する。
   - **tmux:** claude の親（ペインのシェル）を `#{pane_pid}` で探し、そのシェルごと終了する。ペインが閉じ、最後のペインならウィンドウも閉じる。`-t` を使わないので、psmux の `@ID` / `%ID` の取り違えは起きない。
@@ -87,7 +87,9 @@ ssh -o BatchMode=yes <Host> '$env:PYTHONIOENCODING = "utf-8"; uv run --no-projec
 - 接続先にも、このスキル（`~/.claude/skills/session-kill`）と uv が必要。入っていなければ `can't open file ... kill-session.py` と出て終了できない。**そのときは、下の「`/exit` をキー入力で送る」で終了する。**
   - 2026/10/22 の時点で、Home_Desktop_PC_1_win には session-kill スキルが入っていなかった（session-overview は入っていた）。同じ日に接続先で dotfiles を pull して `install_claude.ps1` でリンクを張り直したら入った。
 - 2026/10/22 に、Home_Desktop_PC_1_win（Windows）の `pcwin-dotfiles` を PowerShell の形で終了し、`killed: pcwin-dotfiles ... where=other` と出て、このマシンのウィンドウも閉じた。ただし、直後の `ListAgents` には `idle` のまま残っていた（Windows では `taskkill /F` で強制終了するので、Remote Control の接続をきちんと閉じられず、サーバー側の状態がすぐには変わらないためだと思われる。確かめてはいない）。そのときは「接続先では終了した。一覧からはしばらくして消えるか offline になるはず」と伝える。
-- session-ssh で起動したセッションは、接続先の tmux の中で動いている。claude が終わるとそのペインのコマンドも終わり、接続先の tmux のセッションが閉じ、ssh も終わって、このマシンのウィンドウ（ウィンドウ名がセッション名のもの）も閉じる。
+- session-ssh で起動したセッションは、接続先の tmux のペインの対話シェルに `claude ...; exit` を打ち込んで動かしている。claude が終わるとシェルも終わってペインが閉じ、接続先の tmux のセッションが閉じ、ssh も終わって、このマシンのウィンドウ（ウィンドウ名がセッション名のもの）も閉じる。
+  - Ctrl+Z で suspend すると、zsh は行の残り（`; exit`）を捨てるので、claude だけ終わらせるとシェルが残る。そのため、claude の親が tmux のペインのシェルなら、そのシェルも `SIGHUP` で終わらせる（`closed=tmux のペイン (ペインのシェルも終了)` と出る）。suspend 中はシェルを先に、動いているときは claude を先に終わらせる。
+  - 2026/10/30 に、Home_Mac_1 の `ctrlz-test` で「suspend しない」「suspend 中」「suspend → `fg` のあと」の 3 つとも、tmux のセッション・claude・このマシンのウィンドウが閉じることを確認した。
 - 2026/10/22 に、Home_Mac_1 の `mac-test` で `--dry-run` が `would kill: mac-test pid=7350 where=other` と出ることを確認した（接続先で claude の親は `zsh -lic` なので `where=other` になる）。続けて実際に終了し、`killed: mac-test ... where=other` と出て、このマシンのウィンドウが閉じ、`ListAgents` からも消えた（offline としても残らなかった）ことを確認した。psmux ではウィンドウが閉じると、後ろのウィンドウの番号が詰まる（0:8 が 0:7 になった）。
 
 #### `/exit` をキー入力で送る（接続先に session-kill がないとき）

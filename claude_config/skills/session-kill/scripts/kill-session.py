@@ -9,6 +9,7 @@
         psmux は -t の @ID / %ID を取り違えることがあるので、-t は使わずにプロセスで閉じる。
 - ターミナル: claude の親がシェルで、その親がターミナル (Windows Terminal など) なら、シェルごと終了してタブを閉じる。
 - それ以外 (VS Code など): claude だけを終了する。
+        ただし、親が tmux のペインのシェルなら ($TMUX がない ssh 越し。session-ssh の接続先)、そのシェルも終了する。
 
 使い方:
     uv run --no-project python kill-session.py <セッション名> [<セッション名> ...] [--dry-run] [--keep-window]
@@ -112,9 +113,49 @@ def kill_tree(pid):
         return r.returncode == 0, (r.stdout + r.stderr).strip()
     try:
         os.kill(pid, signal.SIGTERM)
-        return True, ""
+    except ProcessLookupError:
+        return True, ""  # もう終わっている
     except OSError as e:
         return False, str(e)
+    # Ctrl+Z で suspend されたプロセスは、再開するまで SIGTERM で終わらないので、続けて再開させる。
+    # 端末がまだあると、再開しても裏のジョブとして端末に触れたところで (SIGTTOU で) また止まるので、
+    # しばらく待っても止まったままなら強制終了する
+    try:
+        os.kill(pid, signal.SIGCONT)
+        for _ in range(10):
+            time.sleep(0.3)
+            if not is_stopped(pid):
+                return True, ""
+        os.kill(pid, signal.SIGKILL)
+    except OSError:
+        pass
+    return True, ""
+
+
+def is_stopped(pid):
+    """Ctrl+Z などで止まっていれば True (動いていない・Windows では False)。"""
+    if IS_WINDOWS:
+        return False
+    r = subprocess.run(["ps", "-o", "stat=", "-p", str(pid)], capture_output=True, text=True)
+    return r.stdout.strip().startswith("T")
+
+
+def pane_shell(pid):
+    """claude の親が tmux のペインのシェルなら、そのシェルの PID を返す ($TMUX がない ssh 越しでも見つける)。
+
+    session-ssh は、ペインの対話シェルに "claude ...; exit" を打ち込んで起動する。Ctrl+Z で suspend すると
+    zsh は行の残り (exit) を捨てるので、fg で戻したあとも含め、claude が終わってもシェルとペインが残る。
+    """
+    if IS_WINDOWS:
+        return None
+    me = proc_info(pid)
+    parent = proc_info(me[1]) if me else None
+    # ログインシェルは "-zsh" のように - が付く
+    if not parent or parent[0].lstrip("-") not in SHELLS:
+        return None
+    grand = proc_info(parent[1])
+    # tmux のサーバーは、Linux では "tmux: server" と出ることがある
+    return me[1] if grand and grand[0].startswith("tmux") else None
 
 
 def end_with_code0(pid):
@@ -189,6 +230,9 @@ def main():
             ok = False
             continue
         kill_pid, where, closes = plan(pid, args.keep_window)
+        shell = pane_shell(pid) if where == "other" and not args.keep_window else None
+        if shell:
+            closes = "tmux のペイン (ペインのシェルも終了)"
         desc = f"pid={pid} where={where} closed={closes} cwd={s.get('cwd', '')}"
         if args.dry_run:
             print(f"would kill: {name} {desc}")
@@ -198,6 +242,24 @@ def main():
             done, msg = kill_tree(pid)
             if done:
                 done, msg = end_with_code0(kill_pid)
+        elif shell:
+            # ペインのシェルは、端末が閉じたときと同じ SIGHUP で終わらせる (対話シェルは SIGTERM を無視する)。
+            # suspend されているときはシェルを先に終わらせる。シェルは止まっているジョブ (claude) にも SIGHUP を送り、
+            # ペインが閉じて端末がなくなるので、claude は再開してもまた止まることがない。
+            # 動いているときは、claude を先に終わらせてきちんと閉じさせる
+            stopped = is_stopped(pid)
+            if not stopped:
+                done, msg = kill_tree(kill_pid)
+                time.sleep(1)
+            try:
+                os.kill(shell, signal.SIGHUP)
+            except ProcessLookupError:
+                pass  # "; exit" でもう終わっている
+            except OSError as e:
+                desc += f" (シェルを終了できなかった: {e})"
+            if stopped:
+                time.sleep(1)
+                done, msg = kill_tree(kill_pid)
         else:
             done, msg = kill_tree(kill_pid)
         if done and where == "tmux":
