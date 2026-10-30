@@ -368,7 +368,7 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     counts = {}
     notes = []
     for item in local:
-        rows.append((row(item), item, None))
+        rows.append((row(item), item, None, target(item)))
         counts[item.get("status")] = counts.get(item.get("status"), 0) + 1
     for host, r in sorted(remote_result.items()):
         if r["sessions"] is None:
@@ -384,11 +384,11 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
         numbers = overview.session_numbers(keys, scope=f"{host}|")
         for item, key in zip(shown_items, keys):
             item = dict(item, number=numbers.get(key))
-            rows.append((row(item, host, r["windows"]), item, host))
+            rows.append((row(item, host, r["windows"]), item, host, target(item, host, r["windows"])))
             counts[item.get("status")] = counts.get(item.get("status"), 0) + 1
     # 並びは優先度の高い順。No は並びとは関係なく、セッションごとに決まった番号 (session-overview と同じ)
     rows.sort(key=lambda r: r[0][0])
-    for (_, waiting, *cells, style), item, host in rows:
+    for (_, waiting, *cells, style), item, host, _where in rows:
         if waiting:
             wait_log.write(item, host, *waiting)
         table.add_row(*cells, style=style)
@@ -402,6 +402,8 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     body = max(3, height - 2 - len(notes))
     view["page"] = body
     view["offset"] = max(0, min(view["offset"], len(lines) - body))
+    view["targets"] = line_targets(lines, [r[3] for r in rows])
+    view["numbers"] = {r[0][2]: r[3] for r in rows}
     shown = lines[view["offset"]:view["offset"] + body]
     position = ""
     if len(lines) > body:
@@ -417,10 +419,10 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     else:
         remote_info = "ssh: 読み込み中…"
     header = Text.assemble(
-        ("session-observation", "bold"), f"  更新 {now}  このマシン: {args.interval:g}秒ごと  {remote_info}  ",
-        (summary, "cyan"), (position, "bold magenta"), no_wrap=True, overflow="ellipsis",
+        (SWITCH_TEXT["full"], "bold reverse"), " ", ("session-observation", "bold"), f"  更新 {now}  このマシン: {args.interval:g}秒ごと  {remote_info}  ",
+        (summary, "cyan"), (position, "bold magenta"), (typed_info(view), "bold reverse"), no_wrap=True, overflow="ellipsis",
     )
-    footer = Text("スクロール: ↑↓ PgUp/PgDn Home/End (j/k)  止める: q / Ctrl+C / observe.py --stop",
+    footer = Text("クリック / 番号+Enter: そのウィンドウへ  スクロール: ↑↓ ホイール PgUp/PgDn Home/End (j/k)  止める: q / Ctrl+C / observe.py --stop",
                   style="dim", no_wrap=True, overflow="ellipsis")
     parts = [header, Text.from_ansi("\n".join(shown))]
     parts += [Text("・" + n, style="red", no_wrap=True, overflow="ellipsis") for n in notes]
@@ -437,7 +439,9 @@ ESCAPES = {
     "[A": "up", "[B": "down", "[5~": "pgup", "[6~": "pgdn",
     "[H": "home", "[1~": "home", "OH": "home", "[F": "end", "[4~": "end", "OF": "end",
 }
-LETTERS = {"k": "up", "j": "down", " ": "pgdn", "b": "pgup", "g": "home", "G": "end", "q": "quit", "\x03": "quit"}
+LETTERS = {"k": "up", "j": "down", " ": "pgdn", "b": "pgup", "g": "home", "G": "end", "q": "quit", "\x03": "quit",
+           "\r": "enter", "\n": "enter", "\x08": "backspace", "\x7f": "backspace",
+           **{d: ("digit", d) for d in "0123456789"}}
 
 
 class Keys(threading.Thread):
@@ -449,6 +453,7 @@ class Keys(threading.Thread):
         self.queue = []
         self.event = threading.Event()
         self.restore = None
+        self.vt_input = None  # Windows: コンソールの入力を VT に設定し直す
 
     def push(self, key):
         if key:
@@ -465,7 +470,19 @@ class Keys(threading.Thread):
             pass
 
     def run_windows(self):
+        import ctypes
         import msvcrt
+
+        # マウスの報告をキーと同じく msvcrt で読めるように、コンソールの入力を VT にする
+        # (ENABLE_VIRTUAL_TERMINAL_INPUT 0x200)。クイック編集 (0x40) は、クリックが選択に取られないように外す (0x80 はその変更に要る)
+        k32 = ctypes.windll.kernel32
+        handle = k32.GetStdHandle(-10)
+        mode = ctypes.c_uint32()
+        if k32.GetConsoleMode(handle, ctypes.byref(mode)):
+            old = mode.value
+            self.vt_input = lambda: k32.SetConsoleMode(handle, (old | 0x200 | 0x80) & ~0x40)
+            self.vt_input()
+            self.restore = lambda: k32.SetConsoleMode(handle, old)
 
         while True:
             ch = msvcrt.getwch()
@@ -500,13 +517,32 @@ class Keys(threading.Thread):
 
     @staticmethod
     def escape(read1):
-        """Esc の後ろを読み、ESCAPES のどれかに当たればその名前を返す。当たらなければ None。"""
+        """Esc の後ろを読み、ESCAPES のどれかに当たればその名前を返す。マウスの報告なら mouse の結果を返す。
+        当たらなければ None。"""
         seq = read1()
-        while any(k.startswith(seq) for k in ESCAPES):
+        while seq == "[<" or any(k.startswith(seq) for k in ESCAPES):
+            if seq == "[<":
+                return Keys.mouse(read1)
             if seq in ESCAPES:
                 return ESCAPES[seq]
             seq += read1()
         return None
+
+    @staticmethod
+    def mouse(read1):
+        """SGR 形式のマウスの報告 (ボタン;列;行 M か m) を読む。左ボタンを押したときは ("click", (行, 列))、
+        ホイールは up / down を返す。離したとき (m) とマウスの移動 (35 など) は None (移動は大量に届くので捨てる)。
+        離したときの位置は、上にステータスバーがあると psmux でずれることがあるので使わない。"""
+        seq = ""
+        while not seq.endswith(("M", "m")) and len(seq) < 20:
+            seq += read1()
+        try:
+            button, col, row = (int(v) for v in seq[:-1].split(";"))
+        except ValueError:
+            return None
+        if seq.endswith("m"):
+            return None
+        return {0: ("click", (row, col)), 64: "up", 65: "down"}.get(button)
 
 
 def scroll(view, key):
@@ -520,7 +556,156 @@ def scroll(view, key):
         view["offset"] = 10 ** 9  # render で最後のページに切り詰める
 
 
-def main():
+# ---------- クリックでそのセッションのウィンドウに移る ----------
+
+# マウスの報告を頼む (1000: クリック、1006: SGR 形式)。psmux 3.4.0 でも届くことを 2026/10/30 に確かめた
+MOUSE_ON = "\x1b[?1000h\x1b[?1006h"
+MOUSE_OFF = "\x1b[?1000l\x1b[?1006l"
+ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def target(item, host=None, windows=None):
+    """移る先の tmux の「セッション名:ウィンドウ番号」。tmux の外のセッションなど、分からないときは None。
+    ssh の接続先のセッションは、その ssh を開いているこのマシンのウィンドウ (名前が合うものを優先)。"""
+    if host:
+        named = [w for w in windows or [] if w.split(" ", 1)[-1] == item.get("name")]
+        wins = [w.split(" ", 1)[0] for w in (named or windows or [])]
+        return wins[0] if wins else None
+    m = PLACE_RE.match(item.get("location") or "")
+    return m.group(1) if m else None
+
+
+def line_targets(lines, targets, boxed=True):
+    """描いた表の行ごとに、その行が属するセッションの移る先を返す (見出しや罫線は None)。
+    boxed: 罫線付きの表 (observe.py)。罫線は ┡ / ├ で区切られ、区切りの後ろが次のセッション。
+    boxed でない表 (light) は、見出しの 1 行の後ろに 1 セッション 1 行で並ぶ。"""
+    if not boxed:
+        return [None] + list(targets) + [None] * max(0, len(lines) - 1 - len(targets))
+    out, seg = [], 0
+    for line in lines:
+        head = ANSI_RE.sub("", line)[:1]
+        if head in ("┡", "├"):
+            seg += 1
+            out.append(None)
+        elif head in ("┏", "└", "") or seg == 0 or seg > len(targets):
+            out.append(None)
+        else:
+            out.append(targets[seg - 1])
+    return out
+
+
+def click(view, row):
+    """画面の row 行目 (1 始まり) をクリックしたら、その行のセッションのウィンドウに移る。
+    画面の 1 行目は見出しで、表は 2 行目から view["offset"] 行目以降を出している (render)。"""
+    targets = view.get("targets") or []
+    i = view["offset"] + row - 2
+    jump(targets[i] if 0 <= row - 2 < view.get("page", 0) and 0 <= i < len(targets) else None)
+
+
+def handle_key(view, key):
+    """Keys が積んだものを 1 つ処理する (quit は呼び出し元で扱う)。
+    クリック: その行のウィンドウへ。数字を打って Enter: その No のウィンドウへ (打っている番号は view["typed"])。
+    Backspace で 1 文字消す。そのほかはスクロール。"""
+    if isinstance(key, tuple):
+        kind, value = key
+        if kind == "click":
+            row, col = value
+            # 見出しの左端の切り替えの文字 (SWITCH_TEXT) を押したら、通常版と light を切り替える (main が行う)
+            if row == 1 and col <= view.get("switch_width", 0):
+                view["switch"] = True
+            else:
+                click(view, row)
+        elif kind == "digit":
+            view["typed"] = (view.get("typed", "") + value)[-4:]
+    elif key == "enter":
+        typed = view.pop("typed", "")
+        jump((view.get("numbers") or {}).get(typed))
+    elif key == "backspace":
+        view["typed"] = view.get("typed", "")[:-1]
+    else:
+        scroll(view, key)
+
+
+# 見出しの左端に出す、もう一方の表示に切り替える文字 (今の表示 → 出す文字)。2026/10/30 にユーザーが決めた
+SWITCH_TEXT = {"full": "[light]", "light": "[通常版]"}
+LIGHT = os.path.join(HERE, "..", "..", "session-observation-light", "scripts", "observe_light.py")
+
+
+def load_light_render():
+    spec = importlib.util.spec_from_file_location("observe_light", LIGHT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.render
+
+
+def resize_for(mode):
+    """切り替えた表示に合わせて、tmux のペインの大きさを変える。左右に分けたペインは幅
+    (light 24 列・通常版はウィンドウの半分)、上下に分けたペインは高さ (light 12 行・通常版は半分) を変える。
+    psmux 3.4.0 は resize-pane -x の値どおりにならない (-x 24 で 33 列、-x 17 で 24 列になった。2026/10/30) ので、
+    実際の大きさを読み直し、指定を比例で直して 3 回まで繰り返す。大きさは display-message -t ではなく
+    list-panes -a から自分のペインの行を探して読む (psmux の display-message は今見ているペインを返すことがあるため)。"""
+    pane = os.environ.get("TMUX_PANE")
+    if not pane or not os.environ.get("TMUX"):
+        return
+
+    def sizes():
+        res = subprocess.run(["tmux", "list-panes", "-a", "-F",
+                              "#{pane_id} #{pane_width} #{pane_height} #{window_width} #{window_height}"],
+                             capture_output=True, text=True)
+        for line in res.stdout.splitlines():
+            parts = line.split()
+            if len(parts) == 5 and parts[0] == pane:
+                return [int(v) for v in parts[1:]]
+        return None
+
+    now = sizes()
+    if not now:
+        return
+    pw, ph, ww, wh = now
+    if pw < ww:
+        flag, index, goal = "-x", 0, 24 if mode == "light" else ww // 2
+    elif ph + 2 < wh:  # 窓の高さはステータスバーの分だけペインより大きいので、少し余裕を見る
+        flag, index, goal = "-y", 1, 12 if mode == "light" else wh // 2
+    else:
+        return
+    ask = goal
+    for _ in range(3):
+        subprocess.run(["tmux", "resize-pane", "-t", pane, flag, str(ask)], capture_output=True)
+        time.sleep(0.3)
+        now = sizes()
+        if not now or abs(now[index] - goal) <= 1:
+            return
+        ask = max(1, round(ask * goal / max(1, now[index])))
+
+
+def typed_info(view):
+    """打っている途中の番号を見出しに出す文字。"""
+    return f" No {view['typed']}_ " if view.get("typed") else ""
+
+
+def jump(where):
+    """tmux の「セッション名:ウィンドウ番号」に移る。where が None (tmux の外のセッションなど) なら何もしない。"""
+    if not where or not os.environ.get("TMUX"):
+        return
+    run = lambda *a: subprocess.run(["tmux", *a], capture_output=True, text=True)  # noqa: E731
+    run("select-window", "-t", where)
+    session = where.rsplit(":", 1)[0]
+    current = run("display-message", "-p", "#{session_name}").stdout.strip()
+    if current and current != session:
+        run("switch-client", "-t", session)
+
+
+def keep_mouse(console, keys):
+    """マウスの報告を頼み直す。psmux では、クリックで別のウィンドウに移って戻ると 2 回目からクリックが届かなく
+    なった (2026/10/30) ので、描き直すたびに頼み直し、Windows はコンソールの入力の設定もし直す。"""
+    console.file.write(MOUSE_ON)
+    console.file.flush()
+    if keys.vt_input:
+        keys.vt_input()
+
+
+def main(mode="full", light_render=None):
+    """mode: 始めの表示 (full / light)。light_render: observe_light.py から呼ぶときの light の render。"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--interval", type=float, default=10, help="このマシンのセッションを読み直す間隔 (秒)")
     parser.add_argument("--remote-interval", type=float, default=60, help="ssh の接続先を読み直す間隔 (秒)")
@@ -547,6 +732,7 @@ def main():
     keys = Keys()
     keys.start()
     view = {"offset": 0}
+    renderers = {"full": render, "light": light_render}
     wait_log = WaitLog()
     try:
         with Live(console=console, screen=True, auto_refresh=False) as live:
@@ -556,7 +742,12 @@ def main():
                     data = local.collect()
                     next_collect = time.time() + args.interval
                 result, updated = remote.snapshot() if remote else ({}, None)
-                live.update(render(console, view, data, result, updated, args, overview, wait_log), refresh=True)
+                if renderers[mode] is None:
+                    renderers[mode] = load_light_render()
+                from rich.cells import cell_len
+                view["switch_width"] = cell_len(SWITCH_TEXT[mode])
+                live.update(renderers[mode](console, view, data, result, updated, args, overview, wait_log), refresh=True)
+                keep_mouse(console, keys)
                 # キーが押されたらすぐ描き直す。止める指示にもすぐ気づけるように、0.5 秒より長くは待たない
                 keys.event.wait(max(0.05, min(0.5, next_collect - time.time())))
                 keys.event.clear()
@@ -564,10 +755,16 @@ def main():
                     key = keys.queue.pop(0)
                     if key == "quit":
                         raise KeyboardInterrupt
-                    scroll(view, key)
+                    handle_key(view, key)
+                    if view.pop("switch", False):
+                        mode = "light" if mode == "full" else "full"
+                        view["offset"] = 0
+                        resize_for(mode)
     except KeyboardInterrupt:
         pass
     finally:
+        console.file.write(MOUSE_OFF)
+        console.file.flush()
         if keys.restore:
             keys.restore()
         if still_owner(token):

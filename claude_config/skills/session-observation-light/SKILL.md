@@ -11,7 +11,7 @@ session-observation と同じ材料・判定で、表の列を **No・状態・�
 表示はスクリプト（`scripts/observe_light.py`）が行う。Claude はタイマーを使わずに、監視画面を開くだけにする。
 
 ```
-16:01:32
+[通常版] 16:01:32
 No  状態      場所
  3  返事待ち  0:2
  6  busy      0:6
@@ -49,7 +49,14 @@ No  状態      場所
 uv run --no-project python "<このスキルのフォルダ>/scripts/observe_light.py" --stop
 ```
 
-（`launch-light.ps1 -Stop` / `launch-light.sh -x`、session-observation の `observe.py --stop` でも同じ。）監視画面の中では q か Ctrl+C で止まる。↑↓・PgUp/PgDn・Home/End（j / k / b / スペース / g / G）でスクロールできる。
+（`launch-light.ps1 -Stop` / `launch-light.sh -x`、session-observation の `observe.py --stop` でも同じ。）監視画面の中では q か Ctrl+C で止まる。
+
+## 監視画面の操作
+
+操作は session-observation と同じ（処理は observe.py の `handle_key`）。詳しくは session-observation の「監視画面の操作」を参照。
+- 行のどこかをクリックするか、No を打って Enter を押すと、そのセッションの tmux のウィンドウに移る（2026/10/30 にユーザーが決めた）。
+- 1 行目の左端の `[通常版]` をクリックすると、同じペインのまま session-observation の表示に切り替わり、ペインが広がる（通常版の `[light]` で戻る）。
+- ↑↓・ホイール・PgUp/PgDn・Home/End（j / k / b / スペース / g / G）でスクロールできる。
 
 ## 決まりごと
 
@@ -59,4 +66,4 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe_lig
   - **No**: session-overview・session-kill と同じ番号（SNo）。
   - **状態**: busy・shell（黄）、idle（緑）、返事待ち（赤の太字。`status` が `waiting` / `requires_action`）、返事待ち?（赤。返答の終わり方からの推定）、そのほかの状態（紫）。1 時間以上動きのない idle は行ごと薄く出す。
   - **場所**: このマシンの tmux の「セッション名:ウィンドウ番号」だけ（例 `0:3`）。tmux の外のセッションは `-`。ssh の接続先のセッションは、その ssh を開いているこのマシンのウィンドウを出す。
-- 見出しは時刻（表が収まらないときはその右に「12-30/45」のような位置）だけにする。読めなかった ssh の接続先は、表の下に「<接続先>: 読めない」「<接続先>: 接続先が古い」と 1 行出す（理由の詳細は session-observation で見る）。
+- 見出しは切り替えの `[通常版]` と時刻（表が収まらないときはその右に「12-30/45」のような位置、打っている番号）だけにする。読めなかった ssh の接続先は、表の下に「<接続先>: 読めない」「<接続先>: 接続先が古い」と 1 行出す（理由の詳細は session-observation で見る）。
