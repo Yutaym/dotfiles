@@ -53,7 +53,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe.py"
 
 ## 決まりごと
 
-- **監視は同時に 1 つだけ動く。** 起動すると `~/.claude/session-observation/observer.json` に自分の印を書く。新しい監視を開くと印が書き換わり、古い監視は自分で終わる。`--stop` はこのファイルを消す。
+- **監視は同時に 1 つだけ動く。** 起動すると `~/.claude/session-observation/observer.json` に自分の印を書く。新しい監視を開くと印が書き換わり、古い監視は自分で終わる。`--stop` はこのファイルを消す。コンパクト版の session-observation-light もこの印を共用するので、両方を合わせて 1 つだけ動く（light は `observe.py` を import して使うので、observe.py の関数名や `row` の返り値を変えたら light も確かめる）。
 - 表の列と、表に入れる・入れないの決まりは session-overview に合わせる。違うところ:
   - 生きているかどうかは `ListAgents` ではなく、`~/.claude/sessions/*.json` の `pid` のプロセスが動いているか（Windows では開始時刻 `procStart` も一致するか）で判断する（session-overview.py の `is_alive`）。状態（busy / shell / idle など）は同じファイルの `status` を使う。`shell` は busy と同じ扱いにする（session-overview.py の `BUSY`）。
   - 「何をしているか」は LLM で要約しない。自動で付いたタイトルと最後の依頼をそのまま短く出す。タイトルがセッション名と同じときは、最後の依頼を出す。
