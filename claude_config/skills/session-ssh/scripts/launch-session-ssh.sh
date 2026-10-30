@@ -58,7 +58,8 @@ CLAUDE="claude --name $NAME --remote-control${MODEL:+ --model $MODEL}${EFFORT:+ 
 if [ "$NOTMUX" = 1 ]; then
     BODY="mkdir -p $DIR && cd $DIR || exit 1; $CLAUDE"
 else
-    BODY="mkdir -p $DIR && cd $DIR || exit 1; if command -v tmux >/dev/null 2>&1; then exec tmux new-session -A -s $NAME \"\$SHELL -lic \\\"$CLAUDE\\\"\"; else $CLAUDE; fi"
+    # ペインは対話シェルで起動し、claude はキー入力で打ち込む (Ctrl+Z で tmux ごと閉じないように。理由は .ps1 に書いた)
+    BODY="mkdir -p $DIR && cd $DIR || exit 1; if command -v tmux >/dev/null 2>&1; then command tmux has-session -t \"=$NAME\" 2>/dev/null || { command tmux new-session -d -s $NAME && command tmux send-keys -t \"=$NAME:\" \"$CLAUDE; exit\" Enter; }; exec tmux attach -t \"=$NAME\"; else $CLAUDE; fi"
 fi
 REMOTE="exec \"\$SHELL\" -lic '$BODY'"
 

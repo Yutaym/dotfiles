@@ -58,7 +58,9 @@ sh "<このスキルのフォルダ>/scripts/launch-session-ssh.sh" -h <接続�
 - 接続先では、次のように起動する。
   - Windows（PowerShell）の接続先では、`Set-Location <フォルダ>` してから、psmux（`tmux`）があれば `tmux new-session -A -s <名前> 'claude ...'` で起動する。PowerShell のプロファイルを読むので、ssh の接続時にプロファイルの警告（PSReadLine など）が出ることがあるが、害はない。
   - sh 系の接続先では、ログインシェルを対話モード（`$SHELL -lic`）で起動してから claude を実行する。macOS の zsh では、claude が `.zshrc`（oh-my-zsh の nvm プラグインの関数）の中でだけ使えるため。起動時に `can't change option: zle` と出ることがあるが、害はない。
-  - 接続先に tmux があれば、セッション名と同じ名前の tmux セッションの中で起動する（`tmux new-session -A`）。ssh が切れても、Claude は動き続ける。tmux を使わないときは `-NoTmux`（sh は `-T`）を付ける。
+  - 接続先に tmux があれば、セッション名と同じ名前の tmux セッションの中で起動する。ssh が切れても、Claude は動き続ける。同じ名前のセッションがあれば、つなぎ直すだけにする。tmux を使わないときは `-NoTmux`（sh は `-T`）を付ける。
+    - sh 系では、ペインを普通の対話シェルで起動し、`tmux send-keys` で `claude ...; exit` を打ち込む。ペインのコマンドを `$SHELL -lic "claude ..."` にすると、Ctrl+Z で suspend したときに戻るプロンプトがなくシェルが終わり、tmux のセッション・ssh・このマシンのウィンドウまで閉じるため（2026/10/30 に確認）。Ctrl+Z でプロンプトに戻り、`fg` で戻せる。
+    - suspend 中の claude は止まっているので、Remote Control や SendMessage には応答しないはず（未確認）。`fg` で戻したあとに claude を終えると、`; exit` が捨てられているのでシェルが残る（`exit` で閉じる。session-kill はシェルごと閉じる）。
   - こちらも tmux（psmux）の中だと tmux が二重になる。接続先の tmux を操作するときは、prefix を 2 回押すなど、接続先の設定に合わせる。
 - 終了コード 2 は、自動でタブを開けなかったことを表す（sh だけ）。表示された `ssh -t ...` を手で実行するようユーザーに伝える。
 
