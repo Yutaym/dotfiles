@@ -106,7 +106,7 @@ Windows では `tmux` の代わりに `psmux` でもよい（psmux は `tmux` �
 | ---------------------------------------------- | -------------------------------------------------------- |
 | `default-terminal 'screen-256color'`           | 256 色を使う                                             |
 | `terminal-overrides 'xterm:colors=256'`        | xterm を 256 色として扱う                                |
-| `prefix C-q` / `unbind C-b` / `bind C-q send-prefix` | Prefix を `Ctrl-b` から `Ctrl-q` に変更（2 回押すとアプリに `Ctrl-q` を送る） |
+| `prefix C-q` / `unbind C-b` / `bind C-S-q send-prefix` | Prefix を `Ctrl-b` から `Ctrl-q` に変更（Prefix → `Ctrl-Shift-q` でアプリに `Ctrl-q` を送る） |
 | `base-index 1` / `pane-base-index 1`           | ウィンドウ・ペインの番号を 1 から始める                  |
 | `renumber-windows on`                          | ウィンドウを閉じたら番号を詰める                         |
 | `escape-time 0`                                | Esc キーの待ち時間をなくす（vim で Esc がもたつかない）  |
@@ -122,6 +122,8 @@ Windows では `tmux` の代わりに `psmux` でもよい（psmux は `tmux` �
 | `Prefix` → `h` `j` `k` `l`   | `select-pane -L/-D/-U/-R`（`-r` で連続入力可）    |
 | `Prefix` → `H` `J` `K` `L`   | `resize-pane`（左右は 5、上下は 1 ずつ。`-r`）    |
 | `Prefix` → `Ctrl-h` / `Ctrl-l` | `select-window -t :-` / `:+`（`-r`）            |
+| `Prefix` → `Ctrl-q`          | `select-window -t :^`（1 番のウィンドウに移る）   |
+| `Prefix` → `Ctrl-Shift-q`    | `send-prefix`（アプリに `Ctrl-q` を送る）         |
 | `Prefix` → `\|` / `-`        | `split-window -h` / `-v`（`-c '#{pane_current_path}'`） |
 | `Prefix` → `r`               | `source-file ~/.config/tmux/tmux.conf` して「Reloard was successful.」と表示 |
 | `Ctrl-o`（Prefix 不要）      | `select-pane -t :.+`                              |
