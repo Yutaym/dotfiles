@@ -28,20 +28,31 @@ function Import-CachedCompletion {
 
     $needsRefresh = $true
     if (Test-Path $cacheFile) {
-        $age = (Get-Date) - (Get-Item $cacheFile).LastWriteTime
-        $needsRefresh = $age.TotalDays -gt $script:CompletionCacheMaxAgeDays
+        $item = Get-Item $cacheFile
+        $age = (Get-Date) - $item.LastWriteTime
+        ## 生成に失敗して空のキャッシュが残っていたら作り直す
+        $needsRefresh = $item.Length -eq 0 -or $age.TotalDays -gt $script:CompletionCacheMaxAgeDays
     }
 
     if ($needsRefresh) {
         try {
-            & $Generator | Out-File -FilePath $cacheFile -Encoding utf8
+            $output = & $Generator | Out-String
+            ## 出力が空のときは書き込まない (空のキャッシュを Invoke-Expression に渡すとエラーになる)
+            if ([string]::IsNullOrWhiteSpace($output)) {
+                Write-Warning "補完キャッシュの生成結果が空でした: $Name"
+            } else {
+                $output | Out-File -FilePath $cacheFile -Encoding utf8
+            }
         } catch {
             Write-Warning "補完キャッシュの生成に失敗しました: $Name"
         }
     }
 
     if (Test-Path $cacheFile) {
-        Invoke-Expression -Command (Get-Content $cacheFile -Raw)
+        $content = Get-Content $cacheFile -Raw
+        if (-not [string]::IsNullOrWhiteSpace($content)) {
+            Invoke-Expression -Command $content
+        }
     }
 }
 
