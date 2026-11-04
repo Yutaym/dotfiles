@@ -23,7 +23,8 @@
     "command": "sh ~/dotfiles/claude_config/statusline.sh subagent-statusline.mjs"
   },
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
   },
   "teammateMode": "auto",
   "hooks": {
