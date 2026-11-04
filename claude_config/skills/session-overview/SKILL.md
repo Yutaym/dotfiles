@@ -55,6 +55,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/remote-over
 
 - このマシンの tmux（psmux）で、ssh-generate / session-ssh スキルで開いたウィンドウ（ペインのオプション `@ssh_host` に接続先が入っている）を探し、その接続先ごとに ssh で session-overview.py を動かす。出力の形は session-overview.py と同じで、各セッションの前に `# 接続先: <Host> (ssh を開いているこのマシンのウィンドウ: 0:3 dotfiles-mac, 0:7 mac-test)`（番号とウィンドウ名） が付く。
 - 接続先のマシンにも、このスキル（`~/.claude/skills/session-overview`）と uv が必要。ssh は `BatchMode=yes` で実行するので、パスワードを聞かれる接続先は読めない。
+  - 接続先にこのスキルがない（`session-overview.py` がない）ときは、その接続先を黙って外す（「読めなかった」の行も出さない。2026/11/04 にユーザーの指示で変えた）。ssh できないなど、ほかの理由で読めないときは、これまでどおり理由を 1 行出す。
 - 接続先のシェルは、sh 系（bash / zsh など）と、既定のシェルが PowerShell の Windows に対応する。接続先ごとに ssh で `$PSVersionTable.PSEdition` を出させて判断する。
   - 2026/10/22 に、Home_Desktop_PC_1_win の `pcwin-dotfiles` を読めることを確認した。最初は sh 系のコマンド（`exec "$SHELL" -lic ...`）だけを送っていたので、PowerShell で `exec` が見つからずに失敗し、表に出なかった。
 - どの接続先でも見つからなかったセッション（ssh で開いていないマシンのもの、自動で付いた名前のものなど）は、表に入れない（「1.」を参照）。

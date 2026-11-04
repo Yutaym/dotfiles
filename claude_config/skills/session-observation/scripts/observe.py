@@ -166,6 +166,9 @@ class Remote(threading.Thread):
                     return json.loads(line), None
                 except ValueError:
                     break
+        # 接続先にスキルがない (session-overview.py がない) ときは、セッションなしとして扱い、表にもエラーにも出さない
+        if self.ro.skill_missing(res.stderr):
+            return [], None
         reason = (res.stderr.strip().splitlines() or [f"終了コード {res.returncode}"])[-1]
         return None, re.sub(r"\x1b\[[0-9;]*m", "", reason)[:80]
 

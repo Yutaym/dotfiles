@@ -76,8 +76,16 @@ def remote_shell(host):
     return "pwsh" if last in ("Core", "Desktop") else "posix"
 
 
+def skill_missing(stderr):
+    """接続先に session-overview スキル (session-overview.py) がないときの python のエラーなら True。
+    python の「can't open file '...session-overview.py': [Errno 2] No such file or directory」は
+    OS によらず英語で出るので、これで見分ける。"""
+    return "session-overview.py" in stderr and ("[Errno 2]" in stderr or "No such file" in stderr)
+
+
 def run_remote(host, names, prompts, chars, no_number=True):
     """接続先で session-overview.py を動かして、出力をセッションごとの塊に分ける。失敗したら (None, 理由)。
+    接続先にスキルがない (session-overview.py がない) ときは (None, None) を返す (呼ぶ側で黙って外す)。
     接続先の session-overview.py が古くて --no-number を知らないときは、付けずに実行し直す。"""
     quoted = " ".join("'" + n + "'" for n in names)
     args = f"{quoted} --prompts {prompts} --chars {chars}" + (" --no-number" if no_number else "")
@@ -98,6 +106,8 @@ def run_remote(host, names, prompts, chars, no_number=True):
     blocks = [b for b in re.split(r"(?m)^(?=## )", res.stdout) if b.startswith("## ")]
     if not blocks and no_number and "--no-number" in res.stderr:
         return run_remote(host, names, prompts, chars, no_number=False)
+    if not blocks and skill_missing(res.stderr):
+        return None, None
     if not blocks:
         reason = (res.stderr.strip().splitlines() or [f"終了コード {res.returncode}"])[-1]
         reason = re.sub(r"\x1b\[[0-9;]*m", "", reason)
@@ -127,6 +137,8 @@ def main():
     found = set()
     for host, windows in hosts.items():
         blocks, err = run_remote(host, names, args.prompts, args.chars)
+        if blocks is None and err is None:
+            continue  # 接続先にスキルがない。表から外し、エラーも出さない
         if blocks is None:
             print(f"# {host} (このマシンのウィンドウ {', '.join(windows)}): 読めなかった ({err})\n")
             continue

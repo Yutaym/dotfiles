@@ -68,7 +68,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe.py"
   - **並びは優先度の高い順**（2026/10/22 にユーザーが決めた）: 返事待ち → 返事待ち? → busy・shell → そのほかの状態 → idle（最近動いたものから）→ 1 時間以上動きのない idle。同じ組の中は最近動いたものから並べる。
   - **No は、session-overview・session-kill と同じ番号**（2026/10/22 にユーザーが決めた）。並びとは関係なく、セッションごとに決まっていて、終わるまで変わらない（session-overview の「No」を参照）。並びが優先度の順なので、表の No は順番どおりにはならない。
 - 色: busy・shell は黄、idle は緑、返事待ちは赤、そのほかの状態は紫。1 時間以上動きのない idle のセッションは薄く出す。tmux の中のセッションは名前を太字にする。
-- ssh の接続先は、このマシンの tmux で `@ssh_host` の付いたペイン（ssh-generate / session-ssh で開いたもの）から探し、接続先で `session-overview.py --json` を実行する。接続先の session-overview.py が古い（`--json` がない）と読めないので、接続先の dotfiles を更新してもらう。読めなかった接続先は、表には入れずに表の下に理由を 1 行出す。
+- ssh の接続先は、このマシンの tmux で `@ssh_host` の付いたペイン（ssh-generate / session-ssh で開いたもの）から探し、接続先で `session-overview.py --json` を実行する。接続先の session-overview.py が古い（`--json` がない）と読めないので、接続先の dotfiles を更新してもらう。読めなかった接続先は、表には入れずに表の下に理由を 1 行出す。ただし、接続先に session-overview スキルがない（`session-overview.py` がない）ときは、セッションがないものとして扱い、理由の行も出さない（2026/11/04 にユーザーの指示で変えた）。
   - **ssh の接続先は、Remote Control につながっているセッションだけを出す**（session-overview に合わせる。2026/10/22 にユーザーが決めた）。見分けには `sessions/*.json` の `bridgeSessionId` を使う（JSON の `remoteControl`）。名前を付けずに Remote Control につないだセッションは、ListAgents では自動で付いた別の名前（例 `macbookpro-velvety-owl`）で出るので、session-overview の表と名前が合わないことがある。
   - このマシンのセッションは、Remote Control につながっているかにかかわらず全部出す。
 - 材料の読み取りは session-overview の `scripts/session-overview.py` を import して使う。Claude Code の内部形式が変わって項目が取れなくなったら、session-overview.py を直す。
