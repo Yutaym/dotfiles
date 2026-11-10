@@ -41,7 +41,7 @@ argument-hint: "[stop] [間隔の秒数]"
 - ↑↓（j / k）・マウスのホイール: 1 行、PgUp / PgDn（b / スペース）: 1 ページ、Home / End（g / G）: 先頭 / 最後
 - **そのセッションのウィンドウに移る**（2026/10/30 にユーザーが決めた）: 行のどこかをクリックするか、No を打って Enter を押すと、そのセッションの tmux のウィンドウ（`select-window`。別の tmux セッションなら `switch-client` も）に移る。ssh の接続先のセッションは、その ssh を開いているこのマシンのウィンドウに移る。打っている番号は 1 行目の右に出て、Backspace で消せる。場所の分からないセッション（tmux の外）では何もしない。
   - クリックは、マウスの報告（`\x1b[?1000h\x1b[?1006h`。Windows はコンソールの入力を VT にする）で受け取る。psmux ではウィンドウを移って戻ると報告が止まったので、描き直すたびに頼み直す（`keep_mouse`）。
-- **表示の切り替え:** 1 行目の左端の `[light]` をクリックすると、同じペインのまま session-observation-light の表示に切り替わる（light では `[通常版]` で戻る）。tmux のペインの大きさも変える（左右の分割なら light 24 列・通常版はウィンドウの半分。`resize_for`）。psmux は `resize-pane -x` の値どおりにならないので、実際の大きさを読み直して 3 回まで指定し直す。
+- **表示の切り替え:** 1 行目の左端の `[light]` をクリックすると、同じペインのまま、No・状態・場所の 3 列だけの小さい表示（light。描くのは `scripts/observe_light.py`）に切り替わる（light では `[通常版]` で戻る。2026/11/10 に session-observation-light スキルを外し、light の表示はこの切り替えだけにした）。tmux のペインの大きさも変える（左右の分割なら light 24 列・通常版はウィンドウの半分。`resize_for`）。psmux は `resize-pane -x` の値どおりにならないので、実際の大きさを読み直して 3 回まで指定し直す。
 - 収まらないときは、1 行目の右に「12〜30 行目 / 全 45 行」のように今の位置を出す。
 - q（または Ctrl+C）で終わる。
 - キーは Windows は msvcrt、それ以外は termios で読む。
@@ -56,7 +56,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe.py"
 
 ## 決まりごと
 
-- **監視は同時に 1 つだけ動く。** 起動すると `~/.claude/session-observation/observer.json` に自分の印を書く。新しい監視を開くと印が書き換わり、古い監視は自分で終わる。`--stop` はこのファイルを消す。コンパクト版の session-observation-light もこの印を共用するので、両方を合わせて 1 つだけ動く（light は `observe.py` を import して使うので、observe.py の関数名や `row` の返り値を変えたら light も確かめる）。
+- **監視は同時に 1 つだけ動く。** 起動すると `~/.claude/session-observation/observer.json` に自分の印を書く。新しい監視を開くと印が書き換わり、古い監視は自分で終わる。`--stop` はこのファイルを消す。light の表示（`observe_light.py`）は `observe.py` を import して使うので、observe.py の関数名や `row` の返り値を変えたら light も確かめる。
 - 表の列と、表に入れる・入れないの決まりは session-overview に合わせる。違うところ:
   - 生きているかどうかは `ListAgents` ではなく、`~/.claude/sessions/*.json` の `pid` のプロセスが動いているか（Windows では開始時刻 `procStart` も一致するか）で判断する（session-overview.py の `is_alive`）。状態（busy / shell / idle など）は同じファイルの `status` を使う。`shell` は busy と同じ扱いにする（session-overview.py の `BUSY`）。
   - 「何をしているか」は LLM で要約しない。自動で付いたタイトルと最後の依頼をそのまま短く出す。タイトルがセッション名と同じときは、最後の依頼を出す。

@@ -19,7 +19,7 @@ import sys
 sys.dont_write_bytecode = True
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OBSERVE = os.path.join(HERE, "..", "..", "session-observation", "scripts", "observe.py")
+OBSERVE = os.path.join(HERE, "observe.py")
 
 
 def load_observe():

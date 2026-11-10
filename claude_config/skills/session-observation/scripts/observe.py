@@ -631,7 +631,7 @@ def handle_key(view, key):
 
 # 見出しの左端に出す、もう一方の表示に切り替える文字 (今の表示 → 出す文字)。2026/10/30 にユーザーが決めた
 SWITCH_TEXT = {"full": "[light]", "light": "[通常版]"}
-LIGHT = os.path.join(HERE, "..", "..", "session-observation-light", "scripts", "observe_light.py")
+LIGHT = os.path.join(HERE, "observe_light.py")
 
 
 def load_light_render():
