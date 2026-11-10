@@ -17,7 +17,11 @@ argument-hint: "[まとめる内容・タイトル（省略すると直前の調
 
 - 保存先: `VAULT_DIR/00_Inbox/YYMMDD_タイトル.md`（例: `261110_Artifact の使い方.md`）。YYMMDD は今日の日付。
   - タイトルは内容が分かる短い日本語にする。ファイル名に使えない文字（`\ / : * ? " < > |`、`#` `^` `[` `]`）は使わない。
-  - 同じ名前のファイルがあれば、上書きせず、末尾に `_2` などを付ける。
+  - 同じ名前のノートが **vault 全体**（`00_Inbox` だけでなく、すべてのフォルダ）にあれば、上書きせず、末尾に `_2` などを付けて、どこにもない名前にする。Inbox の振り分け（`inbox_sort.py`）は、vault のどこかに同じ名前のノートがあると動かさず、Inbox に残すため。`[[名前]]` のリンクがどちらを指すかも、あいまいになる。
+    ```bash
+    find ~/vaults -path ~/vaults/.git -prune -o -type f -name "<ファイル名>.md" -print
+    ```
+    何か出たら、名前を変えて、もう一度確かめる。
 - frontmatter は `99_Template/Inbox_template.md` と同じ項目にし、group は `research` にする。
 
 ```yaml
