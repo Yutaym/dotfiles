@@ -190,6 +190,29 @@ class Remote(threading.Thread):
             return dict(self.result), self.updated
 
 
+class Calendar(threading.Thread):
+    """Claude カレンダーの自動実行の未確認の件数を、ssh の接続先と同じ間隔 (--remote-interval) で読み直す
+    (2026/11/10 にユーザーが決めた)。--no-remote のときは、ssh は使わず手元のファイル (Home_Mac_1) だけ読む。"""
+
+    def __init__(self, overview, interval, use_ssh):
+        super().__init__(daemon=True)
+        self.ov, self.interval, self.use_ssh = overview, interval, use_ssh
+        self.count = None
+
+    def run(self):
+        while True:
+            self.count = self.ov.calendar_unread(self.use_ssh)
+            time.sleep(self.interval)
+
+
+CALENDAR = {"watch": None}
+
+
+def calendar_count():
+    watch = CALENDAR["watch"]
+    return watch.count if watch else None
+
+
 # ---------- 表を作る ----------
 
 def to_epoch(value):
@@ -421,9 +444,11 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
         remote_info = f"ssh: {args.remote_interval:g}秒ごと（最終 {datetime.datetime.fromtimestamp(remote_updated):%H:%M:%S}）"
     else:
         remote_info = "ssh: 読み込み中…"
+    cal = calendar_count()
+    cal_text = f"  カレンダー未確認 {cal} 件（/calendar-results）" if cal else ""
     header = Text.assemble(
         (SWITCH_TEXT["full"], "bold reverse"), " ", ("session-observation", "bold"), f"  更新 {now}  このマシン: {args.interval:g}秒ごと  {remote_info}  ",
-        (summary, "cyan"), (position, "bold magenta"), (typed_info(view), "bold reverse"), no_wrap=True, overflow="ellipsis",
+        (summary, "cyan"), (cal_text, "bold yellow"), (position, "bold magenta"), (typed_info(view), "bold reverse"), no_wrap=True, overflow="ellipsis",
     )
     footer = Text("クリック / 番号+Enter: そのウィンドウへ  スクロール: ↑↓ ホイール PgUp/PgDn Home/End (j/k)  止める: q / Ctrl+C / observe.py --stop",
                   style="dim", no_wrap=True, overflow="ellipsis")
@@ -729,6 +754,9 @@ def main(mode="full", light_render=None):
     if not args.no_remote:
         remote = Remote(load_module("remote_overview", "remote-overview.py"), args.remote_interval)
         remote.start()
+
+    CALENDAR["watch"] = Calendar(overview, args.remote_interval, not args.no_remote)
+    CALENDAR["watch"].start()
 
     token = take_lock()
     console = Console()

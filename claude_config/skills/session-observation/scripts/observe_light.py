@@ -88,8 +88,10 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     shown = lines[view["offset"]:view["offset"] + body]
     position = f" {view['offset'] + 1}-{view['offset'] + len(shown)}/{len(lines)}" if len(lines) > body else ""
 
+    cal = ob.calendar_count()
     header = Text.assemble((ob.SWITCH_TEXT["light"], "bold reverse"), " ",
-                           (datetime.datetime.now().strftime("%H:%M:%S"), "bold"), (position, "bold magenta"),
+                           (datetime.datetime.now().strftime("%H:%M:%S"), "bold"),
+                           (f" 📅{cal}" if cal else "", "bold yellow"), (position, "bold magenta"),
                            (ob.typed_info(view), "bold reverse"),
                            no_wrap=True, overflow="ellipsis")
     parts = [header, Text.from_ansi("\n".join(shown))]

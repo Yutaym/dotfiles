@@ -113,6 +113,8 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/remote-over
 - そのほかに対応したほうがよいもの（エラーで止まっているセッションなど）があれば、同じ箇条書きに足す。同じセッションを二重に書かない。
 - session-kill スキルはこの表を使うが、箇条書きは書かない（session-kill の SKILL.md の決まり）。
 
+- **Claude カレンダーの未確認:** `session-overview.py` の出力の末尾に `## Claude カレンダー` の節（`Claude カレンダーの自動実行: 未確認 N 件（/calendar-results）`）があるときは、その 1 行を箇条書きの最後に足す（2026/11/10 にユーザーが決めた。SessionStart の Hook と同じ件数）。節がない（0 件か読めない）ときは何も書かない。session-observation の監視画面にも同じ件数が出る。
+
 要約に書くのは、抜き出した依頼と返答に書いてあることだけにする。材料が足りず推測が混じるところは、「嘘をついているかもしれない」と明記する。
 
 1 つのセッションをもっと詳しく知りたいと言われたら、そのセッションだけを `--prompts` と `--chars` を増やして実行し直す。session-generate スキルの `session-result.py` を使えば、最後の返答を全文で読める。

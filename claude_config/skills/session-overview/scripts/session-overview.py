@@ -307,6 +307,37 @@ def local_numbers(procs):
     return session_numbers([s["sessionId"] for s in alive], scope="")
 
 
+CALENDAR_REL = ".local/state/vault-jobs/calendar-unread.txt"
+
+
+def calendar_unread(use_ssh=True):
+    """Claude カレンダーの自動実行の、まだ確認していない結果の件数を返す (読めなければ None)。
+    hooks/calendar-unread.mjs (SessionStart) と同じ読み方: Home_Mac_1 では手元のファイル、
+    ほかのマシンでは ssh で Home_Mac_1 のファイルを読む。ファイルの 1 行目が件数。"""
+    local = os.path.join(os.path.expanduser("~"), CALENDAR_REL)
+    text = None
+    if os.path.exists(local):
+        try:
+            with open(local, encoding="utf-8") as f:
+                text = f.read()
+        except OSError:
+            return None
+    elif use_ssh:
+        try:
+            r = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=2", "Home_Mac_1", f"cat ~/{CALENDAR_REL} 2>/dev/null"],
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5)
+        except (OSError, subprocess.SubprocessError):
+            return None
+        text = r.stdout if r.returncode == 0 else None
+    first = (text or "").strip().splitlines()[:1]
+    return int(first[0].strip()) if first and first[0].strip().isdigit() else None
+
+
+def calendar_note(n):
+    """未確認が 1 件以上あるときだけ出す案内。"""
+    return f"Claude カレンダーの自動実行: 未確認 {n} 件（/calendar-results）" if n else ""
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("names", nargs="*", help="出すセッションの名前 (ListAgents の名前)。省略時はすべて")
@@ -360,6 +391,9 @@ def main():
         w = judge_waiting(item)
         print(f"判定: {wait_label(item)}" + (f"（{w[1]}）" if w else "") + " ← 表の「最後の動き」の返事待ちは、この判定に従う")
         print()
+    note = calendar_note(calendar_unread())
+    if note:
+        print(f"## Claude カレンダー\n{note}")
 
 
 def to_epoch(value):
