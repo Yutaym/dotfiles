@@ -80,7 +80,8 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     Console(file=buf, width=width, force_terminal=True, color_system=console.color_system or "standard",
             legacy_windows=False).print(table)
     lines = buf.getvalue().rstrip("\n").split("\n")
-    body = max(3, height - 1 - len(notes))
+    cal = ob.calendar_count(overview)
+    body = max(3, height - 1 - len(notes) - (1 if cal else 0))
     view["page"] = body
     view["offset"] = max(0, min(view["offset"], len(lines) - body))
     view["targets"] = ob.line_targets(lines, [r[3] for r in rows], boxed=False)
@@ -88,14 +89,15 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     shown = lines[view["offset"]:view["offset"] + body]
     position = f" {view['offset'] + 1}-{view['offset'] + len(shown)}/{len(lines)}" if len(lines) > body else ""
 
-    cal = ob.calendar_count()
     header = Text.assemble((ob.SWITCH_TEXT["light"], "bold reverse"), " ",
                            (datetime.datetime.now().strftime("%H:%M:%S"), "bold"),
-                           (f" 📅{cal}" if cal else "", "bold yellow"), (position, "bold magenta"),
+                           (position, "bold magenta"),
                            (ob.typed_info(view), "bold reverse"),
                            no_wrap=True, overflow="ellipsis")
     parts = [header, Text.from_ansi("\n".join(shown))]
     parts += [Text(n, style="red", no_wrap=True, overflow="ellipsis") for n in notes]
+    if cal:  # 幅 24 列ほどなので短く、見出しではなく別の行に出す
+        parts.append(Text(f"📅 未確認 {cal} 件", style="bold yellow", no_wrap=True, overflow="ellipsis"))
     return Group(*parts)
 
 

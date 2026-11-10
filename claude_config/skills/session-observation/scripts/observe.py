@@ -201,16 +201,14 @@ class Calendar(threading.Thread):
 
     def run(self):
         while True:
-            self.count = self.ov.calendar_unread(self.use_ssh)
+            # 件数は overview モジュールに持たせる。light 版は observe.py を別のコピーとして読み込むので、
+            # observe.py の中に持つと、通常版から切り替えたときに件数が渡らない (2026/11/10 に起きた)
+            self.ov.CALENDAR_COUNT = self.ov.calendar_unread(self.use_ssh)
             time.sleep(self.interval)
 
 
-CALENDAR = {"watch": None}
-
-
-def calendar_count():
-    watch = CALENDAR["watch"]
-    return watch.count if watch else None
+def calendar_count(overview):
+    return getattr(overview, "CALENDAR_COUNT", None)
 
 
 # ---------- 表を作る ----------
@@ -425,7 +423,8 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
     Console(file=buf, width=width, force_terminal=True, color_system=console.color_system or "standard",
             legacy_windows=False).print(table)
     lines = buf.getvalue().rstrip("\n").split("\n")
-    body = max(3, height - 2 - len(notes))
+    cal = calendar_count(overview)
+    body = max(3, height - 2 - len(notes) - (1 if cal else 0))
     view["page"] = body
     view["offset"] = max(0, min(view["offset"], len(lines) - body))
     view["targets"] = line_targets(lines, [r[3] for r in rows])
@@ -444,16 +443,17 @@ def render(console, view, local, remote_result, remote_updated, args, overview, 
         remote_info = f"ssh: {args.remote_interval:g}秒ごと（最終 {datetime.datetime.fromtimestamp(remote_updated):%H:%M:%S}）"
     else:
         remote_info = "ssh: 読み込み中…"
-    cal = calendar_count()
-    cal_text = f"  カレンダー未確認 {cal} 件（/calendar-results）" if cal else ""
     header = Text.assemble(
         (SWITCH_TEXT["full"], "bold reverse"), " ", ("session-observation", "bold"), f"  更新 {now}  このマシン: {args.interval:g}秒ごと  {remote_info}  ",
-        (summary, "cyan"), (cal_text, "bold yellow"), (position, "bold magenta"), (typed_info(view), "bold reverse"), no_wrap=True, overflow="ellipsis",
+        (summary, "cyan"), (position, "bold magenta"), (typed_info(view), "bold reverse"), no_wrap=True, overflow="ellipsis",
     )
     footer = Text("クリック / 番号+Enter: そのウィンドウへ  スクロール: ↑↓ ホイール PgUp/PgDn Home/End (j/k)  止める: q / Ctrl+C / observe.py --stop",
                   style="dim", no_wrap=True, overflow="ellipsis")
     parts = [header, Text.from_ansi("\n".join(shown))]
     parts += [Text("・" + n, style="red", no_wrap=True, overflow="ellipsis") for n in notes]
+    # 見出しはペインの幅で切れるので、カレンダーの未確認は見出しではなく、表の下の別の行に出す (2026/11/10)
+    if cal:
+        parts.append(Text(f"📅 Claude カレンダーの未確認 {cal} 件（/calendar-results）", style="bold yellow", no_wrap=True, overflow="ellipsis"))
     parts.append(footer)
     return Group(*parts)
 
@@ -755,8 +755,7 @@ def main(mode="full", light_render=None):
         remote = Remote(load_module("remote_overview", "remote-overview.py"), args.remote_interval)
         remote.start()
 
-    CALENDAR["watch"] = Calendar(overview, args.remote_interval, not args.no_remote)
-    CALENDAR["watch"].start()
+    Calendar(overview, args.remote_interval, not args.no_remote).start()
 
     token = take_lock()
     console = Console()
