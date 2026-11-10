@@ -1,6 +1,6 @@
 ---
 name: research-note
-description: 調べもの・調査・比較の結果を、人が読むための Obsidian のノートにまとめ、vault の 00_Inbox に新しく作る（type: note、project: research）。図は必要なときだけ Mermaid で描き、数値はグラフ、挿絵は comfyui-klein で生成して 50_Resources に入れる。自動では動かず、頼まれたときだけ使う。「調べたことをノートにまとめて」「この調査をノートにして」「調べものを見やすくまとめて」「/research-note」などと言われたときに使う。
+description: 調べもの・調査・比較の結果を、人が読むための Obsidian のノートにまとめ、vault の 00_Inbox に新しく作る（type: note、group: research）。図は必要なときだけ Mermaid で描き、数値はグラフ、挿絵は comfyui-klein で生成して 50_Resources に入れる。自動では動かず、頼まれたときだけ使う。「調べたことをノートにまとめて」「この調査をノートにして」「調べものを見やすくまとめて」「/research-note」などと言われたときに使う。
 argument-hint: "[まとめる内容・タイトル（省略すると直前の調べもの）]"
 ---
 
@@ -18,14 +18,14 @@ argument-hint: "[まとめる内容・タイトル（省略すると直前の調
 - 保存先: `VAULT_DIR/00_Inbox/YYMMDD_タイトル.md`（例: `261110_Artifact の使い方.md`）。YYMMDD は今日の日付。
   - タイトルは内容が分かる短い日本語にする。ファイル名に使えない文字（`\ / : * ? " < > |`、`#` `^` `[` `]`）は使わない。
   - 同じ名前のファイルがあれば、上書きせず、末尾に `_2` などを付ける。
-- frontmatter は `99_Template/Inbox_template.md` と同じ項目にし、project は `research` にする。
+- frontmatter は `99_Template/Inbox_template.md` と同じ項目にし、group は `research` にする。
 
 ```yaml
 ---
 type: note
 created: YYYY-MM-DD
 status: inbox
-project: "research"
+group: "research"
 ---
 ```
 
