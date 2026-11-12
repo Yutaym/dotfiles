@@ -463,7 +463,18 @@ def judge_waiting(item):
             m = QUESTION_RE.search(text)
             if m and not (m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(text[:m.end()].rstrip("。．.!！)）」』 "))):
                 return "推定", f"「{m.group(1)}」で終わる"
+        # 行の途中の文が「教えてください」「選んでください」などの返事を求める言い方で終わるもの
+        # (2026/11/12 に、「どれがよいか教えてください。(3) なら、〜です。」が idle と出た。「？」「ですか」は行の途中では数えない)
+        for sent in SENTENCE_RE.split(line)[:-1]:
+            m = QUESTION_RE.search(sent)
+            if m and m.group(1).endswith(("ください", "下さい")) and not (
+                    m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(sent[:m.end()].rstrip("。．.!！)）」』 "))):
+                return "推定", f"「{m.group(1)}」がある"
     return None
+
+
+# 行を文に分ける区切り (句点・感嘆符の直後)
+SENTENCE_RE = re.compile(r"(?<=[。．！!])")
 
 
 def wait_label(item):
