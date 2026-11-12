@@ -2,7 +2,7 @@
 //   使用リミット（5 時間・週）と、このペースで上限に届く時刻 / コンテキスト使用率 / キャッシュの残り時間 / effort などの状態 / モデル
 // rate_limits は Pro / Max のみ、セッションの最初の応答の後から入る。各項目は欠けることがあるので、あるものだけ出す
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, renameSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
@@ -60,18 +60,39 @@ const badges = () => {
 };
 
 const parts = [];
-const rl = d.rate_limits ?? {};
+const own = d.rate_limits ?? {};
+
+// 使用リミットは全セッション共通（同じアカウント）だが、各セッションに渡される値は、そのセッションが最後に応答を受けた時点のもの。
+// 放置中のセッションは古い（低い）値のままなので、~/.claude/cache/rate_limits.json に残っている値と突き合わせ、同じ枠なら使用率の大きいほうを採る。
+// 枠が違うときは resets_at の新しいほう（古い枠のデータは、リセット後の値に負けるようにする）を採る。表示も、書き出すファイルも、採った値を使う
+const cacheFile = join(homedir(), '.claude', 'cache', 'rate_limits.json');
+let saved = {};
+try {
+  saved = JSON.parse(readFileSync(cacheFile, 'utf8'));
+} catch {}
+const mergeWindow = (a, b) => {
+  const ok = (w) => w?.used_percentage != null && w.resets_at > now;
+  if (!ok(a)) return ok(b) ? b : a;
+  if (!ok(b)) return a;
+  if (a.resets_at !== b.resets_at) return a.resets_at > b.resets_at ? a : b;
+  return b.used_percentage > a.used_percentage ? b : a;
+};
+const rl = {
+  ...own,
+  five_hour: mergeWindow(own.five_hour, saved.five_hour),
+  seven_day: mergeWindow(own.seven_day, saved.seven_day),
+};
+for (const k of ['five_hour', 'seven_day']) if (rl[k] == null) delete rl[k];
 
 // 使用リミットを ~/.claude/cache/rate_limits.json に書き出す（スキルなどが、使用率を見て作業の振り分けを決めるため）
-// 同じアカウントの値なので、どのセッションが書いても同じ。読み手が途中まで書かれたファイルを読まないよう、一時ファイルに書いてから置き換える
+// 読み手が途中まで書かれたファイルを読まないよう、一時ファイルに書いてから置き換える
 const saveRateLimits = () => {
   if (rl.five_hour?.used_percentage == null && rl.seven_day?.used_percentage == null) return;
   const dir = join(homedir(), '.claude', 'cache');
-  const file = join(dir, 'rate_limits.json');
-  const tmp = `${file}.${process.pid}.tmp`;
+  const tmp = `${cacheFile}.${process.pid}.tmp`;
   mkdirSync(dir, { recursive: true });
   writeFileSync(tmp, JSON.stringify({ updated_at: now, ...rl }));
-  renameSync(tmp, file);
+  renameSync(tmp, cacheFile);
 };
 try {
   saveRateLimits();
