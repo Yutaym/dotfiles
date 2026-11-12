@@ -468,7 +468,7 @@ ESCAPES = {
     "[H": "home", "[1~": "home", "OH": "home", "[F": "end", "[4~": "end", "OF": "end",
 }
 LETTERS = {"k": "up", "j": "down", " ": "pgdn", "b": "pgup", "g": "home", "G": "end", "q": "quit", "\x03": "quit",
-           "\r": "enter", "\n": "enter", "\x08": "backspace", "\x7f": "backspace",
+           "m": "switch", "\r": "enter", "\n": "enter", "\x08": "backspace", "\x7f": "backspace",
            **{d: ("digit", d) for d in "0123456789"}}
 
 
@@ -645,6 +645,8 @@ def handle_key(view, key):
                 click(view, row)
         elif kind == "digit":
             view["typed"] = (view.get("typed", "") + value)[-4:]
+    elif key == "switch":
+        view["switch"] = True  # m キー: クリックと同じく、通常版と light を切り替える (main が行う)
     elif key == "enter":
         typed = view.pop("typed", "")
         jump((view.get("numbers") or {}).get(typed))
@@ -655,7 +657,7 @@ def handle_key(view, key):
 
 
 # 見出しの左端に出す、もう一方の表示に切り替える文字 (今の表示 → 出す文字)。2026/10/30 にユーザーが決めた
-SWITCH_TEXT = {"full": "[light]", "light": "[通常版]"}
+SWITCH_TEXT = {"full": "[light] (m)", "light": "[通常版] (m)"}
 LIGHT = os.path.join(HERE, "observe_light.py")
 
 
