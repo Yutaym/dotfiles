@@ -12,7 +12,12 @@
   },
   "agentPushNotifEnabled": true,
   "inputNeededNotifEnabled": true,
-  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-opus-5-5": { "effortLevel": "medium" },
+    "claude-sonnet-5-5": { "effortLevel": "medium" },
+    "claude-haiku-5-5": { "effortLevel": "medium" },
+    "claude-fable-5-2": { "effortLevel": "medium" }
+  },
   "statusLine": {
     "type": "command",
     "command": "sh ~/dotfiles/claude_config/statusline.sh",
@@ -98,6 +103,16 @@
             "type": "command",
             "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/calendar-unread.mjs\"",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/model-settings-add.mjs\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-main.mjs\"",
+            "timeout": 15
           }
         ]
       }
@@ -108,6 +123,15 @@
           {
             "type": "command",
             "command": "f=\"$HOME/.config/iterm2/cc-status\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/context-clear-notice.mjs\"",
+            "timeout": 10
           }
         ]
       },
@@ -154,6 +178,15 @@
           {
             "type": "command",
             "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/meta-save-check.mjs\" prompt"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-main-prompt.mjs\"",
+            "timeout": 10
           }
         ]
       }
