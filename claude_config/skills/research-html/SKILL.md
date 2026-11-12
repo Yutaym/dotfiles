@@ -1,6 +1,6 @@
 ---
 name: research-html
-description: 調べもの・調査・比較の結果を、図や表で読みやすい 1 枚の HTML ノートにまとめ、vault の 50_Resources/html_notes/ に保存し、00_Inbox に要点とリンクだけの索引ノート（type: note、group: html_index）を作る。頼まれたときだけ Artifact として公開し（スマホの Claude アプリでも見られる）、前に作った HTML ノートの追記・更新もする。既定の Markdown のノートは research-note を使い、このスキルは HTML を頼まれたときだけ使う。「HTML でまとめて」「調べたことを HTML のノートにして」「HTML レポートにして」「前の HTML ノートを更新して」「Artifact にして」「/research-html」などと言われたときに使う。
+description: 調べもの・調査・比較の結果を、図や表で読みやすい 1 枚の HTML ノートにまとめ、vault の 50_Resources/html_notes/ に保存し、00_Inbox に要点とリンクだけの索引ノート（type: note、group: research）を作る。頼まれたときだけ Artifact として公開し（スマホの Claude アプリでも見られる）、前に作った HTML ノートの追記・更新もする。既定の Markdown のノートは research-note を使い、このスキルは HTML を頼まれたときだけ使う。「HTML でまとめて」「調べたことを HTML のノートにして」「HTML レポートにして」「前の HTML ノートを更新して」「Artifact にして」「/research-html」などと言われたときに使う。
 argument-hint: "[まとめる内容・タイトル（省略すると直前の調べもの）]"
 ---
 
@@ -22,14 +22,14 @@ argument-hint: "[まとめる内容・タイトル（省略すると直前の調
   - 画像は同じフォルダに置き、HTML からは相対パス（`./画像.png`）で参照する。
   - 50_Resources は git の管理外（Remotely Save で同期する。`50_Resources/README.md`）。
 - 索引ノート: `VAULT_DIR/00_Inbox/YYMMDD_タイトル.md`
-  - frontmatter は `99_Template/Inbox_template.md` と同じ項目にし、group は `html_index` にする（振り分けで `20_Notes/html_index` に移る。research-note のノートの `group: research` とは分ける）。
+  - frontmatter は `99_Template/Inbox_template.md` と同じ項目にし、group は `research` にする（research-note のノートと同じ。2026/11/12 にユーザーが決めた）。
 
 ```yaml
 ---
 type: note
 created: YYYY-MM-DD
 status: inbox
-group: "html_index"
+group: "research"
 ---
 ```
 
@@ -68,7 +68,7 @@ group: "html_index"
 
 ## 5. 更新
 
-- 「前の〜の HTML ノートを更新して」と言われたら、索引ノート（00_Inbox か `20_Notes/html_index`。振り分けで移っていることがあるので vault 全体を名前で探す）を見つけ、そこから HTML をたどる。
+- 「前の〜の HTML ノートを更新して」と言われたら、索引ノート（00_Inbox か、振り分け後のフォルダ。振り分けで移っていることがあるので vault 全体を名前で探す）を見つけ、そこから HTML をたどる。
 - HTML を直し、索引ノートの要点と「最終更新」を直す。
 - Artifact に公開済みなら、同じ URL に上書きで公開し直す（`url` を渡す。URL は変わらない）。新しい Artifact は作らない。
 
