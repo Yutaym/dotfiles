@@ -7,6 +7,11 @@ if (-not $env:CLAUDE_OLLAMA_URL) {
     $env:CLAUDE_OLLAMA_URL = "http://yutapc:11434"
 }
 
+# Claude Code の Ctrl+G（外部エディタ）用。Claude が起動した nvim にキーが届かない不具合
+# （psmux の中。anthropics/claude-code #92757）を避けるため、nvim を別ウィンドウで開くラッパーを使う。
+# Mac と共通の settings.json では EDITOR を指定しない（Mac は zshrc の EDITOR を使う）。
+$env:EDITOR = 'pwsh -NoProfile -File "' + (Join-Path $env:USERPROFILE 'dotfiles\claude_config\scripts\claude-editor.ps1') + '"'
+
 ## 補完/フック系スクリプトのキャッシュ機構
 ## 外部コマンドの起動はWindowsではプロセス生成コストが大きく、profile読み込みのたびに
 ## gh/docker/kubectl/pnpm/uv/condaのフックを都度実行すると起動が数秒単位で遅くなる。
