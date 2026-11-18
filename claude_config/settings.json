@@ -7,6 +7,10 @@
   "alwaysThinkingEnabled": true,
   "tui": "fullscreen",
   "theme": "dark-daltonized",
+  "editorMode": "vim",
+  "vimInsertModeRemaps": {
+    "jj": "<Esc>"
+  },
   "feedbackSurveyState": {
     "lastShownTime": 1756260069338
   },
@@ -21,7 +25,8 @@
   "statusLine": {
     "type": "command",
     "command": "sh ~/dotfiles/claude_config/statusline.sh",
-    "refreshInterval": 60
+    "refreshInterval": 60,
+    "hideVimModeIndicator": true
   },
   "subagentStatusLine": {
     "type": "command",

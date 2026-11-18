@@ -102,6 +102,11 @@ if (rl.seven_day?.used_percentage != null) parts.push(rateLimit('週', rl.seven_
 if (d.context_window?.used_percentage != null) parts.push(pct('ctx', d.context_window.used_percentage));
 parts.push(cache(d.prompt_cache), badges(), d.model?.display_name);
 
+// vim モード（editorMode が vim のときだけ stdin の vim.mode が入る）を先頭に出す
+// NORMAL は緑、INSERT は黄、VISUAL 系はマゼンタ（文字色のみ）
+const vimStyle = { NORMAL: '32', INSERT: '33', VISUAL: '1;35', 'VISUAL LINE': '1;35' };
+if (d.vim?.mode) parts.unshift(`\x1b[${vimStyle[d.vim.mode] ?? '0'}m ${d.vim.mode} \x1b[0m`);
+
 // 右揃えにする。画面の幅は Claude Code が COLUMNS に入れて渡す（tput cols では取れない）
 // 表示幅は ANSI の色指定を除き、全角文字を 2 として数える。RIGHT_MARGIN は Claude Code 側の余白のぶんの調整
 // Claude Code は行頭の空白を詰めるので、先頭に色のリセット（\x1b[0m）を置いて空白を残す
