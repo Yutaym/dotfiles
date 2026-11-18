@@ -1,6 +1,7 @@
 // Stop の Hook: 会話が長くなったら「作業が変わるなら /clear を」と画面に一言出す（2026/11/11 にユーザーが決めた）。
 // - 長いセッションは、返事のたび・ほかのセッションから報告が届くたびに会話全体を送り直すので、使用量が増える。
-// - 基準: ふつうのセッションは 200k トークン、session-main は 100k（報告を何度も受けるため低め）。
+// - 基準: ふつうのセッションは 200k トークン、session-main は 150k（報告を何度も受けるため低め。2026/11/13 にユーザーが 100k から変更）。
+//   session-main 扱いかは、名前・入力の session_title・session-main-rules の印のどれかで判定する。
 //   基準を超えたら 1 回出し、そのあとは 100k 増えるごとにもう一度出す。基準より短くなったら（/clear 後など）数え直す。
 // - 長さは transcript_path の最後の assistant 行の usage（input + cache_read + cache_creation）。会話記録は少し遅れて
 //   書かれるので目安。読めないとき・待っている作業（background_tasks / session_crons）があるときは何も出さない。
@@ -10,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, openSync, readSync
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-const THRESHOLD = { "session-main": 100_000 };
+const THRESHOLD = { "session-main": 150_000 };
 const DEFAULT_THRESHOLD = 200_000;
 const STEP = 100_000;
 
@@ -59,7 +60,13 @@ function sessionName(id) {
 const tokens = lastContextTokens(input.transcript_path);
 if (!tokens) process.exit(0);
 
-const name = sessionName(sid);
+// session-main として扱われているか: 名前が session-main、入力の session_title が session-main、
+// または session-main.mjs / session-main-prompt.mjs が決まりを読み込ませた印がある（名前が別でも session-main 扱いのセッション用）。
+const isMain = (() => {
+  if (input.session_title === "session-main") return true;
+  try { readFileSync(join(homedir(), ".claude", "state", "session-main-rules", `${sid}.json`)); return true; } catch { return false; }
+})();
+const name = isMain ? "session-main" : sessionName(sid);
 const threshold = THRESHOLD[name] ?? DEFAULT_THRESHOLD;
 
 const stateDir = join(homedir(), ".claude", "state", "context-clear-notice");
