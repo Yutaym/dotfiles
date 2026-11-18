@@ -39,3 +39,7 @@ Claude Code の vim モードで、NORMAL に戻ったとき日本語入力の�
   ```powershell
   Remove-Item (Join-Path ([Environment]::GetFolderPath('Startup')) 'esc-ime-off.lnk')
   ```
+
+## そのほかのスクリプト
+- `runPowerToys.ahk`: `Ctrl+Space` で PowerToys Run を起動する。元は `OneDrive\ドキュメント\AutoHotkey\` にあったもの。自動起動の登録はしていない（`install.ps1` の対象は `esc-ime-off.ahk` だけ）。使うときは `AutoHotkey64.exe runPowerToys.ahk` で起動するか、スタートアップにショートカットを作る。
+- `Ctrl+Space` を IME のオン・オフに割り当てている環境では、競合に注意する。
