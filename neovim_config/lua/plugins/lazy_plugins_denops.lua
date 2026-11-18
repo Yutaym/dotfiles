@@ -4,6 +4,14 @@ return {
     -- event = "VeryLazy",
     lazy = false,
     init = function()
+      -- Windows: Git Bash 等で SHELL が設定されていると exepath('deno') が拡張子なしの
+      -- シェル用 shim を返し、jobstart が -1 で失敗する。deno.cmd を明示する。
+      if vim.fn.has('win32') == 1 then
+        local deno_cmd = vim.fn.exepath('deno.cmd')
+        if deno_cmd ~= '' then
+          vim.g['denops#deno'] = deno_cmd
+        end
+      end
       -- vim.g["denops#server#deno_args"] = {"--no-lock"}
       vim.g['denops#deno_options'] = {
         '--allow-net',
