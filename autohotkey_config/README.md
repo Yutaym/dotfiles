@@ -20,8 +20,9 @@ Claude Code の vim モードで、NORMAL に戻ったとき日本語入力の�
    ```powershell
    pwsh -NoProfile -File $HOME\dotfiles\autohotkey_config\install.ps1
    Start-Process (Join-Path ([Environment]::GetFolderPath('Startup')) 'esc-ime-off.lnk')
+   Start-Process (Join-Path ([Environment]::GetFolderPath('Startup')) 'runPowerToys.lnk')   # 使うときだけ
    ```
-   - `install.ps1` はショートカット `esc-ime-off.lnk` をスタートアップに作る。何度実行してもよい。
+   - `install.ps1` は `esc-ime-off.lnk` と `runPowerToys.lnk` をスタートアップに作る。何度実行してもよい。
    - AutoHotkey の場所が違うときは、`install.ps1` の `$ahk` を直す。
 
 ## 確認
@@ -35,11 +36,11 @@ Claude Code の vim モードで、NORMAL に戻ったとき日本語入力の�
 
 ## 止める・外す
 - 一時的に止める: タスクトレイの AutoHotkey のアイコン → Exit。
-- 自動起動をやめる: スタートアップの `esc-ime-off.lnk` を削除する。
+- 自動起動をやめる: スタートアップの `esc-ime-off.lnk`（`runPowerToys.lnk`）を削除する。
   ```powershell
   Remove-Item (Join-Path ([Environment]::GetFolderPath('Startup')) 'esc-ime-off.lnk')
   ```
 
 ## そのほかのスクリプト
-- `runPowerToys.ahk`: `Ctrl+Space` で PowerToys Run を起動する。元は `OneDrive\ドキュメント\AutoHotkey\` にあったもの。自動起動の登録はしていない（`install.ps1` の対象は `esc-ime-off.ahk` だけ）。使うときは `AutoHotkey64.exe runPowerToys.ahk` で起動するか、スタートアップにショートカットを作る。
+- `runPowerToys.ahk`: `Ctrl+Space` で PowerToys Run を起動する。元は `OneDrive\ドキュメント\AutoHotkey\` にあったもの。`install.ps1` でスタートアップに登録される（`esc-ime-off.ahk` と同じ）。
 - `Ctrl+Space` を IME のオン・オフに割り当てている環境では、競合に注意する。
