@@ -1,6 +1,6 @@
 ---
 name: session-ssh
-description: ~/.ssh/config の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ）で ssh 接続して、接続先で Remote Control つきの Claude Code を名前付きで起動する。このマシンのセッションと同じように ListAgents / SendMessage で作業を頼める。「リモートで Claude を起動して」「〜のマシンでセッションを開いて」「ssh 先で Claude を動かして」などと言われたときに使う。
+description: ~/.ssh/config の Host から接続先を選んでもらい、新しいターミナルのタブ（tmux の中では新しいウィンドウ）で ssh 接続して、接続先で Remote Control つきの Claude Code を名前付きで起動する。このマシンのセッションと同じように ListAgents / SendMessage で作業を頼める。「リモートで Claude を起動して」「〜のマシンでセッションを開いて」「ssh 先で Claude を動かして」などと言われたときに使う。スリープや再起動で切れた ssh のセッションをつなぎ直すとき（「ssh のセッションをつなぎ直して」「切れたリモートのセッションを開き直して」）にも使う。
 effort: medium
 argument-hint: "[接続先] [フォルダ] [作業]"
 ---
@@ -80,3 +80,25 @@ session-generate の「2. 作業を頼む」と同じ形で `SendMessage` を送
 - `notify_when_idle` は付けない（別のマシンでは使えない）。代わりに「終わったら結論の要約を SendMessage で `<自分の名前>` に送って」と必ず書く。返事は、こちらが Remote Control につながっているときだけ届く。
 - 手がかりのパスは、接続先のマシンのパスで書く。
 - 結果が届かないときは、tmux の中なら `tmux capture-pane -p -S -300 -t <ウィンドウ>` で接続先の画面を読んで、最後の返答を確かめる。
+
+## 5. つなぎ直す（スリープ・回線断・このマシンの再起動のあと）
+
+接続先の Claude は tmux の中で動き続けるので、ssh が切れてもつなぎ直せば元の画面に戻る（接続先の再起動で tmux ごと消えたときは戻せない）。
+
+- **ウィンドウが残っているとき（スリープ・回線断）:** そのウィンドウに「Enter で再接続します。q + Enter で閉じます。」と出ている（ssh-generate の `start-ssh.ps1`。自動では再試行しない）。Enter を押せば同じコマンドで ssh し直して attach する。ユーザーに頼まれたら、Claude が `tmux send-keys -t <ウィンドウ> Enter` で押してもよい。
+- **ウィンドウごと消えたとき（このマシンの再起動など）:** 接続の記録（`~/.claude/state/session-ssh/*.json`。開くときに書き、ssh が正常に終わったら消える）から開き直す。Windows（ネイティブ）だけ。
+  1. 一覧を出して、ユーザーに見せる。
+
+     ```powershell
+     pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\restore-session-ssh.ps1" -List
+     ```
+
+     状態は `open`（このマシンに同じ名前のウィンドウがある）・`alive`（接続先に tmux セッションが残っている）・`gone`（接続先にない）・`unknown`（ssh できない。接続先がスリープ中など）。
+  2. `alive` のうちどれを開き直すかを `AskUserQuestion` で確かめてから（ユーザーが名前を指定していれば、そのまま）開き直す。ウィンドウは画面を切り替えずに開く。
+
+     ```powershell
+     pwsh -NoProfile -File "<このスキルのフォルダ>\scripts\restore-session-ssh.ps1" -Name <名前>[,<名前>...]   # -All ですべて
+     ```
+
+     `gone` を指定したときは開かずに記録を消す（開くと新しい Claude が起動してしまうため）。
+- 開き直した接続先の Claude が `ListAgents` に出ないときは、Remote Control がつながり直していない。そのウィンドウの画面を見て、ユーザーに `/rc` を頼む（スリープのあと自動でつながり直すかは未確認）。
