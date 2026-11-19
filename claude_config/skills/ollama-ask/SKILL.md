@@ -36,4 +36,4 @@ python3 $S --json "…を {\"a\":[]} の形の JSON だけで答えて"  # JSON 
 - 接続できないときは yutapc の電源と Ollama を確かめる。相手の PC の設定（OLLAMA_HOST、ファイアウォールなど）を変えるときは、先にユーザーに確認する。
 
 ## 参考
-調査とテストの記録、Claude Code 自体を Ollama で動かす方法（`qwen3.5:9b-32k` と環境変数）: `~/vaults/90_Wiki/research/remote-ollama-from-claude-code.md`
+調査とテストの記録、Claude Code 自体を Ollama で動かす方法（`qwen3.5:9b-32k` と環境変数）: `~/vaults/90_Wiki/ai-tools/remote-ollama-from-claude-code.md`
