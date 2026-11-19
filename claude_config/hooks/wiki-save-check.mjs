@@ -69,5 +69,5 @@ if (wroteWiki || judged || !(researched || informative)) process.exit(0);
 const why = researched ? "このターンで調べもの（WebFetch / WebSearch / サブエージェント）をした" : "ユーザーのメッセージに覚えておく情報がありそうな";
 console.log(JSON.stringify({
   decision: "block",
-  reason: `（Hook）${why}のに、90_Wiki に何も書いていない。CLAUDE.md のナレッジベースの決まりに従い、保存するか判断する。残す価値があれば保存してどこに保存したかを書き、保存しないなら「（90_Wiki: 保存なし）」とだけ書いて終える。`,
+  reason: `（Hook）${why}のに、90_Wiki に何も書いていない。CLAUDE.md のナレッジベースの決まりに従い、保存するか判断する。残す価値があれば wiki-save スキルの手順で保存してどこに保存したかを書き、保存しないなら「（90_Wiki: 保存なし）」とだけ書いて終える。`,
 }));
