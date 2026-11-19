@@ -50,7 +50,8 @@ vault の同期は 2 つの部分に分かれていて、互いに独立して�
    git -C "$VAULT_DIR" commit -m "$(date '+Claude: %Y/%m/%d %H:%M:%S %z')"
    ```
 
-   - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM` の形式にし、Co-Authored-By などの帰属表示の行は付けない（グローバル CLAUDE.md のルール）。
+   - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM` の形式にする（時刻はローカル時刻の 24 時間表記で、末尾にタイムゾーンのオフセットを付ける。例: `Claude: 2026/09/30 11:42:35 +0900`）。
+   - Co-Authored-By などの帰属表示の行は付けない（グローバル CLAUDE.md のルール）。
    - commit の前に `git status` で、`.gitignore` 対象（90_Wiki など）が含まれていないことを確かめる。
 
 3. リモートの変更を取り込む。
