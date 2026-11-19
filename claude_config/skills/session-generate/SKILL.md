@@ -181,4 +181,4 @@ argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
 | WSL の中の Windows Terminal | `cmd.exe /c wt.exe -w 0 new-tab --reloadEnvironment wsl.exe -d <ディストリ> --cd <フォルダ> -- sh ...` | 未確認 |
 | VS Code の統合ターミナルなど、上のどれでもない | 自動では開かない。手で開いて実行するコマンドを表示する | — |
 
-未確認の環境で初めて使ったときは、うまく動いたかどうかを `WIKI_DIR/troubleshooting/claude-code-launch-new-session-from-session.md` に追記する。動かなかったときは、このスキルを直す。
+未確認の環境で初めて使ったときは、うまく動いたかどうかを `WIKI_DIR/claude-code/claude-code-launch-new-session-from-session.md` に追記する。動かなかったときは、このスキルを直す。
