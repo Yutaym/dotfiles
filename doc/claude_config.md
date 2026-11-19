@@ -107,22 +107,22 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 仮想環境・パッケージ管理は uv で行う（`uv venv` / `uv pip install` / `uv sync` / `uv run`）。`python -m venv`、素の `pip install`、conda で新しく環境を作らない。uv が無ければ公式インストーラー（`curl -LsSf https://astral.sh/uv/install.sh | sh`）で入れる。
 
 ### 環境ごとの設定
-`@~/.claude/local-paths.md` の行で `local-paths.md` を読み込む（CLAUDE.md の `@パス` によるインポート）。`META_DIR` などの環境固有の値は CLAUDE.md には書かず、こちらに分ける。
+`@~/.claude/local-paths.md` の行で `local-paths.md` を読み込む（CLAUDE.md の `@パス` によるインポート）。`WIKI_DIR` などの環境固有の値は CLAUDE.md には書かず、こちらに分ける。
 
-### ナレッジベース（META_DIR）
-`META_DIR` を、Claude Code が自由に読み書きしてよいメモ置き場として使う。
+### ナレッジベース（WIKI_DIR）
+`WIKI_DIR` を、Claude Code が自由に読み書きしてよいメモ置き場として使う。
 
 - 作業中に得た、今後も覚えておくべき内容（環境・好み・手順・調査結果・決定事項など）をトピックごとのフォルダ・ファイルに保存する
-- 目次は階層にする: `META_DIR/INDEX.md` にはフォルダ単位の説明だけ、個々のファイルは各フォルダの `INDEX.md` に 1 行で書く
+- 目次は階層にする: `WIKI_DIR/INDEX.md` にはフォルダ単位の説明だけ、個々のファイルは各フォルダの `INDEX.md` に 1 行で書く
 - 調査・解説・動作確認をしたら、返答ごとに保存するかを必ず判断する。保存しなかった場合は理由を一言書く
-- 読むときは `META_DIR/INDEX.md` → フォルダの `INDEX.md` → ファイルの順にたどる
-- 個人情報・機密情報は `META_DIR/private` の下に置き、外側には所在だけを書く
-- `META_DIR` が未定義・存在しない場合は、使う前にユーザーに確認する
+- 読むときは `WIKI_DIR/INDEX.md` → フォルダの `INDEX.md` → ファイルの順にたどる
+- 個人情報・機密情報は `WIKI_DIR/private` の下に置き、外側には所在だけを書く
+- `WIKI_DIR` が未定義・存在しない場合は、使う前にユーザーに確認する
 
-### VAULT_DIR / META_DIR の同期
+### VAULT_DIR / WIKI_DIR の同期
 | 対象                                   | 同期方法                                                                                                                  |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `META_DIR`（`VAULT_DIR/90_Meta`）      | git では管理しない（`.gitignore` で除外）。SMB 共有経由でタスクスケジューラが自動同期する。頼まれたときだけ `sync-vaults` スキルで同期 |
+| `WIKI_DIR`（`VAULT_DIR/90_Wiki`）      | git では管理しない（`.gitignore` で除外）。SMB 共有経由でタスクスケジューラが自動同期する。頼まれたときだけ `sync-vaults` スキルで同期 |
 | `VAULT_DIR` のそれ以外                 | 編集したら確認を待たずに、作業の区切りで `git add -A` → `commit` → `pull --rebase` → `push`                               |
 
 - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM`（`date '+Claude: %Y/%m/%d %H:%M:%S %z'`）。Co-Authored-By などの帰属表示は付けない
@@ -141,7 +141,7 @@ bash ~/dotfiles/claude_config/install_claude.sh    # Linux / macOS
 
 | 項目        | 値（リポジトリの内容）                                        |
 | ----------- | ------------------------------------------------------------- |
-| `META_DIR`  | `~/vaults/90_Meta`                                            |
+| `WIKI_DIR`  | `~/vaults/90_Wiki`                                            |
 | `VAULT_DIR` | `~/vaults`（git リポジトリ。remote: `origin`、ブランチ: `master`） |
 
 あわせて、`~/.claude` 下のシンボリックリンクと実体の対応（`CLAUDE.md` / `settings.json` / `keybindings.json` → `~/dotfiles/claude_config/`）を書いている。Claude Code がリンクを直接編集しようとして失敗したり、毎回リンク先を調べたりしないように、最初から実体のパスを使うよう指示している。
@@ -249,14 +249,14 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 
 ```text
 /sync-vaults          # A → B の両方
-/sync-vaults meta     # A だけ
+/sync-vaults wiki     # A だけ
 /sync-vaults git      # B だけ
 ```
 
 | 部分                  | 内容                                                                                                                                                                         |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0. 準備               | `~/.claude/local-paths.md` から `VAULT_DIR`・`META_DIR`・リモート・ブランチを読む。`VAULT_DIR` が無い・git リポジトリでなければ中止                                         |
-| A. 90_Meta の SMB 同期 | 手順は vault 内のプロジェクトスキル `VAULT_DIR/.claude/skills/sync-vaults/SKILL.md`（古い端末では `sync-vault`）を Read で読んで従う（ドライラン → 確認 → 本実行 → 要確認ファイルの整理）。見つからない・接続できなければスキップして B へ |
+| 0. 準備               | `~/.claude/local-paths.md` から `VAULT_DIR`・`WIKI_DIR`・リモート・ブランチを読む。`VAULT_DIR` が無い・git リポジトリでなければ中止                                         |
+| A. 90_Wiki の SMB 同期 | 手順は vault 内のプロジェクトスキル `VAULT_DIR/.claude/skills/sync-vaults/SKILL.md`（古い端末では `sync-vault`）を Read で読んで従う（ドライラン → 確認 → 本実行 → 要確認ファイルの整理）。見つからない・接続できなければスキップして B へ |
 | B. git の同期         | `status` で確認 → 変更があれば `add -A` / `commit` → `pull --rebase origin master` → `push origin master` → `status -sb` で ahead / behind が無いことを確認               |
 
 - A と B は独立していて、片方が失敗してももう片方は行う

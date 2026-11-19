@@ -90,8 +90,8 @@ group: "research"
 
 ## 5. 保存と同期
 
-- ノートを保存したら、CLAUDE.md の「VAULT_DIR / META_DIR の同期」に従い、`sync-vaults` スキルの git の手順で、コミットして push する（コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM`、帰属表示の行は付けない）。
-- 90_Meta への保存は、これまでどおり CLAUDE.md の決まりで別に判断する（Claude 用の簡潔なメモ。このノートとは別に残す）。
+- ノートを保存したら、CLAUDE.md の「VAULT_DIR / WIKI_DIR の同期」に従い、`sync-vaults` スキルの git の手順で、コミットして push する（コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM`、帰属表示の行は付けない）。
+- 90_Wiki への保存は、これまでどおり CLAUDE.md の決まりで別に判断する（Claude 用の簡潔なメモ。このノートとは別に残す）。
 
 ## 6. 返答
 

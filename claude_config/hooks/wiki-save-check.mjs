@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// 90_Meta（META_DIR）への保存を Claude に判断させる Hook。
+// 90_Wiki（WIKI_DIR）への保存を Claude に判断させる Hook。
 //   prompt: UserPromptSubmit で、人のメッセージのときだけ、保存の判断を思い出させる短い一行を渡す。
 //   stop:   Stop で、調べもの（WebFetch / WebSearch / サブエージェント）をしたか、
-//           人のメッセージに覚えておく情報がはっきりあるのに 90_Meta に何も書いていなければ、1 回だけ止めて判断させる。
+//           人のメッセージに覚えておく情報がはっきりあるのに 90_Wiki に何も書いていなければ、1 回だけ止めて判断させる。
 // 人のメッセージかどうか: 会話記録では origin.kind が "human" のものだけ。自動のメッセージ（idle notice など）は
 // isMeta: true で origin が付かないので、origin が無いものは人のメッセージとみなさない（2026/11/12 に確認）。
 import { readFileSync } from "node:fs";
@@ -24,7 +24,7 @@ if (mode === "prompt") {
   console.log(JSON.stringify({
     hookSpecificOutput: {
       hookEventName: "UserPromptSubmit",
-      additionalContext: "（Hook）覚えておく情報があれば 90_Meta に保存する。",
+      additionalContext: "（Hook）覚えておく情報があれば 90_Wiki に保存する。",
     },
   }));
   process.exit(0);
@@ -49,7 +49,7 @@ if (start < 0) process.exit(0);
 const prompt = entries[start].message.content;
 const fromHuman = entries[start].origin?.kind === "human" && !entries[start].isMeta;
 let researched = false;
-let wroteMeta = false;
+let wroteWiki = false;
 let lastText = "";
 for (const e of entries.slice(start + 1)) {
   if (e.type !== "assistant" || e.isSidechain || !Array.isArray(e.message?.content)) continue;
@@ -57,17 +57,17 @@ for (const e of entries.slice(start + 1)) {
     if (c.type === "text") lastText = c.text;
     if (c.type !== "tool_use") continue;
     if (RESEARCH_TOOLS.has(c.name)) researched = true;
-    if (WRITE_TOOLS.has(c.name) && JSON.stringify(c.input ?? {}).includes("90_Meta")) wroteMeta = true;
+    if (WRITE_TOOLS.has(c.name) && JSON.stringify(c.input ?? {}).includes("90_Wiki")) wroteWiki = true;
   }
 }
 
 // 最後の返答で、もう保存するかを判断していれば止めない
-const judged = /保存(しない|しません|しなかった|なし|済み|しました)|90_Meta\s*(に|へ|には|:)/.test(lastText);
+const judged = /保存(しない|しません|しなかった|なし|済み|しました)|90_Wiki\s*(に|へ|には|:)/.test(lastText);
 const informative = fromHuman && KEYWORDS.some((k) => prompt.includes(k));
-if (wroteMeta || judged || !(researched || informative)) process.exit(0);
+if (wroteWiki || judged || !(researched || informative)) process.exit(0);
 
 const why = researched ? "このターンで調べもの（WebFetch / WebSearch / サブエージェント）をした" : "ユーザーのメッセージに覚えておく情報がありそうな";
 console.log(JSON.stringify({
   decision: "block",
-  reason: `（Hook）${why}のに、90_Meta に何も書いていない。CLAUDE.md のナレッジベースの決まりに従い、保存するか判断する。残す価値があれば保存してどこに保存したかを書き、保存しないなら「（90_Meta: 保存なし）」とだけ書いて終える。`,
+  reason: `（Hook）${why}のに、90_Wiki に何も書いていない。CLAUDE.md のナレッジベースの決まりに従い、保存するか判断する。残す価値があれば保存してどこに保存したかを書き、保存しないなら「（90_Wiki: 保存なし）」とだけ書いて終える。`,
 }));

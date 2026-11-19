@@ -1,25 +1,25 @@
 ---
 name: sync-vaults
-description: vault（VAULT_DIR、既定 ~/vaults）を同期する。90_Meta（META_DIR、private を含む）を SMB 共有先と双方向同期し、vault 全体（90_Meta 以外）を git で commit / pull --rebase / push する。どのディレクトリで作業していても使える。「vault を同期」「vault を push」「メモを同期」「90_Meta を同期」などと言われたとき、または VAULT_DIR（90_Meta 以外）のファイルを編集した作業の区切りで git の同期に使う。
+description: vault（VAULT_DIR、既定 ~/vaults）を同期する。90_Wiki（WIKI_DIR、private を含む）を SMB 共有先と双方向同期し、vault 全体（90_Wiki 以外）を git で commit / pull --rebase / push する。どのディレクトリで作業していても使える。「vault を同期」「vault を push」「メモを同期」「90_Wiki を同期」などと言われたとき、または VAULT_DIR（90_Wiki 以外）のファイルを編集した作業の区切りで git の同期に使う。
 effort: medium
-argument-hint: "[meta | git]（省略時は両方）"
+argument-hint: "[wiki | git]（省略時は両方）"
 ---
 
 # sync-vaults
 
 vault の同期は 2 つの部分に分かれていて、互いに独立している（片方が失敗しても、もう片方は行う）。
 
-- **A. 90_Meta の SMB 同期**: 90_Meta は全体が `.gitignore` で除外されているので、git ではなく SMB 共有経由で同期する。
-- **B. git の同期**: vault 全体（90_Meta 以外）を GitHub のリモートと同期する。
+- **A. 90_Wiki の SMB 同期**: 90_Wiki は全体が `.gitignore` で除外されているので、git ではなく SMB 共有経由で同期する。
+- **B. git の同期**: vault 全体（90_Wiki 以外）を GitHub のリモートと同期する。
 
-引数が `meta` なら A だけ、`git` なら B だけを行う。省略時は A → B の順に両方を行う。
+引数が `wiki` なら A だけ、`git` なら B だけを行う。省略時は A → B の順に両方を行う。
 
 ## 0. 準備
 
-1. `~/.claude/local-paths.md` を読み、`VAULT_DIR`・`META_DIR`・リモート名・ブランチ名を確認する（既定は `~/vaults`、`~/vaults/90_Meta`、`origin`、`master`）。以下の `VAULT_DIR` はこの値に読み替える。
+1. `~/.claude/local-paths.md` を読み、`VAULT_DIR`・`WIKI_DIR`・リモート名・ブランチ名を確認する（既定は `~/vaults`、`~/vaults/90_Wiki`、`origin`、`master`）。以下の `VAULT_DIR` はこの値に読み替える。
 2. `VAULT_DIR` が存在しない、または git リポジトリでない場合は、何もせずにユーザーに報告する。
 
-## A. 90_Meta の SMB 同期
+## A. 90_Wiki の SMB 同期
 
 手順の詳細は vault 内のプロジェクトスキルにまとめてあるので、二重に書かずにそちらに従う。
 
@@ -51,7 +51,7 @@ vault の同期は 2 つの部分に分かれていて、互いに独立して�
    ```
 
    - コミットメッセージは `Claude: yyyy/MM/dd HH:mm:ss ±HHMM` の形式にし、Co-Authored-By などの帰属表示の行は付けない（グローバル CLAUDE.md のルール）。
-   - commit の前に `git status` で、`.gitignore` 対象（90_Meta など）が含まれていないことを確かめる。
+   - commit の前に `git status` で、`.gitignore` 対象（90_Wiki など）が含まれていないことを確かめる。
 
 3. リモートの変更を取り込む。
 

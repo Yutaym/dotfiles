@@ -58,7 +58,7 @@ if (Test-Path $dst) {
 } else {
     Copy-Item -Path $src -Destination $dst
     Write-Host "[copy] $src -> $dst"
-    Write-Host '[info] 必要に応じて ~/.claude/local-paths.md のパス (META_DIR など) をこの環境向けに編集してください'
+    Write-Host '[info] 必要に応じて ~/.claude/local-paths.md のパス (WIKI_DIR など) をこの環境向けに編集してください'
 }
 
 Write-Host '[done]'

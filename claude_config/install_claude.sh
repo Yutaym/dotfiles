@@ -48,7 +48,7 @@ if [ -e "$dst" ]; then
 else
     cp "$src" "$dst"
     echo "[copy] $src -> $dst"
-    echo "[info] 必要に応じて ~/.claude/local-paths.md のパス (META_DIR など) をこの環境向けに編集してください"
+    echo "[info] 必要に応じて ~/.claude/local-paths.md のパス (WIKI_DIR など) をこの環境向けに編集してください"
 fi
 
 echo "[done]"

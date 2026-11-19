@@ -10,7 +10,7 @@ effort: low
 
 ## 対応表
 
-- 場所: `~/vaults/90_Meta/private/chrome-browser-list.md`（deviceId を含むので private）。
+- 場所: `~/vaults/90_Wiki/private/chrome-browser-list.md`（deviceId を含むので private）。
 - 列: 呼び名 / deviceId / 登録日。読む前にファイルを開いて最新を確かめる。
 
 ## 手順

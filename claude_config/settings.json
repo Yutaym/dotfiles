@@ -116,7 +116,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/meta-save-check.mjs\" stop"
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/wiki-save-check.mjs\" stop"
           }
         ]
       }
@@ -154,7 +154,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/meta-save-check.mjs\" prompt"
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/wiki-save-check.mjs\" prompt"
           }
         ]
       },

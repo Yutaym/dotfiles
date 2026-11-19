@@ -1,6 +1,6 @@
 # この環境固有のパス設定
 
-- META_DIR: `~/vaults/90_Meta`
+- WIKI_DIR: `~/vaults/90_Wiki`
 - VAULT_DIR: `~/vaults`（git リポジトリ。remote: `origin`、ブランチ: `master`）
 
 ## Claude 設定ファイルの実体（シンボリックリンク）

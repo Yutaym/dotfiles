@@ -70,7 +70,7 @@ argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
   - 軽いか基準どおりか迷ったら、基準どおりにする。
   - 例:
     - `haiku` / `low`: 「`.tmux.conf` で `kill-pane` の行を探して」（場所を返すだけ）
-    - `haiku` / `medium`: 「90_Meta で psmux に触れているメモを全部探して一覧にして」（探す範囲が広い）
+    - `haiku` / `medium`: 「90_Wiki で psmux に触れているメモを全部探して一覧にして」（探す範囲が広い）
     - `sonnet` / `low`: 「`git status` の結果を教えて」「このファイルの誤字を直して」
     - `sonnet` / `medium`: 「vault の同期状況を見て」（ログやタスクの結果からおかしな点に気づく必要がある）、「dotfiles を pull して」（競合したら止めて報告する）
     - `sonnet` / `high`: ふだんの作業だが、直すファイルが多く長くなりそうなもの（例: 1 つのスキルの、いくつものスクリプトにオプションを足す）
@@ -181,4 +181,4 @@ argument-hint: "[作業フォルダ] [セッション名] [頼む作業]"
 | WSL の中の Windows Terminal | `cmd.exe /c wt.exe -w 0 new-tab --reloadEnvironment wsl.exe -d <ディストリ> --cd <フォルダ> -- sh ...` | 未確認 |
 | VS Code の統合ターミナルなど、上のどれでもない | 自動では開かない。手で開いて実行するコマンドを表示する | — |
 
-未確認の環境で初めて使ったときは、うまく動いたかどうかを `META_DIR/troubleshooting/claude-code-launch-new-session-from-session.md` に追記する。動かなかったときは、このスキルを直す。
+未確認の環境で初めて使ったときは、うまく動いたかどうかを `WIKI_DIR/troubleshooting/claude-code-launch-new-session-from-session.md` に追記する。動かなかったときは、このスキルを直す。
