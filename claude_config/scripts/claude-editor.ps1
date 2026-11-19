@@ -3,7 +3,7 @@
 # キーを受け取れない（ConPTY の多重化ソフト psmux の中で起きる。anthropics/claude-code #92757）。
 # そこで、エディタを Claude とは別のコンソールで開き、閉じるまで待つ。
 #   - psmux / tmux の中: 新しいウィンドウで開き、wait-for で終わりを待って、元のウィンドウに戻る。
-#   - それ以外: 新しいコンソールのウィンドウで開いて待つ。
+#   - それ以外（素の Windows Terminal など）: 同じ画面でそのままエディタを開く。
 # 実際に使うエディタは CLAUDE_EDITOR_REAL（既定は nvim）。
 $ErrorActionPreference = 'Stop'
 $editor = if ($env:CLAUDE_EDITOR_REAL) { $env:CLAUDE_EDITOR_REAL } else { 'nvim' }
@@ -37,7 +37,13 @@ if ($env:TMUX) {
     exit $code
 }
 else {
-    $argStr = ($args | ForEach-Object { '"' + ($_ -replace '"', '\"') + '"' }) -join ' '
-    $p = Start-Process -FilePath $editor -ArgumentList $argStr -WorkingDirectory $cwd -Wait -PassThru
-    exit $p.ExitCode
+    # tmux・psmux の外: Claude と同じ画面でそのままエディタを開く（別ウィンドウに分けない）。
+    # 外でも入力を横取りされて固まる場合は、CLAUDE_EDITOR_NEWWIN=1 で新しいコンソールのウィンドウに戻せる。
+    if ($env:CLAUDE_EDITOR_NEWWIN) {
+        $argStr = ($args | ForEach-Object { '"' + ($_ -replace '"', '\"') + '"' }) -join ' '
+        $p = Start-Process -FilePath $editor -ArgumentList $argStr -WorkingDirectory $cwd -Wait -PassThru
+        exit $p.ExitCode
+    }
+    & $editor @args
+    exit $LASTEXITCODE
 }
