@@ -21,3 +21,6 @@ test.txt
 .claude/settings.json
 neovim_config/lazy-lock.json
 __pycache__/
+
+# Git Bash (MSYS/Cygwin) のコマンドが異常終了したときのクラッシュの記録
+*.stackdump
