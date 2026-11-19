@@ -1,7 +1,7 @@
 # スタートアップに AutoHotkey スクリプトのショートカットを作る（何度実行してもよい）
 # 対象は $scripts の *.ahk。ショートカットの名前はスクリプト名と同じ。
 $ahk = 'C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe'
-$scripts = 'esc-ime-off.ahk', 'runPowerToys.ahk'
+$scripts = 'esc-ime-off.ahk'
 $startup = [Environment]::GetFolderPath('Startup')
 $shell = New-Object -ComObject WScript.Shell
 foreach ($name in $scripts) {
