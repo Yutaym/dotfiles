@@ -5,4 +5,5 @@
   - 別のテーマの作業や調査は `command tmux new-window -d -n <名前> -c <作業フォルダ>` で別ウィンドウに出す。
   - `-d` を付けて、ユーザーが見ている画面を切り替えない。
   - 出力を確かめるときは `command tmux capture-pane -p -t <ペイン>` を使う。
-- 必ず `command tmux` で呼ぶ（Bash ツールの zsh では `tmux` が oh-my-zsh のエイリアスになっていてエラーになるため）。素の `tmux` は Hook（`hooks/pretool-guard.mjs`）が止める。
+- Bash ツールでは必ず `command tmux` で呼ぶ（zsh では `tmux` が oh-my-zsh のエイリアスになっていてエラーになるため）。素の `tmux` は Hook（`hooks/pretool-guard.mjs`。Bash ツールだけにかかる）が止める。
+- PowerShell ツールでは `command tmux` を使わず、`tmux ...` をそのまま書く（2026/11/20 にユーザーが決めた）。PowerShell には bash の `command` がなく、`command` が `Get-Command` として解決されて `-F` などの引数があいまいというエラーになるため。Hook は PowerShell ツールにはかからない。
