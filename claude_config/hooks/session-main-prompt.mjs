@@ -2,11 +2,14 @@
 // session-main の決まり（hooks/session-main-rules.md）を 1 回だけ読み込ませる（2026/11/11 にユーザーが決めた）。
 // - 起動・再開・/clear・compact のときは session-main.mjs（SessionStart）が読み込ませ、
 //   ~/.claude/state/session-main-rules/<session_id>.json に印を残す。印があれば、ここでは何もしない。
+// - 読み込ませたとき（/rename で session-main になったとき）に、tmux / psmux の中なら session-observation の監視画面も開く
+//   （session-main-observer.mjs。2026/11/20 にユーザーが決めた）。
 // - 入力の session_title（--name・/rename などで付けた名前）が session-main のときだけ動く。
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { openObserver } from "./session-main-observer.mjs";
 
 let input = {};
 try { input = JSON.parse(readFileSync(0, "utf8") || "{}"); } catch { process.exit(0); }
@@ -21,4 +24,7 @@ try { rules = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "sessio
 if (!rules) process.exit(0);
 
 try { mkdirSync(st, { recursive: true }); writeFileSync(mark, JSON.stringify({ at: new Date().toISOString(), source: "prompt" })); } catch {}
-console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: `（Hook）${rules}` } }));
+const out = { hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: `（Hook）${rules}` } };
+const opened = openObserver();
+if (opened) out.systemMessage = opened;
+console.log(JSON.stringify(out));

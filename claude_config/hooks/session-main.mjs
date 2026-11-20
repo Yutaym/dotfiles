@@ -8,7 +8,9 @@
 // 2. 決まりを読み込ませる: session-main なら（名前を付けたとき・--name / /rename 済みで起動・再開・/clear・compact のあと）、
 //    hooks/session-main-rules.md を additionalContext に入れる。/clear のあとは、前に頼んだ作業を覚えていないことも伝える。
 //    起動したあとに /rename で session-main になった場合は session-main-prompt.mjs（UserPromptSubmit）が読み込ませる。
-// 3. 2 つ以上あると知らせる: 生きている session-main が自分を含めて 2 つ以上なら systemMessage で知らせる（起動時だけ）。
+// 3. 監視画面を開く: session-main として起動したとき（source が startup）、tmux / psmux の中なら session-observation の監視画面を開く
+//    （session-main-observer.mjs。2026/11/20 にユーザーが決めた）。再開・/clear・compact では開かない。
+// 4. 2 つ以上あると知らせる: 生きている session-main が自分を含めて 2 つ以上なら systemMessage で知らせる（起動時だけ）。
 // - session-main がいるかは ~/.claude/sessions/<pid>.json の name で見る。終わったセッションのファイルが残ることがあるので、
 //   pid が生きていて、そのプロセスが claude であるか（Windows は tasklist、ほかは ps）も確かめる。確かめられないときは生きているとみなす。
 // - 数えるのはこの OS のユーザーのセッションだけ（~/.claude はユーザーごと）。SendMessage は名前で宛先を探すので 1 つにする。
@@ -17,6 +19,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { openObserver } from "./session-main-observer.mjs";
 
 const NAME = "session-main";
 const HOOK_DIR = dirname(fileURLToPath(import.meta.url));
@@ -106,6 +109,11 @@ if (isMain) {
       mkdirSync(st, { recursive: true });
       writeFileSync(join(st, `${sid}.json`), JSON.stringify({ at: new Date().toISOString(), source: input.source }));
     } catch {}
+  }
+  if (input.source === "startup") {
+    const opened = openObserver();
+    if (opened) out.systemMessage = out.systemMessage ? `${out.systemMessage}
+${opened}` : opened;
   }
   if (others.length >= 1) {
     const where = others.map((m) => `pid ${m.pid}${m.tmux ? `（tmux ${m.tmux}）` : ""}`).join("、");

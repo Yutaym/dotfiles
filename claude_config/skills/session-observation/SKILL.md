@@ -34,6 +34,7 @@ argument-hint: "[stop] [間隔の秒数]"
 - tmux / psmux の中では、呼び出し元のウィンドウを `split-window -d -h` で左右に分割する（画面は切り替えない）。場所は「セッション名:ウィンドウ番号」で指定する（psmux は `@ID` / `%ID` を取り違えることがあるため）。
 - tmux の外では、新しいタブで開く（Windows Terminal、WezTerm、kitty、iTerm2、macOS のターミナル、GNOME Terminal、Konsole）。開けないターミナルでは、手で実行するコマンドを表示して終了コード 2 で終わるので、それをユーザーに伝える。
 - 開いたら、どこに開いたか（スクリプトの `launched:` の行）をユーザーに伝える。
+- **session-main になったときは自動で開く**（2026/11/20 にユーザーが決めた）: tmux / psmux の中で、session-main として起動したとき（自動で名前が付いた・`--name session-main`）と、起動したあとに `/rename session-main` したときに、Hook（`hooks/session-main-observer.mjs`。session-main.mjs・session-main-prompt.mjs から呼ぶ）が `launch-observer` を実行して、session-main のウィンドウを左右に分割して開く。再開・/clear・compact のとき、tmux の外のとき、監視画面がもう動いている（`observer.json` の pid が生きている）ときは開かない。
 
 ## 監視画面の操作
 
