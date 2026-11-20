@@ -390,6 +390,9 @@ def main():
                 "lastReply": {"time": last_reply[0], "text": last_reply[1]} if last_reply else None}
         w = judge_waiting(item)
         print(f"判定: {wait_label(item)}" + (f"（{w[1]}）" if w else "") + " ← 表の「最後の動き」の返事待ちは、この判定に従う")
+        fin = judge_finish(item)
+        print(f"状態の表示: {'finish' if fin else item['status']}" + (f"（{fin}）" if fin else "")
+              + " ← 表の「状態」は、この値に従う (finish = 作業が終わって閉じてよい)")
         print()
     note = calendar_note(calendar_unread())
     if note:
@@ -433,6 +436,8 @@ REQUEST_RE = re.compile(
     r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事|ご指示|ご判断)を?(?:い)?ただい?(?:たら|ければ)"
     r"|(?:どちら|どれ|どの案|どっち)(?:に|で)(?:する|進める|します|進めます)か(?:を|は)?(?:決めて|選んで|教えて|ご指示|お知らせ|指示して)"
 )
+# 「依頼元に要約を送りますか？」のような、報告を送るかどうかの確認は、返事待ちにしない (2026/11/20 にユーザーが決めた。idle のままにする)
+SEND_OFFER_RE = re.compile(r"(?:要約|報告|結果|経過)[^。．！!？?]*?(?:送り|送信し|報告し|伝え|共有し)ますか")
 WAITING = {"waiting", "requires_action"}
 # 作業中の状態。shell は Claude Code がシェルのコマンドを動かしている間の状態で、本体も busy と同じ「作業中」として出す (2026/10/26 に claude.exe 2.1.310 で確認)
 BUSY = {"busy", "shell"}
@@ -456,6 +461,8 @@ def judge_waiting(item):
     for line in reversed(tail.splitlines()):
         # 質問のあとに「よければ、〜します。」のような、答えたあとの予告の文が付いていても、質問で終わるものとして扱う
         # (2026/10/28 に、「A で進めてよいですか？ よければ、直して commit・push します。」が完了と出た)
+        if SEND_OFFER_RE.search(line):
+            continue
         m = REQUEST_RE.search(line)
         if m:
             return "推定", f"「{m.group(0)}」がある"
@@ -481,6 +488,45 @@ def wait_label(item):
     """judge_waiting の結果を「返事待ち」「返事待ち?」「なし」にする。"""
     w = judge_waiting(item)
     return "なし" if not w else "返事待ち" if w[0] == "状態" else "返事待ち?"
+
+
+# finish (作業が終わって、閉じてよい) かどうかの判定 (2026/11/19 にユーザーが決めた)。
+# idle で、返事待ちの判定がなく、24 時間以内の最後の返答が、完了の報告で終わっているものを finish にする。
+# 返答の終わり方からの推定なので、外れることがある (返事待ち? と同じ作り)。判定はこの関数だけで行い、監視画面も使う。
+# 最後の文が完了の報告の言い方で終わるもの (しました・完了です・ありません・してあります など)
+FINISH_RE = re.compile(
+    r"(?:ました|ていました|ています|てあります|ていません|ありません|ません|完了|終了|終わり|済み|以上)"
+    r"(?:です|でした|します)?[。．.!！]?[)）」』]?\s*$"
+)
+# 続きがありそうな・返事を待っていそうな言葉が最後の数行にあれば、finish にしない
+NOT_FINISH_RE = re.compile(r"次の手|次の手順|次は|続けて|続きは|まだ|待って|待ち|待機|いただくまで|届きます|届く")
+# 返答の末尾に Hook が足す「（90_Wiki: 保存なし）」のような行は、判定から除く
+HOOK_MARK_RE = re.compile(r"^[(（]90_Wiki[:：].*[)）]$")
+
+
+def judge_finish(item):
+    """finish (閉じてよい) かどうかを、判断の材料の文字列で返す。finish でなければ None。
+    item は judge_waiting と同じ辞書。"""
+    if item.get("status") != "idle" or judge_waiting(item):
+        return None
+    reply = item.get("lastReply")
+    last = item.get("lastTime") or item.get("statusUpdatedAt")
+    if not reply or time.time() - (to_epoch(last) or 0) >= 86400:
+        return None
+    tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
+    lines = [ln for ln in tail.splitlines() if ln.strip()]
+    while lines and HOOK_MARK_RE.match(lines[-1].strip()):
+        lines.pop()
+    if not lines or any(NOT_FINISH_RE.search(ln) for ln in lines):
+        return None
+    sentences = [s for s in SENTENCE_RE.split(lines[-1]) if s.strip()]
+    m = FINISH_RE.search(sentences[-1].strip()) if sentences else None
+    return f"「{m.group(0)}」で終わる" if m else None
+
+
+def display_state(item):
+    """状態の欄に出す値。idle で finish と判定されたものは "finish"、それ以外は status のまま。"""
+    return "finish" if judge_finish(item) else item.get("status")
 
 
 def tail_for_judging(text, n=5):
@@ -520,6 +566,7 @@ def print_json(sessions, procs, panes, n, chars, numbers):
                               "tail": tail_for_judging(last_reply[1])} if last_reply else None,
             })
         item["wait"] = wait_label(item)
+        item["finish"] = bool(judge_finish(item))
         out.append(item)
     print(json.dumps(out, ensure_ascii=False))
 

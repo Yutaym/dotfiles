@@ -261,6 +261,12 @@ def judge_waiting(item):
     return _OVERVIEW.judge_waiting(item)
 
 
+def judge_finish(item):
+    """finish (作業が終わって閉じてよい) かどうかの判定。基準は session-overview.py の judge_finish (返答の終わり方からの推定)。"""
+    judge_waiting(item)  # _OVERVIEW を読み込む
+    return _OVERVIEW.judge_finish(item)
+
+
 WAIT_LOG = os.path.join(STATE_DIR, "waiting.log")
 
 
@@ -319,7 +325,7 @@ def place(item, host=None, windows=None):
 def row(item, host=None, windows=None):
     """(並べ替えの鍵, 返事待ちの判定, No, セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。
     並びは優先度の高い順: 返事待ち (状態が waiting / requires_action のもの) → 返事待ち? (最後の返答が質問で終わるもの)
-    → busy → そのほかの状態 → idle (最近動いたものから) → 1 時間以上動きのない idle。同じ組の中は最近動いたものから。"""
+    → busy → そのほかの状態 → idle (最近動いたものから) → 1 時間以上動きのない idle → finish (閉じてよい。青)。同じ組の中は最近動いたものから。"""
     from rich.text import Text
 
     status = item.get("status") or "?"
@@ -359,15 +365,19 @@ def row(item, host=None, windows=None):
     elif waiting:
         group, state, style = 0.5, "idle", "red"
         move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
+    # 完了の報告で終わっていて、閉じてよいと推定したものは finish (青)。いちばん下に並べ、薄くしない
+    elif judge_finish(item):
+        group, state, style = 5, "finish", "bold blue"
+        move = Text(f"完了 {hm(last)}（{ago(last)}）", style="blue")
     else:
         state, style = "idle", "green"
-        move = Text(f"完了 {hm(last)}（{ago(last)}）", style="green")
+        move = Text(f"最後の返答 {hm(last)}（{ago(last)}）", style="green")
     if reply:
         move.append("\n" + one_line(reply.get("text"), 28), style="dim")
 
     # 1 時間以上動きのない idle のセッションは、全体を薄くする
     t = to_epoch(last)
-    stale = status == "idle" and t and time.time() - t > 3600
+    stale = status == "idle" and t and time.time() - t > 3600 and group != 5
     if stale and group == 3:
         group = 4
     key = (group, -(t or 0))
