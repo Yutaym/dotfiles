@@ -64,7 +64,8 @@ for (const e of entries.slice(start + 1)) {
 // 最後の返答で、もう保存するかを判断していれば止めない
 const judged = /保存(しない|しません|しなかった|なし|済み|しました)|90_Wiki\s*(に|へ|には|:)/.test(lastText);
 const informative = fromHuman && KEYWORDS.some((k) => prompt.includes(k));
-if (wroteWiki || judged || !(researched || informative)) process.exit(0);
+// session-main-auto-clear が /clear するターン（返答に [auto-clear]）は止めない（止めると /clear の打ち込みが作業中に重なる）
+if (wroteWiki || judged || !(researched || informative) || lastText.includes("[auto-clear]")) process.exit(0);
 
 const why = researched ? "このターンで調べもの（WebFetch / WebSearch / サブエージェント）をした" : "ユーザーのメッセージに覚えておく情報がありそうな";
 console.log(JSON.stringify({

@@ -119,6 +119,15 @@
             "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/wiki-save-check.mjs\" stop"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-main-auto-clear.mjs\" stop",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "StopFailure": [
@@ -163,6 +172,15 @@
           {
             "type": "command",
             "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-main-prompt.mjs\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 || exit 0; exec node \"$HOME/dotfiles/claude_config/hooks/session-main-auto-clear.mjs\" prompt",
             "timeout": 10
           }
         ]

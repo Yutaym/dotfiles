@@ -1,17 +1,17 @@
 // Stop の Hook: 会話が長くなったら「作業が変わるなら /clear を」と画面に一言出す（2026/11/11 にユーザーが決めた）。
 // - 長いセッションは、返事のたび・ほかのセッションから報告が届くたびに会話全体を送り直すので、使用量が増える。
-// - 基準: ふつうのセッションは 200k トークン、session-main は 150k（報告を何度も受けるため低め。2026/11/13 にユーザーが 100k から変更）。
+// - 基準: ふつうのセッションは 200k トークン、session-main は 100k（報告を何度も受けるため低め。2026/11/13 にユーザーが 100k から 150k に、2026/11/19 に 100k に変更）。
 //   session-main 扱いかは、名前・入力の session_title・session-main-rules の印のどれかで判定する。
 //   基準を超えたら 1 回出し、そのあとは 100k 増えるごとにもう一度出す。基準より短くなったら（/clear 後など）数え直す。
 // - 長さは transcript_path の最後の assistant 行の usage（input + cache_read + cache_creation）。会話記録は少し遅れて
 //   書かれるので目安。読めないとき・待っている作業（background_tasks / session_crons）があるときは何も出さない。
 // - セッション名は ~/.claude/sessions/<pid>.json（sessionId・name）で調べる。
-// - /clear を実行できるのはユーザーだけなので、知らせるだけにする。
+// - Hook は /clear を実行できないので、知らせるだけにする（session-main で話題が変わったときの自動の /clear は session-main-auto-clear.mjs）。
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, openSync, readSync, fstatSync, closeSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-const THRESHOLD = { "session-main": 150_000 };
+const THRESHOLD = { "session-main": 100_000 };
 const DEFAULT_THRESHOLD = 200_000;
 const STEP = 100_000;
 
