@@ -435,7 +435,11 @@ REQUEST_RE = re.compile(
     r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事)(?:を)?(?:して)?(?:ください|下さい)"
     r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事|ご指示|ご判断)を?(?:い)?ただい?(?:たら|ければ)"
     r"|(?:どちら|どれ|どの案|どっち)(?:に|で)(?:する|進める|します|進めます)か(?:を|は)?(?:決めて|選んで|教えて|ご指示|お知らせ|指示して)"
+    # 「〜の答えを待っています」など、ユーザーの返事を待っていると書いたもの (2026/11/20 にユーザーが決めた)
+    r"|(?:答え|返事|お返事|回答|ご回答|返信|ご返信|ご判断|ご指示|ご承認|承認)を(?:お)?待って(?:い)?(?:ます|おります)"
 )
+# 返事待ちの行（CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。太字などの飾りも許す
+WAIT_LINE_RE = re.compile(r"^[*_\s]*❓\s*返事待ち[:：]")
 # 「依頼元に要約を送りますか？」のような、報告を送るかどうかの確認は、返事待ちにしない (2026/11/20 にユーザーが決めた。idle のままにする)
 SEND_OFFER_RE = re.compile(r"(?:要約|報告|結果|経過)[^。．！!？?]*?(?:送り|送信し|報告し|伝え|共有し)ますか")
 WAITING = {"waiting", "requires_action"}
@@ -457,6 +461,12 @@ def judge_waiting(item):
         return None
     # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
     tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
+    # CLAUDE.md の「作業の終わり方」で決めた返事待ちの行（「❓ 返事待ち: …」）で終わっていれば返事待ち?（2026/11/20 にユーザーが決めた）
+    lines = [ln for ln in tail.splitlines() if ln.strip()]
+    while lines and HOOK_MARK_RE.match(lines[-1].strip()):
+        lines.pop()
+    if lines and WAIT_LINE_RE.match(lines[-1].strip()):
+        return "推定", "「❓ 返事待ち」の行で終わる"
     # 最後の数行のどれかが質問で終わっていれば返事待ち (質問のあとに「次の手順」などの行が続く返答がある)
     for line in reversed(tail.splitlines()):
         # 質問のあとに「よければ、〜します。」のような、答えたあとの予告の文が付いていても、質問で終わるものとして扱う
@@ -502,6 +512,8 @@ FINISH_RE = re.compile(
 NOT_FINISH_RE = re.compile(r"次の手|次の手順|次は|続けて|続きは|まだ|待って|待ち|待機|いただくまで|届きます|届く")
 # 返答の末尾に Hook が足す「（90_Wiki: 保存なし）」のような行は、判定から除く
 HOOK_MARK_RE = re.compile(r"^[(（]90_Wiki[:：].*[)）]$")
+# 完了の行（CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。太字などの飾りも許す
+DONE_LINE_RE = re.compile(r"^[*_\s]*✅\s*完了[:：]")
 
 
 def judge_finish(item):
@@ -517,6 +529,9 @@ def judge_finish(item):
     lines = [ln for ln in tail.splitlines() if ln.strip()]
     while lines and HOOK_MARK_RE.match(lines[-1].strip()):
         lines.pop()
+    # CLAUDE.md の「作業の終わり方」で決めた完了の行（「✅ 完了: …」）で終わっていれば finish（2026/11/20 にユーザーが決めた）
+    if lines and DONE_LINE_RE.match(lines[-1].strip()):
+        return "「✅ 完了」の行で終わる"
     if not lines or any(NOT_FINISH_RE.search(ln) for ln in lines):
         return None
     sentences = [s for s in SENTENCE_RE.split(lines[-1]) if s.strip()]
