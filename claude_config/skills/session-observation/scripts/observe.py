@@ -322,6 +322,18 @@ def place(item, host=None, windows=None):
     return f"{folder} / 不明"
 
 
+MAIN_MARK_DIR = os.path.join(os.path.expanduser("~"), ".claude", "state", "session-main-rules")
+
+
+def is_main(item, host=None):
+    """session-main (振り分け役) か。名前が session-main か、このマシンなら session-main の Hook が決まりを読み込ませた印
+    (~/.claude/state/session-main-rules/<sessionId>.json) があるもの (2026/11/20 にユーザーが決めた。context-clear-notice と同じ見分け方)。"""
+    if item.get("name") == "session-main":
+        return True
+    sid = item.get("sessionId")
+    return bool(host is None and sid and os.path.isfile(os.path.join(MAIN_MARK_DIR, f"{sid}.json")))
+
+
 def row(item, host=None, windows=None):
     """(並べ替えの鍵, 返事待ちの判定, No, セッション, 状態, 場所, 何をしているか, 最後の動き, 色) を返す。
     並びは優先度の高い順: 返事待ち (状態が waiting / requires_action のもの) → 返事待ち? (最後の返答が質問で終わるもの)
@@ -380,6 +392,9 @@ def row(item, host=None, windows=None):
     stale = status == "idle" and t and time.time() - t > 3600 and group != 5
     if stale and group == 3:
         group = 4
+    # session-main は、状態にかかわらず状態の欄を白の「main」にし、いちばん下に並べる。薄くしない (2026/11/20 にユーザーが決めた)
+    if is_main(item, host):
+        group, state, style, stale = 9, "main", "bold white", False
     key = (group, -(t or 0))
     no = str(item.get("number") or "-")
     return key, waiting, no, name, Text(state, style=style), place(item, host, windows), doing, move, "dim" if stale else ""
