@@ -440,6 +440,9 @@ REQUEST_RE = re.compile(
 )
 # 返事待ちの行（CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。太字などの飾りも許す
 WAIT_LINE_RE = re.compile(r"^[*_\s]*❓\s*返事待ち[:：]")
+# 待機の行（作業の途中で一時止まっていて、続けて何かできる。CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。
+# この行で終わる返答は、上に質問や完了の文があっても idle のままにする（返事待ち?・finish にしない）
+IDLE_LINE_RE = re.compile(r"^[*_\s]*⏳\s*待機[:：]")
 # 「依頼元に要約を送りますか？」のような、報告を送るかどうかの確認は、返事待ちにしない (2026/11/20 にユーザーが決めた。idle のままにする)
 SEND_OFFER_RE = re.compile(r"(?:要約|報告|結果|経過)[^。．！!？?]*?(?:送り|送信し|報告し|伝え|共有し)ますか")
 WAITING = {"waiting", "requires_action"}
@@ -465,6 +468,8 @@ def judge_waiting(item):
     lines = [ln for ln in tail.splitlines() if ln.strip()]
     while lines and HOOK_MARK_RE.match(lines[-1].strip()):
         lines.pop()
+    if lines and IDLE_LINE_RE.match(lines[-1].strip()):
+        return None
     if lines and WAIT_LINE_RE.match(lines[-1].strip()):
         return "推定", "「❓ 返事待ち」の行で終わる"
     # 最後の数行のどれかが質問で終わっていれば返事待ち (質問のあとに「次の手順」などの行が続く返答がある)
@@ -532,6 +537,8 @@ def judge_finish(item):
     # CLAUDE.md の「作業の終わり方」で決めた完了の行（「✅ 完了: …」）で終わっていれば finish（2026/11/20 にユーザーが決めた）
     if lines and DONE_LINE_RE.match(lines[-1].strip()):
         return "「✅ 完了」の行で終わる"
+    if lines and IDLE_LINE_RE.match(lines[-1].strip()):
+        return None
     if not lines or any(NOT_FINISH_RE.search(ln) for ln in lines):
         return None
     sentences = [s for s in SENTENCE_RE.split(lines[-1]) if s.strip()]
