@@ -371,7 +371,7 @@ def row(item, host=None, windows=None):
         group, state, style = 2, status, "bold magenta"
         move = Text(f"{status}（{ago(item.get('statusUpdatedAt'))}から）", style="magenta")
     elif not item.get("transcript"):
-        state, style = "idle", "green"
+        state, style = "idle", "cyan"
         move = Text("記録なし", style="dim")
     # 返答の終わり方からの推定は、確かな返事待ち (状態) と分けて「返事待ち?」として、太字にしない
     elif waiting:
@@ -379,11 +379,11 @@ def row(item, host=None, windows=None):
         move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
     # 完了の報告で終わっていて、閉じてよいと推定したものは finish (青)。いちばん下に並べ、薄くしない
     elif judge_finish(item):
-        group, state, style = 5, "finish", "bold blue"
-        move = Text(f"完了 {hm(last)}（{ago(last)}）", style="blue")
+        group, state, style = 5, "finish", "bold green"
+        move = Text(f"完了 {hm(last)}（{ago(last)}）", style="green")
     else:
-        state, style = "idle", "green"
-        move = Text(f"最後の返答 {hm(last)}（{ago(last)}）", style="green")
+        state, style = "idle", "cyan"
+        move = Text(f"最後の返答 {hm(last)}（{ago(last)}）", style="cyan")
     if reply:
         move.append("\n" + one_line(reply.get("text"), 28), style="dim")
 
