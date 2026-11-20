@@ -1,7 +1,10 @@
 // SessionStart の Hook: session-main（作業を振り分けるセッション）まわりをまとめて行う（2026/11/11 にユーザーが決めた）。
 // 1. 名前を付ける: tmux の中で最初に起動したセッションに「session-main」と付ける。
 //    条件: source が "startup"、環境変数 TMUX がある、まだ名前がない（session_title がない）、
-//    今動いている session-main がこの OS のユーザーにいない。名前は sessionTitle で付ける（/rename と同じ効果）。
+//    今動いている session-main がこの OS のユーザーにいない。名前は sessionTitle で付ける。
+//    ただし sessionTitle はタイトル（tmux のウィンドウ名）だけで、ほかのセッションが送るときの名前（sessions/*.json の name）は
+//    自動の名前（yutay-34 など）のまま（2026/11/20 に確認）。そのため、裏で画面が空くのを待って、send-keys で
+//    「/rename session-main」を打って送る（/rename なら name も変わる。2026/11/20 にユーザーが決めた。送信は Alt+Enter）。
 // 2. 決まりを読み込ませる: session-main なら（名前を付けたとき・--name / /rename 済みで起動・再開・/clear・compact のあと）、
 //    hooks/session-main-rules.md を additionalContext に入れる。/clear のあとは、前に頼んだ作業を覚えていないことも伝える。
 //    起動したあとに /rename で session-main になった場合は session-main-prompt.mjs（UserPromptSubmit）が読み込ませる。
@@ -10,7 +13,7 @@
 //   pid が生きていて、そのプロセスが claude であるか（Windows は tasklist、ほかは ps）も確かめる。確かめられないときは生きているとみなす。
 // - 数えるのはこの OS のユーザーのセッションだけ（~/.claude はユーザーごと）。SendMessage は名前で宛先を探すので 1 つにする。
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -54,6 +57,38 @@ if (input.source === "startup" && process.env.TMUX && !input.session_title && !i
   hso.sessionTitle = NAME;
   isMain = true;
   out.systemMessage = `tmux で最初のセッションなので「${NAME}」と名前を付けました（/rename で変えられます）。`;
+  renameLater(process.env.TMUX_PANE);
+}
+
+// 起動の画面が落ち着いてから「/rename session-main」を打って送る（Hook はすぐ終える）
+function renameLater(pane) {
+  if (!pane) return;
+  const worker = `
+const { execFileSync } = require("node:child_process");
+const pane = process.argv[1];
+const env = { ...process.env, MSYS_NO_PATHCONV: "1" };
+const t = (...a) => execFileSync("tmux", a, { env, encoding: "utf8", windowsHide: true });
+const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+const BUSY = /…\\s*\\((\\d+[hms]\\s*)+/;
+let idle = 0;
+for (let i = 0; i < 60 && idle < 3; i++) {
+  sleep(1000);
+  let s = "";
+  try { s = t("capture-pane", "-p", "-t", pane); } catch { process.exit(0); }
+  const bottom = s.split("\\n").filter((x) => x.trim()).slice(-10).join("\\n");
+  // 入力欄が見えていて（❯）、作業中の行がない
+  idle = /❯/.test(bottom) && !BUSY.test(bottom) ? idle + 1 : 0;
+}
+if (idle < 3) process.exit(0);
+try {
+  t("send-keys", "-t", pane, "-l", "/rename ${NAME}");
+  sleep(800);
+  t("send-keys", "-t", pane, "M-Enter");
+} catch {}
+`;
+  try {
+    spawn(process.execPath, ["-e", worker, pane], { detached: true, stdio: "ignore", windowsHide: true }).unref();
+  } catch {}
 }
 
 if (isMain) {
