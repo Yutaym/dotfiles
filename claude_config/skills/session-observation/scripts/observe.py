@@ -377,7 +377,7 @@ def row(item, host=None, windows=None):
     elif waiting:
         group, state, style = 0.5, "idle", "red"
         move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
-    # 完了の報告で終わっていて、閉じてよいと推定したものは finish (青)。いちばん下に並べ、薄くしない
+    # 完了の報告で終わっていて、閉じてよいと推定したものは finish (緑の太字)。いちばん下に並べ、薄くしない
     elif judge_finish(item):
         group, state, style = 5, "finish", "bold green"
         move = Text(f"完了 {hm(last)}（{ago(last)}）", style="green")
