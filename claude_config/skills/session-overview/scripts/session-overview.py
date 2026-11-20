@@ -416,10 +416,23 @@ def to_epoch(value):
 # 判定は、返答の最後の行 (CLAUDE.md の「作業の終わり方」の行) だけで行う。返答の文から推し量る処理 (QUESTION_RE・FINISH_RE など) は
 # 2026/11/20 にユーザーが決めて消した (Claude が最後の行で状態を書き、書き忘れは Stop の Hook (hooks/wiki-save-check.mjs) が止める)。
 #   「✅ 完了: …」→ finish / 「❓ 返事待ち: …」→ 返事待ち? / 「⏳ 待機: …」・行なし → idle
+#   例外: 「✅ 完了」の行の前の 4 行に、まだ追加の作業がある言い方 (セッションのキル・リポジトリの同期・追加の提案・残っていること。PENDING_RE) が
+#   あれば finish にせず idle にする (2026/11/20 にユーザーが決めた。子セッションがまだ起動したままで「閉じてよければ…お知らせください」と聞いたのに finish と出た)
 # 太字などの飾りも許す
 DONE_LINE_RE = re.compile(r"^[*_\s]*✅\s*完了[:：]")
 WAIT_LINE_RE = re.compile(r"^[*_\s]*❓\s*返事待ち[:：]")
 IDLE_LINE_RE = re.compile(r"^[*_\s]*⏳\s*待機[:：]")
+PENDING_RE = re.compile(
+    # 起動したままのセッション・次の手を聞く言い方
+    r"まだ(?:起動した|動いた|開いた|残った)まま|まだ(?:動いて|残って|起動して)(?:い)?(?:ます|いる)"
+    r"|(?:閉じ|止め|終了し|キルし|消し|進め|続け|直し)て(?:も)?(?:よければ|よろしければ|良ければ|いいなら|よいなら)"
+    r"|(?:お知らせ|ご連絡|ご指示|ご判断)(?:を)?(?:ください|下さい)|知らせてください|教えてください|しましょうか|しますか"
+    # 残っている作業 (セッションのキル・リポジトリの同期など)。「記録は残っている」のような文は入れない
+    r"|(?:後片付け|片付け|残りの作業|キル|終了|同期|push|pull|コミット|commit)[^。]{0,12}(?:が|は)?(?:まだ)?(?:残って|していません|してません|していない|まだです)"
+    r"|残っていること|残っている作業|残りは|未(?:同期|push|コミット|対応|完了)"
+    # 追加の提案
+    r"|提案(?:します|です|があります|として|[:：])|ご提案|おすすめします"
+)
 # 返答の末尾に Hook が足させる「（90_Wiki: 保存なし）」のような行は、判定から除く
 HOOK_MARK_RE = re.compile(r"^[(（]90_Wiki[:：].*[)）]$")
 WAITING = {"waiting", "requires_action"}
@@ -429,16 +442,22 @@ BUSY = {"busy", "shell"}
 
 def last_line(item):
     """idle で、24 時間以内の最後の返答があれば、その最後の行 (Hook の印の行を除く) を返す。なければ None。"""
+    lines = last_lines(item)
+    return lines[-1] if lines else None
+
+
+def last_lines(item):
+    """last_line と同じ条件で、最後の返答の空でない行 (Hook の印の行を除く) のリストを返す。なければ []。"""
     reply = item.get("lastReply")
     last = item.get("lastTime") or item.get("statusUpdatedAt")
     if item.get("status") != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
-        return None
+        return []
     # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
     tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
     lines = [ln.strip() for ln in tail.splitlines() if ln.strip()]
     while lines and HOOK_MARK_RE.match(lines[-1]):
         lines.pop()
-    return lines[-1] if lines else None
+    return lines
 
 
 def judge_waiting(item):
@@ -464,8 +483,13 @@ def wait_label(item):
 def judge_finish(item):
     """finish (閉じてよい) かどうかを、判断の材料の文字列で返す。finish でなければ None。
     idle で、24 時間以内の最後の返答が「✅ 完了:」の行で終わるもの。item は judge_waiting と同じ辞書。"""
-    line = last_line(item)
-    return "「✅ 完了」の行で終わる" if line and DONE_LINE_RE.match(line) else None
+    lines = last_lines(item)
+    if not lines or not DONE_LINE_RE.match(lines[-1]):
+        return None
+    # ✅ の行の前の 4 行に、残りの作業や次の手を聞く言い方があれば idle のまま (2026/11/20 にユーザーが決めた)
+    if any(PENDING_RE.search(ln) for ln in lines[-5:-1]):
+        return None
+    return "「✅ 完了」の行で終わる"
 
 
 def display_state(item):
