@@ -249,7 +249,7 @@ def one_line(text, limit):
 
 
 CONTINUED = "This session is being continued"
-# 返事待ちの判定 (QUESTION_RE / COND_RE / judge_waiting) は session-overview.py に置いてある。
+# 返事待ち・finish の判定 (judge_waiting / judge_finish。返答の最後の行だけで決める) は session-overview.py に置いてある。
 # session-overview の表と同じ基準にするため、ここでは持たずにそれを呼ぶ。基準を変えるときは session-overview.py を直す。
 _OVERVIEW = None
 
@@ -262,7 +262,7 @@ def judge_waiting(item):
 
 
 def judge_finish(item):
-    """finish (作業が終わって閉じてよい) かどうかの判定。基準は session-overview.py の judge_finish (返答の終わり方からの推定)。"""
+    """finish (作業が終わって閉じてよい) かどうかの判定。基準は session-overview.py の judge_finish (返答の最後の行が「✅ 完了:」の行か)。"""
     judge_waiting(item)  # _OVERVIEW を読み込む
     return _OVERVIEW.judge_finish(item)
 

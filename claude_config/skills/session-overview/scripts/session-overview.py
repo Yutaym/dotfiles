@@ -411,92 +411,48 @@ def to_epoch(value):
         return None
 
 
-# 返事待ちかどうかの判定は、session-overview (この出力の「判定:」行) と session-observation の監視画面 (observe.py) の
+# 返事待ち・finish の判定は、session-overview (この出力の「判定:」「状態の表示:」行) と session-observation の監視画面 (observe.py) の
 # 両方がこの関数を使う。基準を変えるときはここだけを直す。
-# 返答の終わり方から「返事待ち?」と推定する言葉。「ください」は、ユーザーの返事を求めるもの (教えて・選んで など) だけにする。
-# 「確認してください」「実行してください」などの作業のお願いは、返事が要らないので含めない (2026/10/22 にユーザーが決めた)
-QUESTION_RE = re.compile(
-    r"(？|\?|ますか|ですか|でしょうか"
-    r"|(?:教えて|選んで|決めて|知らせて|お知らせ|返信して|回答して|指示して|返事を|回答を|指示を|ご指示|ご返信|ご回答)"
-    r"(?:ください|下さい))"
-    r"[。．.!！]?[)）」』]?\s*$"
-)
-# 「崩れていたら教えてください」のような、条件付きの依頼は返事待ちにしない (2026/10/26 にユーザーが決めた。案 A)。
-# 条件の言葉 (たら・れば・なら・場合は・ときは) と「教えて・知らせて」の依頼が同じ文にあるものを除く。
-# 元に戻すときは、judge_waiting の COND_RE を使っている条件を消す (~/vaults/90_Wiki の session-observation メモも参照)
-COND_RE = re.compile(r"(?:たら|れば|なら|場合は|ときは)[^。．.!！？?]*$")
-# 質問のあとの「よければ、〜します。」の予告 (質問の文には「？」「ますか」などがない、質問のあとの 1 文だけを除く)
-PREVIEW_RE = re.compile(r"\s*(?:よければ|よろしければ|良ければ|問題なければ|問題ないなら|それでよければ|OK なら|OKなら)[^？?]*$")
-# 疑問文でない、判断を頼む言い方 (「A か B を決めていただければ、そのとおりに作ります」など)。行のどこにあっても返事待ち?にする。
-# 返答の最後に、保存先や連絡の報告の段落が付いていても拾える (2026/10/28 に、この形が完了と出た)
-REQUEST_RE = re.compile(
-    r"(?:決めて|選んで|判断して|指示して|教えて|知らせて|返事して|回答して|返信して|お選び|お決め|ご指示|ご判断|ご返信|ご回答|ご連絡)"
-    r"(?:い)?ただければ"
-    r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事)(?:を)?(?:して)?(?:ください|下さい)"
-    r"|(?:返信|返事|回答|承認|ご承認|ご返信|ご回答|ご返事|お返事|ご指示|ご判断)を?(?:い)?ただい?(?:たら|ければ)"
-    r"|(?:どちら|どれ|どの案|どっち)(?:に|で)(?:する|進める|します|進めます)か(?:を|は)?(?:決めて|選んで|教えて|ご指示|お知らせ|指示して)"
-    # 「〜の答えを待っています」など、ユーザーの返事を待っていると書いたもの (2026/11/20 にユーザーが決めた)
-    r"|(?:答え|返事|お返事|回答|ご回答|返信|ご返信|ご判断|ご指示|ご承認|承認)を(?:お)?待って(?:い)?(?:ます|おります)"
-)
-# 返事待ちの行（CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。太字などの飾りも許す
+# 判定は、返答の最後の行 (CLAUDE.md の「作業の終わり方」の行) だけで行う。返答の文から推し量る処理 (QUESTION_RE・FINISH_RE など) は
+# 2026/11/20 にユーザーが決めて消した (Claude が最後の行で状態を書き、書き忘れは Stop の Hook (hooks/wiki-save-check.mjs) が止める)。
+#   「✅ 完了: …」→ finish / 「❓ 返事待ち: …」→ 返事待ち? / 「⏳ 待機: …」・行なし → idle
+# 太字などの飾りも許す
+DONE_LINE_RE = re.compile(r"^[*_\s]*✅\s*完了[:：]")
 WAIT_LINE_RE = re.compile(r"^[*_\s]*❓\s*返事待ち[:：]")
-# 待機の行（作業の途中で一時止まっていて、続けて何かできる。CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。
-# この行で終わる返答は、上に質問や完了の文があっても idle のままにする（返事待ち?・finish にしない）
 IDLE_LINE_RE = re.compile(r"^[*_\s]*⏳\s*待機[:：]")
-# 「依頼元に要約を送りますか？」のような、報告を送るかどうかの確認は、返事待ちにしない (2026/11/20 にユーザーが決めた。idle のままにする)
-SEND_OFFER_RE = re.compile(r"(?:要約|報告|結果|経過)[^。．！!？?]*?(?:送り|送信し|報告し|伝え|共有し)ますか")
+# 返答の末尾に Hook が足させる「（90_Wiki: 保存なし）」のような行は、判定から除く
+HOOK_MARK_RE = re.compile(r"^[(（]90_Wiki[:：].*[)）]$")
 WAITING = {"waiting", "requires_action"}
 # 作業中の状態。shell は Claude Code がシェルのコマンドを動かしている間の状態で、本体も busy と同じ「作業中」として出す (2026/10/26 に claude.exe 2.1.310 で確認)
 BUSY = {"busy", "shell"}
 
 
+def last_line(item):
+    """idle で、24 時間以内の最後の返答があれば、その最後の行 (Hook の印の行を除く) を返す。なければ None。"""
+    reply = item.get("lastReply")
+    last = item.get("lastTime") or item.get("statusUpdatedAt")
+    if item.get("status") != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
+        return None
+    # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
+    tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
+    lines = [ln.strip() for ln in tail.splitlines() if ln.strip()]
+    while lines and HOOK_MARK_RE.match(lines[-1]):
+        lines.pop()
+    return lines[-1] if lines else None
+
+
 def judge_waiting(item):
     """返事待ちかどうかを (種類, 判断の材料) で返す。返事待ちでなければ None。
     種類は "状態" (sessions/*.json の status が waiting / requires_action。確か) か
-    "推定" (idle で、24 時間以内の最後の返答が QUESTION_RE で終わる)。
+    "推定" (idle で、24 時間以内の最後の返答が「❓ 返事待ち:」の行で終わる)。
     item は status・lastTime・statusUpdatedAt・lastReply ({time, text, tail}) を持つ辞書 (--json の 1 要素と同じ形)。"""
     status = item.get("status")
     if status in WAITING:
         return "状態", f"status={status}"
-    reply = item.get("lastReply")
-    last = item.get("lastTime") or item.get("statusUpdatedAt")
-    if status != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
-        return None
-    # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
-    tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
-    # CLAUDE.md の「作業の終わり方」で決めた返事待ちの行（「❓ 返事待ち: …」）で終わっていれば返事待ち?（2026/11/20 にユーザーが決めた）
-    lines = [ln for ln in tail.splitlines() if ln.strip()]
-    while lines and HOOK_MARK_RE.match(lines[-1].strip()):
-        lines.pop()
-    if lines and IDLE_LINE_RE.match(lines[-1].strip()):
-        return None
-    if lines and WAIT_LINE_RE.match(lines[-1].strip()):
+    line = last_line(item)
+    if line and WAIT_LINE_RE.match(line):
         return "推定", "「❓ 返事待ち」の行で終わる"
-    # 最後の数行のどれかが質問で終わっていれば返事待ち (質問のあとに「次の手順」などの行が続く返答がある)
-    for line in reversed(tail.splitlines()):
-        # 質問のあとに「よければ、〜します。」のような、答えたあとの予告の文が付いていても、質問で終わるものとして扱う
-        # (2026/10/28 に、「A で進めてよいですか？ よければ、直して commit・push します。」が完了と出た)
-        if SEND_OFFER_RE.search(line):
-            continue
-        m = REQUEST_RE.search(line)
-        if m:
-            return "推定", f"「{m.group(0)}」がある"
-        for text in (line, PREVIEW_RE.sub("", line)):
-            m = QUESTION_RE.search(text)
-            if m and not (m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(text[:m.end()].rstrip("。．.!！)）」』 "))):
-                return "推定", f"「{m.group(1)}」で終わる"
-        # 行の途中の文が「教えてください」「選んでください」などの返事を求める言い方で終わるもの
-        # (2026/11/12 に、「どれがよいか教えてください。(3) なら、〜です。」が idle と出た。「？」「ですか」は行の途中では数えない)
-        for sent in SENTENCE_RE.split(line)[:-1]:
-            m = QUESTION_RE.search(sent)
-            if m and m.group(1).endswith(("ください", "下さい")) and not (
-                    m.group(1).startswith(("教えて", "知らせて", "お知らせ")) and COND_RE.search(sent[:m.end()].rstrip("。．.!！)）」』 "))):
-                return "推定", f"「{m.group(1)}」がある"
     return None
-
-
-# 行を文に分ける区切り (句点・感嘆符の直後)
-SENTENCE_RE = re.compile(r"(?<=[。．！!])")
 
 
 def wait_label(item):
@@ -505,45 +461,11 @@ def wait_label(item):
     return "なし" if not w else "返事待ち" if w[0] == "状態" else "返事待ち?"
 
 
-# finish (作業が終わって、閉じてよい) かどうかの判定 (2026/11/19 にユーザーが決めた)。
-# idle で、返事待ちの判定がなく、24 時間以内の最後の返答が、完了の報告で終わっているものを finish にする。
-# 返答の終わり方からの推定なので、外れることがある (返事待ち? と同じ作り)。判定はこの関数だけで行い、監視画面も使う。
-# 最後の文が完了の報告の言い方で終わるもの (しました・完了です・ありません・してあります など)
-FINISH_RE = re.compile(
-    r"(?:ました|ていました|ています|てあります|ていません|ありません|ません|完了|終了|終わり|済み|以上)"
-    r"(?:です|でした|します)?[。．.!！]?[)）」』]?\s*$"
-)
-# 続きがありそうな・返事を待っていそうな言葉が最後の数行にあれば、finish にしない
-NOT_FINISH_RE = re.compile(r"次の手|次の手順|次は|続けて|続きは|まだ|待って|待ち|待機|いただくまで|届きます|届く")
-# 返答の末尾に Hook が足す「（90_Wiki: 保存なし）」のような行は、判定から除く
-HOOK_MARK_RE = re.compile(r"^[(（]90_Wiki[:：].*[)）]$")
-# 完了の行（CLAUDE.md の「作業の終わり方」。2026/11/20 にユーザーが決めた）。太字などの飾りも許す
-DONE_LINE_RE = re.compile(r"^[*_\s]*✅\s*完了[:：]")
-
-
 def judge_finish(item):
     """finish (閉じてよい) かどうかを、判断の材料の文字列で返す。finish でなければ None。
-    item は judge_waiting と同じ辞書。"""
-    if item.get("status") != "idle" or judge_waiting(item):
-        return None
-    reply = item.get("lastReply")
-    last = item.get("lastTime") or item.get("statusUpdatedAt")
-    if not reply or time.time() - (to_epoch(last) or 0) >= 86400:
-        return None
-    tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
-    lines = [ln for ln in tail.splitlines() if ln.strip()]
-    while lines and HOOK_MARK_RE.match(lines[-1].strip()):
-        lines.pop()
-    # CLAUDE.md の「作業の終わり方」で決めた完了の行（「✅ 完了: …」）で終わっていれば finish（2026/11/20 にユーザーが決めた）
-    if lines and DONE_LINE_RE.match(lines[-1].strip()):
-        return "「✅ 完了」の行で終わる"
-    if lines and IDLE_LINE_RE.match(lines[-1].strip()):
-        return None
-    if not lines or any(NOT_FINISH_RE.search(ln) for ln in lines):
-        return None
-    sentences = [s for s in SENTENCE_RE.split(lines[-1]) if s.strip()]
-    m = FINISH_RE.search(sentences[-1].strip()) if sentences else None
-    return f"「{m.group(0)}」で終わる" if m else None
+    idle で、24 時間以内の最後の返答が「✅ 完了:」の行で終わるもの。item は judge_waiting と同じ辞書。"""
+    line = last_line(item)
+    return "「✅ 完了」の行で終わる" if line and DONE_LINE_RE.match(line) else None
 
 
 def display_state(item):
