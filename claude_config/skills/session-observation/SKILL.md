@@ -1,6 +1,6 @@
 ---
 name: session-observation
-description: ほかの Claude Code のセッションの状況（状態・場所・何をしているか・最後の動き）を、一定の間隔で画面を描き直して表示し続ける監視画面を開く。tmux / psmux の中ではペインを分割し、それ以外では新しいタブで開く。ssh の接続先のセッションも、長めの間隔で読む。ほかのセッションから止められる。「セッションを監視して」「セッションの様子を表示し続けて」「監視画面を開いて」「監視を止めて」などと言われたときに使う。
+description: ほかの Claude Code のセッションの状況（状態・場所・何をしているか〈セッションの目的〉・最後の動き）を、一定の間隔で画面を描き直して表示し続ける監視画面を開く。tmux / psmux の中ではペインを分割し、それ以外では新しいタブで開く。ssh の接続先のセッションも、長めの間隔で読む。ほかのセッションから止められる。「セッションを監視して」「セッションの様子を表示し続けて」「監視画面を開いて」「監視を止めて」などと言われたときに使う。
 effort: low
 argument-hint: "[stop] [間隔の秒数]"
 ---
@@ -60,7 +60,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe.py"
 - **監視は同時に 1 つだけ動く。** 起動すると `~/.claude/session-observation/observer.json` に自分の印を書く。新しい監視を開くと印が書き換わり、古い監視は自分で終わる。`--stop` はこのファイルを消す。light の表示（`observe_light.py`）は `observe.py` を import して使うので、observe.py の関数名や `row` の返り値を変えたら light も確かめる。
 - 表の列と、表に入れる・入れないの決まりは session-overview に合わせる。違うところ:
   - 生きているかどうかは `ListAgents` ではなく、`~/.claude/sessions/*.json` の `pid` のプロセスが動いているか（Windows では開始時刻 `procStart` も一致するか）で判断する（session-overview.py の `is_alive`）。状態（busy / shell / idle など）は同じファイルの `status` を使う。`shell` は busy と同じ扱いにする（session-overview.py の `BUSY`）。
-  - 「何をしているか」は LLM で要約しない。自動で付いたタイトルと最後の依頼をそのまま短く出す。タイトルがセッション名と同じときは、最後の依頼を出す。
+  - 「何をしているか」は、1 行目にそのセッションの目的（何のためのセッションか）、2 行目に薄く「← 最後の依頼」を短く出す（目的は 2026/11/24 にユーザーが決めた。最後の依頼を添えるのも 2026/11/24 にユーザーが決めた）。最後の依頼が最初の依頼と同じ（依頼が 1 つだけ）なら 2 行目は出さない。引数のないコマンドと圧縮後の引き継ぎの文は最後の依頼に数えない。目的は Hook（`hooks/session-purpose.mjs`、UserPromptSubmit）が、そのセッションの最初の依頼のときだけ `~/.claude/session-observation/purpose/<sessionId>.json` に保存する。まず最初の依頼の文（別のセッションからなら本文）を入れ、裏で Haiku（設定・MCP・ツール・スキルを外した claude -p。1 回 入力 約 800・出力 約 830 トークン）が 1 行に要約して上書きする。引数のないコマンド（/clear など）は飛ばし、次の依頼を待つ。会話記録に前の依頼があるセッション（Hook を入れる前から動いていたもの）は、その依頼を目的にせず、`purpose: null`（`source: "earlier-session"`）の印だけ残す。/clear で sessionId が変わると新しい目的になる。claude -p などの自動実行では保存しない。30 日より古いファイルは消す。読むのは `session-overview.py` の `read_purpose`（`--json` の `purpose` にも入るので、ssh の接続先でも、接続先の dotfiles が新しければ同じに出る）。保存がない（Hook を入れる前の）セッションは、会話記録の最初の依頼（`first_prompt`。JSON の `firstPrompt`）で代用する。
   - 「返事待ち」は 2 種類に分ける（2026/10/22 にユーザーが決めた）。
     - **返事待ち**（赤の太字）: `sessions/*.json` の `status` が `waiting` / `requires_action`。確かな返事待ち。
     - **返事待ち?**（赤）: idle で、最後の会話が 24 時間以内で、最後の返答の最後の行が「❓ 返事待ち: …」の行のもの（CLAUDE.md の「作業の終わり方」。末尾の「（90_Wiki: …）」の行は飛ばす）。返答の文から推し量ることはしない（2026/11/20 にユーザーが決めた。書き忘れは Stop の Hook `hooks/wiki-save-check.mjs` が止める）。

@@ -100,6 +100,29 @@ def load_sessions(names):
     return sorted(sessions, key=lambda s: s.get("startedAt", 0))
 
 
+def read_purpose(sid):
+    """セッションの目的 (hooks/session-purpose.mjs が最初の依頼のときに保存したもの) を返す。なければ None。
+    {purpose, source ("prompt" / "haiku"), from, createdAt}。session-observation の「何をしているか」に出す (2026/11/24 にユーザーが決めた)。"""
+    if not sid:
+        return None
+    path = os.path.join(CONFIG_DIR, "session-observation", "purpose", re.sub(r"[^A-Za-z0-9_-]", "", sid) + ".json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return None
+    return {k: data.get(k) for k in ("purpose", "source", "from", "createdAt")} if data.get("purpose") else None
+
+
+def first_prompt(prompts):
+    """目的の代わりに使う最初の依頼 ((時刻, origin, 本文))。引数のないコマンド (/clear など) と、圧縮後の引き継ぎの文は飛ばす。"""
+    for p in prompts:
+        text = (p[2] or "").strip()
+        if text and not re.fullmatch(r"/\S+", text) and not text.startswith("This session is being continued"):
+            return p
+    return None
+
+
 def read_transcript(path):
     """依頼・最後の返答・タイトル・最後の時刻を取り出す。"""
     prompts, last_reply, title, last_time = [], None, None, None
@@ -574,6 +597,7 @@ def print_json(sessions, procs, panes, n, chars, numbers):
             "remoteControl": bool(s.get("bridgeSessionId")),
             "startedAt": s.get("startedAt"), "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
             "transcript": False, "title": None, "lastTime": None, "promptCount": 0, "prompts": [], "lastReply": None,
+            "purpose": read_purpose(sid), "firstPrompt": None,
         }
         transcripts = glob.glob(os.path.join(CONFIG_DIR, "projects", "*", f"{sid}.jsonl"))
         if transcripts:
@@ -581,6 +605,7 @@ def print_json(sessions, procs, panes, n, chars, numbers):
             picked = prompts if len(prompts) <= n * 2 else prompts[:n] + prompts[-n:]
             item.update({
                 "transcript": True, "title": title, "lastTime": last_time, "promptCount": len(prompts),
+                "firstPrompt": (lambda f: {"time": f[0], "origin": f[1], "text": shorten(f[2], chars)} if f else None)(first_prompt(prompts)),
                 "prompts": [{"time": ts, "origin": o, "text": shorten(t, chars)} for ts, o, t in picked],
                 "lastReply": {"time": last_reply[0], "text": shorten(last_reply[1], chars * 2),
                               "tail": tail_for_judging(last_reply[1])} if last_reply else None,

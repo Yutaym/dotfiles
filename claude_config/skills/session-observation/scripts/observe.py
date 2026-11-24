@@ -117,6 +117,7 @@ class Local:
                 "location": self.ov.location(int(s.get("pid") or 0), procs, panes),
                 "startedAt": s.get("startedAt"), "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
                 "transcript": False, "title": None, "lastTime": None, "prompts": [], "lastReply": None,
+                "purpose": self.ov.read_purpose(s.get("sessionId", "")), "firstPrompt": None,
             }
             t = self.transcript(s.get("sessionId", ""))
             if t:
@@ -124,6 +125,7 @@ class Local:
                 item.update({
                     "transcript": True, "title": title, "lastTime": last_time,
                     "prompts": [{"time": ts, "origin": o, "text": text} for ts, o, text in prompts[-3:]],
+                    "firstPrompt": (lambda f: {"time": f[0], "origin": f[1], "text": f[2]} if f else None)(self.ov.first_prompt(prompts)),
                     "lastReply": {"time": last_reply[0], "text": last_reply[1]} if last_reply else None,
                 })
             out.append(item)
@@ -343,18 +345,23 @@ def row(item, host=None, windows=None):
     in_tmux = host is None and (item.get("location") or "").startswith("tmux")
     name = Text(item.get("name") or "-", style="bold" if in_tmux else "")
 
-    # 会話を圧縮したあとの「This session is being continued ...」は依頼ではないので除く
-    prompts = [p for p in item.get("prompts") or [] if not (p.get("text") or "").startswith(CONTINUED)]
-    last_prompt = prompts[-1] if prompts else None
-    # タイトルがセッション名と同じ (名前を付けて起動したもの) ときは、中身が分からないので最後の依頼を出す
-    title = item.get("title") if item.get("title") != item.get("name") else None
-    peer = last_prompt and last_prompt.get("origin") == "peer"
-    sender, _, body = (last_prompt or {}).get("text", "").partition(" から:") if peer else ("", "", "")
-    doing = Text(one_line(title or body or (last_prompt or {}).get("text") or "-", 30))
-    if peer:
-        doing.append(f"\n{sender} から依頼", style="cyan")
-    elif last_prompt and title:
-        doing.append("\n← " + one_line(last_prompt.get("text"), 26), style="dim")
+    # 「何をしているか」は、1 行目にそのセッションの目的、2 行目に薄く「← 最後の依頼」を短く出す
+    # (目的は 2026/11/24 にユーザーが決めた。最後の依頼を添えるのも 2026/11/24 にユーザーが決めた)。
+    # 目的は hooks/session-purpose.mjs が最初の依頼のときに保存したもの (Haiku の 1 行要約。できるまでは最初の依頼の文)。
+    # 保存がない (Hook を入れる前の) セッションは、会話記録の最初の依頼 (別のセッションからなら本文) で代用する。
+    def body(p):
+        text = (p or {}).get("text") or ""
+        if p and p.get("origin") == "peer":
+            text = text.partition(" から:")[2].strip() or text
+        return text
+    first = item.get("firstPrompt")
+    doing = Text(one_line((item.get("purpose") or {}).get("purpose") or body(first) or "-", 30))
+    # 最後の依頼 (圧縮後の引き継ぎの文と、引数のないコマンドは除く)。最初の依頼と同じ (依頼が 1 つだけ) なら出さない
+    prompts = [p for p in item.get("prompts") or []
+               if not (p.get("text") or "").startswith(CONTINUED) and not re.fullmatch(r"/\S+", (p.get("text") or "").strip())]
+    last_p = prompts[-1] if prompts else None
+    if last_p and body(last_p) and body(last_p) != body(first):
+        doing.append("\n← " + one_line(body(last_p), 26), style="dim")
 
     reply = item.get("lastReply")
     last = item.get("lastTime") or item.get("statusUpdatedAt")
