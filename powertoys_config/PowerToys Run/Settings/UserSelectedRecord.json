@@ -1,0 +1,1867 @@
+{
+  "Records": {
+    "ubuntu.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 3,
+      "LastSelected": "2024-06-17T06:19:52.7849606Z",
+      "IconPath": "C:\\Program Files\\WindowsApps\\CanonicalGroupLimited.Ubuntu_2204.3.49.0_x64__79rhkp1fndgsc\\ubuntu.exe",
+      "Title": "ubuntu.exe",
+      "Search": "ubuntu",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Microsoft Teams classic (work or school) : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2024-03-18T00:13:46.6418213Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Microsoft Teams classic (work or school).lnk",
+      "Title": "Microsoft Teams classic (work or school)",
+      "Search": "teams",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Microsoft Teams (work or school) : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 18,
+      "LastSelected": "2024-05-13T07:45:22.8730555Z",
+      "Title": "Microsoft Teams (work or school)",
+      "Search": "teams",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30BF\u30B9\u30AF \u30DE\u30CD\u30FC\u30B8\u30E3\u30FC : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 144,
+      "LastSelected": "2026-11-17T00:02:57.059728Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\System Tools\\Task Manager.lnk",
+      "Title": "\u30BF\u30B9\u30AF \u30DE\u30CD\u30FC\u30B8\u30E3\u30FC",
+      "Search": "task",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Word : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 42,
+      "LastSelected": "2026-04-13T00:07:40.89108Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Word.lnk",
+      "Title": "Word",
+      "Search": "word",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "TeamViewer : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 131,
+      "LastSelected": "2025-07-16T09:06:16.318764Z",
+      "IconPath": "C:\\Users\\Public\\Desktop\\TeamViewer.lnk",
+      "Title": "TeamViewer",
+      "Search": "team",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Notepad\u002B\u002B : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 123,
+      "LastSelected": "2026-11-16T23:44:14.5312978Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Notepad\u002B\u002B.lnk",
+      "Title": "Notepad\u002B\u002B",
+      "Search": "note",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Zotero : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 40,
+      "LastSelected": "2026-04-03T01:32:55.0431757Z",
+      "IconPath": "C:\\Users\\Public\\Desktop\\Zotero.lnk",
+      "Title": "Zotero",
+      "Search": "zotero",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Dev Home : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-03-14T00:12:55.7713135Z",
+      "Title": "Dev Home",
+      "Search": "dev",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "3dairimage.exe : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 107,
+      "LastSelected": "2025-10-29T23:39:29.2421079Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\3dairimage\\3dairimage.exe.lnk",
+      "Title": "3dairimage.exe",
+      "Search": "3d",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "DeepL : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 51,
+      "LastSelected": "2025-08-20T00:40:15.9426595Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\DeepL.lnk",
+      "Title": "DeepL",
+      "Search": "dee",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Affinity Photo 2 : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-07-31T01:29:37.8524595Z",
+      "Title": "Affinity Photo 2",
+      "Search": "affint",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Grammarly : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 7,
+      "LastSelected": "2024-09-02T09:01:22.1865678Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Grammarly.lnk",
+      "Title": "Grammarly",
+      "Search": "gramm",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "PowerPoint : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 75,
+      "LastSelected": "2026-09-16T01:16:23.7895837Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PowerPoint.lnk",
+      "Title": "PowerPoint",
+      "Search": "power",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Excel : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 48,
+      "LastSelected": "2026-09-09T07:49:46.3083921Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Excel.lnk",
+      "Title": "Excel",
+      "Search": "excel",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30A8\u30AF\u30B9\u30D7\u30ED\u30FC\u30E9\u30FC : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-10-16T06:17:09.368863Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\File Explorer.lnk",
+      "Title": "\u30A8\u30AF\u30B9\u30D7\u30ED\u30FC\u30E9\u30FC",
+      "Search": "poer",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Affinity Designer 2 : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 6,
+      "LastSelected": "2025-08-22T09:53:44.3064963Z",
+      "Title": "Affinity Designer 2",
+      "Search": "designer",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "https://gakunin/ : \u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-03-15T09:29:29.7880141Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://gakunin/",
+      "Search": "gakunin",
+      "Score": 0,
+      "SubTitle": "\u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "powershell.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 7,
+      "LastSelected": "2025-02-19T06:07:39.5600514Z",
+      "IconPath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "Title": "powershell.exe",
+      "Search": "powershell",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u8B66\u544A: \u3059\u3079\u3066\u306E\u30D5\u30A1\u30A4\u30EB\u304C\u30A4\u30F3\u30C7\u30C3\u30AF\u30B9\u5316\u3055\u308C\u3066\u3044\u308B\u308F\u3051\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002 : \u4FEE\u6B63\u3059\u308B\u306B\u306F\u3001\u30AF\u30EA\u30C3\u30AF\u3057\u3066 Windows Search \u306E\u8A2D\u5B9A\u306B\u79FB\u52D5\u3057\u3066\u304F\u3060\u3055\u3044\u3002": {
+      "SelectedCount": 8,
+      "LastSelected": "2025-07-11T01:03:19.9873868Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Indexer\\Images/Warning.dark.png",
+      "Title": "\u8B66\u544A: \u3059\u3079\u3066\u306E\u30D5\u30A1\u30A4\u30EB\u304C\u30A4\u30F3\u30C7\u30C3\u30AF\u30B9\u5316\u3055\u308C\u3066\u3044\u308B\u308F\u3051\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002",
+      "Search": "claus",
+      "Score": 0,
+      "SubTitle": "\u4FEE\u6B63\u3059\u308B\u306B\u306F\u3001\u30AF\u30EA\u30C3\u30AF\u3057\u3066 Windows Search \u306E\u8A2D\u5B9A\u306B\u79FB\u52D5\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "PowerShell : Windows \u30BF\u30FC\u30DF\u30CA\u30EB": {
+      "SelectedCount": 34,
+      "LastSelected": "2026-07-15T05:42:05.5272343Z",
+      "Title": "PowerShell",
+      "Search": "powershell",
+      "Score": 0,
+      "SubTitle": "Windows \u30BF\u30FC\u30DF\u30CA\u30EB",
+      "PluginID": "F59BA85006B14389A72A0EA756695F1D"
+    },
+    "\u30B3\u30DE\u30F3\u30C9 \u30D7\u30ED\u30F3\u30D7\u30C8 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 4,
+      "LastSelected": "2024-06-04T00:10:19.058917Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\System Tools\\Command Prompt.lnk",
+      "Title": "\u30B3\u30DE\u30F3\u30C9 \u30D7\u30ED\u30F3\u30D7\u30C8",
+      "Search": "comma",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Neovim : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 4,
+      "LastSelected": "2024-04-12T08:44:41.7837229Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Neovim\\Neovim.lnk",
+      "Title": "Neovim",
+      "Search": "neovim",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 7,
+      "LastSelected": "2026-07-16T02:02:09.9217941Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\System Tools\\Control Panel.lnk",
+      "Title": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB",
+      "Search": "control",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "LINE : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 12,
+      "LastSelected": "2025-02-04T11:52:15.1189169Z",
+      "Title": "LINE",
+      "Search": "line",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Neovim Qt : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-03-28T11:09:11.3047255Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Neovim\\Neovim Qt.lnk",
+      "Title": "Neovim Qt",
+      "Search": "neovim",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "FreeMind : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2024-07-30T00:57:07.4552747Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\FreeMind\\FreeMind.lnk",
+      "Title": "FreeMind",
+      "Search": "freemi",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "OpenVPN GUI : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 10,
+      "LastSelected": "2025-06-07T23:23:59.6777392Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OpenVPN\\OpenVPN GUI.lnk",
+      "Title": "OpenVPN GUI",
+      "Search": "openv",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4\u306E\u8A73\u7D30\u8A2D\u5B9A : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30B7\u30B9\u30C6\u30E0": {
+      "SelectedCount": 37,
+      "LastSelected": "2026-08-26T23:49:35.8654854Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4\u306E\u8A73\u7D30\u8A2D\u5B9A",
+      "Search": "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30B7\u30B9\u30C6\u30E0",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Visual Studio Code : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-05-13T06:03:52.5472057Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Visual Studio Code\\Visual Studio Code.lnk",
+      "Title": "Visual Studio Code",
+      "Search": "code",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "OneDrive : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 7,
+      "LastSelected": "2024-06-13T08:22:39.9287252Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OneDrive.lnk",
+      "Title": "OneDrive",
+      "Search": "one",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Windows PowerShell : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-04-12T09:55:37.6672388Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Windows PowerShell\\Windows PowerShell.lnk",
+      "Title": "Windows PowerShell",
+      "Search": "powershell",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Windows PowerShell : Windows \u30BF\u30FC\u30DF\u30CA\u30EB": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-04-12T10:33:02.4999129Z",
+      "Title": "Windows PowerShell",
+      "Search": "powerhell",
+      "Score": 0,
+      "SubTitle": "Windows \u30BF\u30FC\u30DF\u30CA\u30EB",
+      "PluginID": "F59BA85006B14389A72A0EA756695F1D"
+    },
+    "Programs : \u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u7814\u7A76\\SiC\\Programs": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-04-17T01:38:21.1124286Z",
+      "IconPath": "C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u7814\u7A76\\SiC\\Programs",
+      "Title": "Programs",
+      "Search": "programs",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u7814\u7A76\\SiC\\Programs",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "Webex : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 18,
+      "LastSelected": "2025-12-25T05:52:52.8402847Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Webex\\Webex.lnk",
+      "Title": "Webex",
+      "Search": "webex",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "download : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-04-18T02:54:01.2399172Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "download",
+      "Search": "download",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9 : \u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-04-18T02:54:29.314623Z",
+      "IconPath": "C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9",
+      "Title": "\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9",
+      "Search": "\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "Microsoft Teams : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 29,
+      "LastSelected": "2025-12-25T06:06:40.7578302Z",
+      "Title": "Microsoft Teams",
+      "Search": "teams",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "calc.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-02-17T06:20:24.3978066Z",
+      "IconPath": "C:\\Windows\\system32\\calc.exe",
+      "Title": "calc.exe",
+      "Search": "calc",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30EA\u30E2\u30FC\u30C8 \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\u63A5\u7D9A : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-06-07T23:20:29.9106701Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Remote Desktop Connection.lnk",
+      "Title": "\u30EA\u30E2\u30FC\u30C8 \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\u63A5\u7D9A",
+      "Search": "remoted",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Spark Desktop : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2026-01-07T02:08:31.9244741Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Spark Desktop.lnk",
+      "Title": "Spark Desktop",
+      "Search": "spar",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Google Drive : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-02-17T04:43:02.8956455Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Google Drive.lnk",
+      "Title": "Google Drive",
+      "Search": "googde",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66 : \u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-05-15T08:58:08.8331827Z",
+      "IconPath": "C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66",
+      "Title": "OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66",
+      "Search": "onedrive",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "\u30BF\u30D6\u30EC\u30C3\u30C8 PC \u306E\u8A2D\u5B9A : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-01T16:17:09.7443087Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30BF\u30D6\u30EC\u30C3\u30C8 PC \u306E\u8A2D\u5B9A",
+      "Search": "ta",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Kindle : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-06-03T08:27:30.7057244Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Amazon\\Amazon Kindle\\Kindle.lnk",
+      "Title": "Kindle",
+      "Search": "kind",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "PowerToys (Preview) : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 27,
+      "LastSelected": "2025-11-17T06:56:59.6435226Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PowerToys (Preview)\\PowerToys (Preview).lnk",
+      "Title": "PowerToys (Preview)",
+      "Search": "powerto",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "0.0002 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-12T07:31:31.9246252Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "0.0002",
+      "Search": "10^19/5/10^22",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "24*3 : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-12T09:16:45.2229604Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "24*3",
+      "Search": "24*3",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "72 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-06-12T09:24:20.6431318Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "72",
+      "Search": "24*3",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "DevToys Preview : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-13T00:38:15.5823556Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\DevToys Preview.lnk",
+      "Title": "DevToys Preview",
+      "Search": "dev",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Google Chrome : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2026-09-28T04:42:23.49987Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Google Chrome.lnk",
+      "Title": "Google Chrome",
+      "Search": "chrome",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Ubuntu : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 6,
+      "LastSelected": "2025-06-06T07:02:57.7683794Z",
+      "Title": "Ubuntu",
+      "Search": "ubu",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u5171\u6709\u30BB\u30F3\u30BF\u30FC : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8": {
+      "SelectedCount": 3,
+      "LastSelected": "2024-10-08T05:52:43.8667927Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u5171\u6709\u30BB\u30F3\u30BF\u30FC",
+      "Search": "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "firewak : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-19T01:44:47.7068444Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "firewak",
+      "Search": "firewak",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u304C\u5F37\u5316\u3055\u308C\u305F Windows Defender \u30D5\u30A1\u30A4\u30A2\u30A6\u30A9\u30FC\u30EB : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-19T01:44:58.2059936Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Windows Defender Firewall with Advanced Security.lnk",
+      "Title": "\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u304C\u5F37\u5316\u3055\u308C\u305F Windows Defender \u30D5\u30A1\u30A4\u30A2\u30A6\u30A9\u30FC\u30EB",
+      "Search": "firewall",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "0.1525902190 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-26T07:11:52.6709267Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "0.1525902190",
+      "Search": "10000/65535",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "4096 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-26T07:40:15.3102868Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "4096",
+      "Search": "2^12",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "\u8A2D\u5B9A : \u5B9F\u884C\u4E2D: SystemSettings.exe - \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7: Desktop 1": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-26T08:43:25.9355031Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowWalker\\Images/windowwalker.dark.png",
+      "Title": "\u8A2D\u5B9A",
+      "Search": "Setting",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u4E2D: SystemSettings.exe - \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7: Desktop 1",
+      "PluginID": "F737A9223560B3C6833B5FFB8CDF78E5"
+    },
+    "network : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-06-30T23:56:07.140715Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "network",
+      "Search": "network",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "display : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-01T02:21:40.613952Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "display",
+      "Search": "display",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "Raspberry Pi Imager : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2024-10-22T03:07:07.178494Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Raspberry Pi\\Raspberry Pi Imager.lnk",
+      "Title": "Raspberry Pi Imager",
+      "Search": "ras",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "wsl.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-17T02:08:56.3539566Z",
+      "IconPath": "C:\\Windows\\system32\\wsl.exe",
+      "Title": "wsl.exe",
+      "Search": "wsl",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30B3\u30F3\u30D4\u30E5\u30FC\u30BF\u30FC\u7BA1\u7406 : Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-25T08:09:34.5157307Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30B3\u30F3\u30D4\u30E5\u30FC\u30BF\u30FC\u7BA1\u7406",
+      "Search": "com",
+      "Score": 0,
+      "SubTitle": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Autodesk Inventor Professional 2023 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-07-30T00:41:06.3469841Z",
+      "IconPath": "C:\\Users\\Public\\Desktop\\Autodesk Inventor Professional 2023.lnk",
+      "Title": "Autodesk Inventor Professional 2023",
+      "Search": "inven",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Autodesk Inventor Professional 2023 - \u65E5\u672C\u8A9E(Japanese) : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-30T00:41:28.9050323Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Autodesk Inventor 2023\\Autodesk Inventor Professional 2023 - \u65E5\u672C\u8A9E(Japanese).lnk",
+      "Title": "Autodesk Inventor Professional 2023 - \u65E5\u672C\u8A9E(Japanese)",
+      "Search": "inve",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "23 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-31T00:17:29.8048277Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "23",
+      "Search": "219-196",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "\u30C7\u30A3\u30B9\u30AF \u30AF\u30EA\u30FC\u30F3\u30A2\u30C3\u30D7 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-31T02:01:36.2034617Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Disk Cleanup.lnk",
+      "Title": "\u30C7\u30A3\u30B9\u30AF \u30AF\u30EA\u30FC\u30F3\u30A2\u30C3\u30D7",
+      "Search": "disk",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "OBS Studio (64bit) : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-07-31T02:14:41.6681137Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\OBS Studio\\OBS Studio (64bit).lnk",
+      "Title": "OBS Studio (64bit)",
+      "Search": "obs",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "WizTree : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2024-08-22T01:52:02.3179923Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\WizTree\\WizTree.lnk",
+      "Title": "WizTree",
+      "Search": "wizt",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "183.487 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-01T06:45:14.4816746Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "183.487",
+      "Search": "87.62 \u002B 47.867 \u002B 16 * 3",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "\u4EEE\u60F3\u30E1\u30E2\u30EA : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-01T10:50:16.4172639Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "\u4EEE\u60F3\u30E1\u30E2\u30EA",
+      "Search": "\u4EEE\u60F3\u30E1\u30E2\u30EA",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "VESTA.exe : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 10,
+      "LastSelected": "2025-01-14T07:44:00.2508833Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\VESTA\\VESTA.exe.lnk",
+      "Title": "VESTA.exe",
+      "Search": "vesta",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "0.5 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-05T06:25:11.1093153Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "0.5",
+      "Search": "0.0001 * 5000",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "Bluetooth \u30C7\u30D0\u30A4\u30B9 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9  \u02C3  bthprops.cpl": {
+      "SelectedCount": 20,
+      "LastSelected": "2026-09-08T08:20:05.1851415Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "Bluetooth \u30C7\u30D0\u30A4\u30B9",
+      "Search": "blue",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9  \u02C3  bthprops.cpl",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "\u96FB\u6E90\u30AA\u30D7\u30B7\u30E7\u30F3 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3": {
+      "SelectedCount": 4,
+      "LastSelected": "2026-01-22T07:39:53.9606071Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u96FB\u6E90\u30AA\u30D7\u30B7\u30E7\u30F3",
+      "Search": "powe",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "\u30B7\u30B9\u30C6\u30E0\u60C5\u5831 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-09T05:29:32.9862368Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\System Information.lnk",
+      "Title": "\u30B7\u30B9\u30C6\u30E0\u60C5\u5831",
+      "Search": "system",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "explorer.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-12-25T05:55:41.3816999Z",
+      "IconPath": "C:\\Windows\\explorer.exe",
+      "Title": "explorer.exe",
+      "Search": "explorer",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Logi Options\u002B : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 10,
+      "LastSelected": "2026-04-20T03:59:13.3430994Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Logi\\Logi Options\u002B.lnk",
+      "Title": "Logi Options\u002B",
+      "Search": "logi",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "logic : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-19T02:55:15.29046Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "logic",
+      "Search": "logic",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "\u30A4\u30D9\u30F3\u30C8 \u30D3\u30E5\u30FC\u30A2\u30FC : Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-19T06:35:20.2785173Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30A4\u30D9\u30F3\u30C8 \u30D3\u30E5\u30FC\u30A2\u30FC",
+      "Search": "event",
+      "Score": 0,
+      "SubTitle": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Happy Hacking Keyboard \u30AD\u30FC\u30DE\u30C3\u30D7\u5909\u66F4\u30C4\u30FC\u30EB : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-07-25T09:24:55.9243251Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Happy Hacking Keyboard \u30AD\u30FC\u30DE\u30C3\u30D7\u5909\u66F4\u30C4\u30FC\u30EB\\Happy Hacking Keyboard \u30AD\u30FC\u30DE\u30C3\u30D7\u5909\u66F4\u30C4\u30FC\u30EB.lnk",
+      "Title": "Happy Hacking Keyboard \u30AD\u30FC\u30DE\u30C3\u30D7\u5909\u66F4\u30C4\u30FC\u30EB",
+      "Search": "keybor",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Microsoft Teams (personal) : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-11-12T01:07:44.6238947Z",
+      "Title": "Microsoft Teams (personal)",
+      "Search": "teams",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Designer 5.15.2 (MinGW 8.1.0 64-bit) : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-08-29T11:12:47.7662993Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Qt\\5.15.2\\MinGW 8.1.0 (64-bit)\\Designer 5.15.2 (MinGW 8.1.0 64-bit).lnk",
+      "Title": "Designer 5.15.2 (MinGW 8.1.0 64-bit)",
+      "Search": "qtdesigner",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "36.5 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-02T02:17:16.5747307Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "36.5",
+      "Search": "73/2",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "\u30EA\u30BD\u30FC\u30B9 \u30E2\u30CB\u30BF\u30FC : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 15,
+      "LastSelected": "2026-07-15T03:05:48.2708943Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Resource Monitor.lnk",
+      "Title": "\u30EA\u30BD\u30FC\u30B9 \u30E2\u30CB\u30BF\u30FC",
+      "Search": "reso",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u74B0\u5883\u5909\u6570 : PowerToys Utility": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-03T11:43:50.473252Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\PowerToys\\Images/EnvironmentVariables.png",
+      "Title": "\u74B0\u5883\u5909\u6570",
+      "Search": "",
+      "Score": 0,
+      "SubTitle": "PowerToys Utility",
+      "PluginID": "29DD65DB28C84A37BDEF1D2B43DA368B"
+    },
+    "Everything : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-02-17T04:39:07.1000169Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Everything.lnk",
+      "Title": "Everything",
+      "Search": "everythin",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Microsoft Store : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-10-30T02:11:22.1905943Z",
+      "Title": "Microsoft Store",
+      "Search": "store",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "TeamViewer.lnk : \u691C\u7D22: C:\\Users\\yutay\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\Shortcuts\\TeamViewer.lnk": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-09-09T06:35:14.2433913Z",
+      "IconPath": "C:\\Users\\yutay\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\Shortcuts\\TeamViewer.lnk",
+      "Title": "TeamViewer.lnk",
+      "Search": "teamvie",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\Users\\yutay\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\Shortcuts\\TeamViewer.lnk",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "TeamViewer.lnk : \u691C\u7D22: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\TeamViewer.lnk": {
+      "SelectedCount": 4,
+      "LastSelected": "2025-01-28T11:23:57.4079222Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\TeamViewer.lnk",
+      "Title": "TeamViewer.lnk",
+      "Search": "teamvi",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\TeamViewer.lnk",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "teamvi : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-01-28T11:23:48.753759Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "teamvi",
+      "Search": "teamvi",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "ChatGPT : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 8,
+      "LastSelected": "2025-04-21T01:21:44.8591736Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\ChatGPT\\ChatGPT.lnk",
+      "Title": "ChatGPT",
+      "Search": "ChatGPT",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Music Maker Jam : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-11T00:17:23.7223017Z",
+      "Title": "Music Maker Jam",
+      "Search": "music",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "PowerShell : \u5B9F\u884C\u4E2D: WindowsTerminal.exe - \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7: Desktop 1": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-12T10:45:28.6496072Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowWalker\\Images/windowwalker.dark.png",
+      "Title": "PowerShell",
+      "Search": "terminal",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u4E2D: WindowsTerminal.exe - \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7: Desktop 1",
+      "PluginID": "F737A9223560B3C6833B5FFB8CDF78E5"
+    },
+    "\u30BF\u30B9\u30AF \u30B9\u30B1\u30B8\u30E5\u30FC\u30E9 : Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB": {
+      "SelectedCount": 5,
+      "LastSelected": "2026-07-02T01:01:51.2551955Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30BF\u30B9\u30AF \u30B9\u30B1\u30B8\u30E5\u30FC\u30E9",
+      "Search": "task",
+      "Score": 0,
+      "SubTitle": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "WizTree.lnk : \u691C\u7D22: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\WizTree\\WizTree.lnk": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-17T01:02:20.0980919Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\WizTree\\WizTree.lnk",
+      "Title": "WizTree.lnk",
+      "Search": "wiz",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\WizTree\\WizTree.lnk",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "Blender 3.4 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-07-16T13:44:29.1039615Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\blender\\Blender 3.4.lnk",
+      "Title": "Blender 3.4",
+      "Search": "blendr",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB (\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3\u306E HomePage) : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB": {
+      "SelectedCount": 2,
+      "LastSelected": "2024-11-15T08:57:27.5739811Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB (\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3\u306E HomePage)",
+      "Search": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "\u30E6\u30FC\u30B6\u30FC \u30A2\u30AB\u30A6\u30F3\u30C8\u5236\u5FA1\u8A2D\u5B9A\u306E\u5909\u66F4 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3  \u02C3  \u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3068\u30E1\u30F3\u30C6\u30CA\u30F3\u30B9": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-18T10:04:44.6981837Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30E6\u30FC\u30B6\u30FC \u30A2\u30AB\u30A6\u30F3\u30C8\u5236\u5FA1\u8A2D\u5B9A\u306E\u5909\u66F4",
+      "Search": "tt",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3  \u02C3  \u30BB\u30AD\u30E5\u30EA\u30C6\u30A3\u3068\u30E1\u30F3\u30C6\u30CA\u30F3\u30B9",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB : Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-10-16T04:00:43.8067841Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "Search": "i",
+      "Score": 0,
+      "SubTitle": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "notepad.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-04-08T02:12:28.7532901Z",
+      "IconPath": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsNotepad_11.2501.30.0_x64__8wekyb3d8bbwe\\Notepad\\Notepad.exe",
+      "Title": "notepad.exe",
+      "Search": "notepad",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u304B\u3093\u304D\u3087\u3046 : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-27T01:51:38.6761163Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "\u304B\u3093\u304D\u3087\u3046",
+      "Search": "\u304B\u3093\u304D\u3087\u3046",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "\u74B0\u5883\u5909\u6570\u3092\u7DE8\u96C6 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3  \u02C3  \u30B7\u30B9\u30C6\u30E0\u306E\u30D7\u30ED\u30D1\u30C6\u30A3": {
+      "SelectedCount": 22,
+      "LastSelected": "2025-06-30T09:20:42.9786006Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u74B0\u5883\u5909\u6570\u3092\u7DE8\u96C6",
+      "Search": "\u74B0\u5883\u5909\u6570",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3  \u02C3  \u30B7\u30B9\u30C6\u30E0\u306E\u30D7\u30ED\u30D1\u30C6\u30A3",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "\u30EC\u30B8\u30B9\u30C8\u30EA \u30A8\u30C7\u30A3\u30BF\u30FC : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-27T02:27:48.109992Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Registry Editor.lnk",
+      "Title": "\u30EC\u30B8\u30B9\u30C8\u30EA \u30A8\u30C7\u30A3\u30BF\u30FC",
+      "Search": "reg",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Custom Context Menu : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-27T02:38:15.825291Z",
+      "Title": "Custom Context Menu",
+      "Search": "context",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30D7\u30EA\u30F3\u30BF\u30FC : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-09-30T02:45:28.6611436Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30D7\u30EA\u30F3\u30BF\u30FC",
+      "Search": "\u30D7\u30EA\u30F3\u30BF",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "2.53197 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-10-01T07:55:48.666493Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "2.53197",
+      "Search": "4.43627-1.9043",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "Windows Software Development Kit : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-10-08T05:38:09.4056327Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Windows Kits\\Windows Software Development Kit\\Windows Software Development Kit.lnk",
+      "Title": "Windows Software Development Kit",
+      "Search": "explorer.ex",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8": {
+      "SelectedCount": 16,
+      "LastSelected": "2025-10-17T00:19:43.0068019Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF",
+      "Search": "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "dotfiles : \u691C\u7D22: C:\\dotfiles": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-10-24T09:26:54.3092429Z",
+      "IconPath": "C:\\dotfiles",
+      "Title": "dotfiles",
+      "Search": "dotfiles",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\dotfiles",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "CubePDF Utility : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-10-30T02:56:33.6853906Z",
+      "IconPath": "C:\\Users\\yutay\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\CubePDF Utility.lnk",
+      "Title": "CubePDF Utility",
+      "Search": "cube",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "DeepL auto-start : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-11-06T11:51:27.3337014Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\DeepL auto-start.lnk",
+      "Title": "DeepL auto-start",
+      "Search": "deepl",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "brender : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-11-08T06:32:10.7823895Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "brender",
+      "Search": "brender",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "Arduino IDE : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-11-11T02:03:30.5136409Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Arduino IDE.lnk",
+      "Title": "Arduino IDE",
+      "Search": "ardui",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30A2\u30D7\u30EA\u3068\u6A5F\u80FD : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30A2\u30D7\u30EA": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-11-12T05:01:41.8744194Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30A2\u30D7\u30EA\u3068\u6A5F\u80FD",
+      "Search": "\u30A2\u30D7\u30EA",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30A2\u30D7\u30EA",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "\u30D7\u30ED\u30B0\u30E9\u30E0\u3068\u6A5F\u80FD : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30D7\u30ED\u30B0\u30E9\u30E0": {
+      "SelectedCount": 4,
+      "LastSelected": "2025-04-23T00:45:16.484531Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30D7\u30ED\u30B0\u30E9\u30E0\u3068\u6A5F\u80FD",
+      "Search": "\u30D7\u30ED\u30B0\u30E9\u30E0",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30D7\u30ED\u30B0\u30E9\u30E0",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Logi Plugin Service : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-11-21T04:23:31.0216848Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Logi Plugin Service.lnk",
+      "Title": "Logi Plugin Service",
+      "Search": "logi",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "990 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-12-04T07:31:52.813405Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "990",
+      "Search": "1980/2",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "28348 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2024-12-09T08:54:16.4295592Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "28348",
+      "Search": "14174 * 2",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "VPN : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-07-16T12:49:19.4808777Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "VPN",
+      "Search": "vpn",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Microsoft Edge : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-01-20T06:27:18.0326764Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Microsoft Edge.lnk",
+      "Title": "Microsoft Edge",
+      "Search": "edge",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "notepand : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-01-23T14:06:50.230852Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "notepand",
+      "Search": "notepand",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "https://\u3067\u3043\uFF53\u30D7\u30EC\u30A4/ : \u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-01T05:57:14.4373739Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://\u3067\u3043\uFF53\u30D7\u30EC\u30A4/",
+      "Search": "\u3067\u3043\uFF53\u30D7\u30EC\u30A4",
+      "Score": 0,
+      "SubTitle": "\u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "LINE : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 7,
+      "LastSelected": "2025-12-25T07:18:19.06309Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\LINE\\LINE.lnk",
+      "Title": "LINE",
+      "Search": "line",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "RemoteApp \u3068\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\u63A5\u7D9A : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-06-03T08:07:14.5758504Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "RemoteApp \u3068\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\u63A5\u7D9A",
+      "Search": "remote",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u3068\u30A4\u30F3\u30BF\u30FC\u30CD\u30C3\u30C8",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Upgrade all winget packages (update --all --source winget) : via winget CLI": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-17T04:32:18.1944802Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Local\\Microsoft\\PowerToys\\PowerToys Run\\Plugins\\Winget\\Images/Winget.dark.png",
+      "Title": "Upgrade all winget packages (update --all --source winget)",
+      "Search": "",
+      "Score": 0,
+      "SubTitle": "via winget CLI",
+      "PluginID": "46778CB7A2FD4949A845B19EF1A6364B"
+    },
+    "Google Drive \u00A0|\u00A0 Google for Developers : https://developers.google.com/drive?hl=ja": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-17T04:43:26.4512541Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "Google Drive \u00A0|\u00A0 Google for Developers",
+      "Search": "google drive",
+      "Score": 0,
+      "SubTitle": "https://developers.google.com/drive?hl=ja",
+      "PluginID": "E5A9FC7A3F7F4320BE612DA95C57C32D"
+    },
+    "Google Drive : Favorite: Google Drive": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-17T04:45:17.0830485Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Local\\Microsoft\\PowerToys\\PowerToys Run\\Plugins\\EdgeFavorite\\Images/Url.dark.png",
+      "Title": "Google Drive",
+      "Search": "drive",
+      "Score": 0,
+      "SubTitle": "Favorite: Google Drive",
+      "PluginID": "D73A7EF0633F4C82A14454FFD848F447"
+    },
+    "GitHub : Favorite: GitHub": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-18T04:09:41.0243191Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Local\\Microsoft\\PowerToys\\PowerToys Run\\Plugins\\EdgeFavorite\\Images/Url.dark.png",
+      "Title": "GitHub",
+      "Search": "git",
+      "Score": 0,
+      "SubTitle": "Favorite: GitHub",
+      "PluginID": "D73A7EF0633F4C82A14454FFD848F447"
+    },
+    "17.0667 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-21T07:43:03.7884119Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "17.0667",
+      "Search": "8.53335*2",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "10.24002 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-21T07:43:39.9054134Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "10.24002",
+      "Search": "8.53335*1.2",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "0.375 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-02-21T07:51:48.7549195Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "0.375",
+      "Search": "0.25\u002B0.125",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "https://\u304B\u3093\u304D\u3087\u3046\u3078\u3093\u3059\u3046/ : \u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-04-16T05:59:54.2535752Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://\u304B\u3093\u304D\u3087\u3046\u3078\u3093\u3059\u3046/",
+      "Search": "\u304B\u3093\u304D\u3087\u3046\u3078\u3093\u3059\u3046",
+      "Score": 0,
+      "SubTitle": "\u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "\u30B7\u30B9\u30C6\u30E0\u74B0\u5883\u5909\u6570\u306E\u7DE8\u96C6 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3  \u02C3  \u30B7\u30B9\u30C6\u30E0\u306E\u30D7\u30ED\u30D1\u30C6\u30A3": {
+      "SelectedCount": 4,
+      "LastSelected": "2025-06-30T08:46:36.6305987Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30B7\u30B9\u30C6\u30E0\u74B0\u5883\u5909\u6570\u306E\u7DE8\u96C6",
+      "Search": "\u74B0\u5883\u5909\u6570",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30B7\u30B9\u30C6\u30E0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3  \u02C3  \u30B7\u30B9\u30C6\u30E0\u306E\u30D7\u30ED\u30D1\u30C6\u30A3",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "\u8CC7\u683C\u60C5\u5831\u30DE\u30CD\u30FC\u30B8\u30E3\u30FC : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30E6\u30FC\u30B6\u30FC \u30A2\u30AB\u30A6\u30F3\u30C8": {
+      "SelectedCount": 2,
+      "LastSelected": "2026-03-03T07:44:47.3975573Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u8CC7\u683C\u60C5\u5831\u30DE\u30CD\u30FC\u30B8\u30E3\u30FC",
+      "Search": "\u8CC7\u683C\u60C5\u5831",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30E6\u30FC\u30B6\u30FC \u30A2\u30AB\u30A6\u30F3\u30C8",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Claude : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 11,
+      "LastSelected": "2026-03-03T06:38:30.2400356Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Anthropic\\Claude.lnk",
+      "Title": "Claude",
+      "Search": "claude",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "FreeCAD : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-03-25T10:08:00.3849589Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\FreeCAD 0.20\\FreeCAD.lnk",
+      "Title": "FreeCAD",
+      "Search": "Cad",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Windows Update : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u66F4\u65B0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-03-26T05:41:33.8067063Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "Windows Update",
+      "Search": "windows updat",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u66F4\u65B0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "2171.4285714286 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-02T00:42:43.2594784Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "2171.4285714286",
+      "Search": "30400/14",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "note\u002B7 : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-08T02:12:22.4099959Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "note\u002B7",
+      "Search": "note\u002B7",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "65536 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-08T07:13:20.5620568Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "65536",
+      "Search": "256*256",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "\u304B\u3093\u304D\u3087\u3046\u3078\u3093\u3059 : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-10T09:45:58.7539652Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "\u304B\u3093\u304D\u3087\u3046\u3078\u3093\u3059",
+      "Search": "\u304B\u3093\u304D\u3087\u3046\u3078\u3093\u3059",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "Ollama : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 4,
+      "LastSelected": "2026-03-10T04:53:36.2744159Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Ollama\\Ollama.lnk",
+      "Title": "Ollama",
+      "Search": "ollama",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u5E9C\u7701\u5171\u901A\u7814\u7A76\u958B\u767A\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0\uFF08e-Rad\uFF09\u30DD\u30FC\u30BF\u30EB\u30B5\u30A4\u30C8 : https://www.e-rad.go.jp/": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-17T08:49:49.6558343Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "\u5E9C\u7701\u5171\u901A\u7814\u7A76\u958B\u767A\u7BA1\u7406\u30B7\u30B9\u30C6\u30E0\uFF08e-Rad\uFF09\u30DD\u30FC\u30BF\u30EB\u30B5\u30A4\u30C8",
+      "Search": "e-r",
+      "Score": 0,
+      "SubTitle": "https://www.e-rad.go.jp/",
+      "PluginID": "E5A9FC7A3F7F4320BE612DA95C57C32D"
+    },
+    "\u30D1\u30D5\u30A9\u30FC\u30DE\u30F3\u30B9 \u30E2\u30CB\u30BF\u30FC : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-21T01:31:32.4388163Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Performance Monitor.lnk",
+      "Title": "\u30D1\u30D5\u30A9\u30FC\u30DE\u30F3\u30B9 \u30E2\u30CB\u30BF\u30FC",
+      "Search": "perfo",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30D7\u30ED\u30B0\u30E9\u30E0\u306E\u8FFD\u52A0\u3068\u524A\u9664 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-23T00:35:49.8689672Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30D7\u30ED\u30B0\u30E9\u30E0\u306E\u8FFD\u52A0\u3068\u524A\u9664",
+      "Search": "ap",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Uninstall : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-23T00:45:10.692034Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\ADC\u8A08\u6E2C\u5668USB\u30C9\u30E9\u30A4\u30D064bit\u72482.0.0\\Uninstall.lnk",
+      "Title": "Uninstall",
+      "Search": "unins",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Notepad2e : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-05-08T08:49:10.4527587Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\TortoiseGit\\Notepad2e.lnk",
+      "Title": "Notepad2e",
+      "Search": "notpa",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "7800 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-05-20T01:35:40.6957466Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "7800",
+      "Search": "39000/5",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "\u30AB\u30E1\u30E9 : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-05-27T03:03:38.391096Z",
+      "Title": "\u30AB\u30E1\u30E9",
+      "Search": "\u30AB\u30E1\u30E9",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u8B70\u4E8B\u9332.pptx : \u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u7269\u6027\u60C5\u5831\u7269\u7406\u5B66\u30B9\u30BF\u30C3\u30D5-group - 20250520_\u30B9\u30BF\u30C3\u30D5\u4F1A\u8B70\\\u8B70\u4E8B\u9332.pptx": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-05-30T06:55:21.5146424Z",
+      "IconPath": "C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u7269\u6027\u60C5\u5831\u7269\u7406\u5B66\u30B9\u30BF\u30C3\u30D5-group - 20250520_\u30B9\u30BF\u30C3\u30D5\u4F1A\u8B70\\\u8B70\u4E8B\u9332.pptx",
+      "Title": "\u8B70\u4E8B\u9332.pptx",
+      "Search": "\u8B70\u4E8B\u9332",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\Users\\yutay\\OneDrive - \u5948\u826F\u5148\u7AEF\u79D1\u5B66\u6280\u8853\u5927\u5B66\u9662\u5927\u5B66\\\u7269\u6027\u60C5\u5831\u7269\u7406\u5B66\u30B9\u30BF\u30C3\u30D5-group - 20250520_\u30B9\u30BF\u30C3\u30D5\u4F1A\u8B70\\\u8B70\u4E8B\u9332.pptx",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "Chrome \u30EA\u30E2\u30FC\u30C8 \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7 : https://remotedesktop.google.com/?lfhs=2": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-04T07:10:21.6638323Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "Chrome \u30EA\u30E2\u30FC\u30C8 \u30C7\u30B9\u30AF\u30C8\u30C3\u30D7",
+      "Search": "remoted",
+      "Score": 0,
+      "SubTitle": "https://remotedesktop.google.com/?lfhs=2",
+      "PluginID": "E5A9FC7A3F7F4320BE612DA95C57C32D"
+    },
+    "\u8A3C\u660E\u66F8 - \u30ED\u30FC\u30AB\u30EB \u30B3\u30F3\u30D4\u30E5\u30FC\u30BF\u30FC : Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-08T02:37:41.0148767Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u8A3C\u660E\u66F8 - \u30ED\u30FC\u30AB\u30EB \u30B3\u30F3\u30D4\u30E5\u30FC\u30BF\u30FC",
+      "Search": "\u8A3C\u660E\u66F8",
+      "Score": 0,
+      "SubTitle": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "RDE/Dataset View : https://rde.nims.go.jp/#state=eyJpZCI6IjEyOTkwYjRmLTc3ZDEtNGZlNy1iN2QyLWU2ODhjYTY1NzY4NyIsIm1ldGEiOnsiaW50ZXJhY3Rpb25UeXBlIjoicmVkaXJlY3QifX0%3d\u0026client_info=eyJ1aWQiOiItYjJjXzFhX2RwZl9zaWduaW4iLCJ1dGlkIjoiMGU5ZDUxZDEtYjg1MS00ZWE1LWI0YzktZmFkY2UyYzhjOGIwIn0\u0026code=eyJraWQiOiJob1RNZVBZTXlQMExtQ0hkZ0t0SnRFYTI0ajJMc2VjYlZaa3RQMnFydmRvIiwidmVyIjoiMS4wIiwiemlwIjoiRGVmbGF0ZSIsInNlciI6IjEuMCJ9.iS2HdSGPLmOz-nMYlVLI5CB_FP7CWkZOdHWdTfOOCoFnhBW9Q0boqTU5s1-R5OrZCdZrt7ILZ4YWmV7gbG_6el23J2E1_vUs43cpNgy_b-CesYWrNsiNt73OMvKJr1HRHIRwEGBCEfoEHReJz5BNdRBQVevtl5GIzOIejsjB_vjcOA-MXA5p51tf0HKXmpaPkPxKHNMhJqM_d6rLKQHz_6uwdT1SNMCCf1yiW5I7y5ekLs-jFQq682Zn02unWG-wx439dvpN26nzX7bhndVEN05W8l8hAFgUh1mZX5H6_WhvVtUF5XrZC-zrrSdUA3kzPLJvfpM2cgmewD9hDwTPUQ.qp3c1KtboE6K94VU.e81N8KJ5hXJL_VsshXlV-GBMEIfbzCvWN6TwgkbPjGmrBBkHd2qF3jku5vHZFpxYUEcfEmVvF8dE_In0CWtk5ziira8wofsMQyJc8nFey5alyyXRhOKEuR3DKP2QQi6pxjz_sr3lxpnMVxwSY0f2i_jAMhj_ENROrpBkoeyk8nGw3E5OC893lyJXTKS2_hT5plt5n87lD-NGnxEndF7xFSGT7hy8zqiUiXgqth8Jg5O5FjamapzYUPu6lh9nJBixQOTj0zFPizhjJ0pasTg9gElgiX9K6OZyiqbyO2_SXlH5_kvhkEYq1RqpJrAauqzLI2zieTZA05J0P7-8S1Y2CSKnQhItPbDm4ELjSyFtNE5nBDSRwmdDFKE7LlZc5UdRno-DcOyMuu7xiDGn0MDBcB3K3qKVp2AzEMlUHsE1wyE1KSumGlINIEGv-CnQmSRaP2zBkNPXgU57k64Z-wbBg6JX6JcYzrpWY3yzFcV7KOF11w_i_haQ-rqNYUATgTlahmLWrq1couiElQyaW-cL7RNjsaNg0exfPcVL7s1l8BU-By0RWazV1kuxvtK8JFnPHmarPtwUEp1F-yYHUeIBQGTMk1hDjs_Ulty8QOV05QyyZZLmZdRv8k7kwhYAgq_pLnwRKQi-gBCwOtbRVA9gGmxxch2mUtuf5Z7TE7EUz-JtdAICaYRlWiLobl1NRHgqtwRXiC6oYboq1sAln6bRuQLrektjwgOv42P3YIp1XDpoYqWt8K46rdQftPt4EI4sRLmetziaU_vAL8wLgSDxv8dp90Lsn4jVXzK32L1klPuN6r0EuLRU1fV6NMDzXr4dRBDilbFNhkdHQdoDGBwuAKcBfL81Mrp-YfnO57dk7KFVcmq__-KPdCkDB8YlfqENUyIoc5uEHIfq8Ie0QZsAIIorEX8Gfcil69TL4u6-e2nwFNnxa9AnvKIm3G-c9l2vktrhPwMAUNTT0Ion2qPy16ewSwCNCA.b9ikGCwHauGI1AUNZ4x3rg": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-11T01:50:50.5529633Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "RDE/Dataset View",
+      "Search": "tas",
+      "Score": 0,
+      "SubTitle": "https://rde.nims.go.jp/#state=eyJpZCI6IjEyOTkwYjRmLTc3ZDEtNGZlNy1iN2QyLWU2ODhjYTY1NzY4NyIsIm1ldGEiOnsiaW50ZXJhY3Rpb25UeXBlIjoicmVkaXJlY3QifX0%3d\u0026client_info=eyJ1aWQiOiItYjJjXzFhX2RwZl9zaWduaW4iLCJ1dGlkIjoiMGU5ZDUxZDEtYjg1MS00ZWE1LWI0YzktZmFkY2UyYzhjOGIwIn0\u0026code=eyJraWQiOiJob1RNZVBZTXlQMExtQ0hkZ0t0SnRFYTI0ajJMc2VjYlZaa3RQMnFydmRvIiwidmVyIjoiMS4wIiwiemlwIjoiRGVmbGF0ZSIsInNlciI6IjEuMCJ9.iS2HdSGPLmOz-nMYlVLI5CB_FP7CWkZOdHWdTfOOCoFnhBW9Q0boqTU5s1-R5OrZCdZrt7ILZ4YWmV7gbG_6el23J2E1_vUs43cpNgy_b-CesYWrNsiNt73OMvKJr1HRHIRwEGBCEfoEHReJz5BNdRBQVevtl5GIzOIejsjB_vjcOA-MXA5p51tf0HKXmpaPkPxKHNMhJqM_d6rLKQHz_6uwdT1SNMCCf1yiW5I7y5ekLs-jFQq682Zn02unWG-wx439dvpN26nzX7bhndVEN05W8l8hAFgUh1mZX5H6_WhvVtUF5XrZC-zrrSdUA3kzPLJvfpM2cgmewD9hDwTPUQ.qp3c1KtboE6K94VU.e81N8KJ5hXJL_VsshXlV-GBMEIfbzCvWN6TwgkbPjGmrBBkHd2qF3jku5vHZFpxYUEcfEmVvF8dE_In0CWtk5ziira8wofsMQyJc8nFey5alyyXRhOKEuR3DKP2QQi6pxjz_sr3lxpnMVxwSY0f2i_jAMhj_ENROrpBkoeyk8nGw3E5OC893lyJXTKS2_hT5plt5n87lD-NGnxEndF7xFSGT7hy8zqiUiXgqth8Jg5O5FjamapzYUPu6lh9nJBixQOTj0zFPizhjJ0pasTg9gElgiX9K6OZyiqbyO2_SXlH5_kvhkEYq1RqpJrAauqzLI2zieTZA05J0P7-8S1Y2CSKnQhItPbDm4ELjSyFtNE5nBDSRwmdDFKE7LlZc5UdRno-DcOyMuu7xiDGn0MDBcB3K3qKVp2AzEMlUHsE1wyE1KSumGlINIEGv-CnQmSRaP2zBkNPXgU57k64Z-wbBg6JX6JcYzrpWY3yzFcV7KOF11w_i_haQ-rqNYUATgTlahmLWrq1couiElQyaW-cL7RNjsaNg0exfPcVL7s1l8BU-By0RWazV1kuxvtK8JFnPHmarPtwUEp1F-yYHUeIBQGTMk1hDjs_Ulty8QOV05QyyZZLmZdRv8k7kwhYAgq_pLnwRKQi-gBCwOtbRVA9gGmxxch2mUtuf5Z7TE7EUz-JtdAICaYRlWiLobl1NRHgqtwRXiC6oYboq1sAln6bRuQLrektjwgOv42P3YIp1XDpoYqWt8K46rdQftPt4EI4sRLmetziaU_vAL8wLgSDxv8dp90Lsn4jVXzK32L1klPuN6r0EuLRU1fV6NMDzXr4dRBDilbFNhkdHQdoDGBwuAKcBfL81Mrp-YfnO57dk7KFVcmq__-KPdCkDB8YlfqENUyIoc5uEHIfq8Ie0QZsAIIorEX8Gfcil69TL4u6-e2nwFNnxa9AnvKIm3G-c9l2vktrhPwMAUNTT0Ion2qPy16ewSwCNCA.b9ikGCwHauGI1AUNZ4x3rg",
+      "PluginID": "E5A9FC7A3F7F4320BE612DA95C57C32D"
+    },
+    "https://\u74B0\u5883\u3078\u3093\u3059\u3046/ : \u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-12T11:13:12.6975315Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://\u74B0\u5883\u3078\u3093\u3059\u3046/",
+      "Search": "\u74B0\u5883\u3078\u3093\u3059\u3046",
+      "Score": 0,
+      "SubTitle": "\u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "zotero mcp - \u691C\u7D22 : https://www.bing.com/search?pglt=297\u0026q=zotero\u002Bmcp\u0026cvid=9984ee72a433492fab8820ef81a48f3d\u0026gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEAAYQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQDIGCAcQABhAMgYICBAAGEDSAQgyOTY5ajBqMagCALACAA\u0026FORM=ANNTA1\u0026PC=NMTS": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-17T06:42:03.5283814Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "zotero mcp - \u691C\u7D22",
+      "Search": "zotero",
+      "Score": 0,
+      "SubTitle": "https://www.bing.com/search?pglt=297\u0026q=zotero\u002Bmcp\u0026cvid=9984ee72a433492fab8820ef81a48f3d\u0026gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEAAYQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQDIGCAcQABhAMgYICBAAGEDSAQgyOTY5ajBqMagCALACAA\u0026FORM=ANNTA1\u0026PC=NMTS",
+      "PluginID": "E5A9FC7A3F7F4320BE612DA95C57C32D"
+    },
+    "\u30AB\u30E1\u30E9 : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30D7\u30E9\u30A4\u30D0\u30B7\u30FC": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-19T08:01:42.0865745Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30AB\u30E1\u30E9",
+      "Search": "\u30AB\u30E1\u30E9",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u30D7\u30E9\u30A4\u30D0\u30B7\u30FC",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "QLaue.exe : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-02T12:41:46.231636Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\QLaue\\QLaue.exe.lnk",
+      "Title": "QLaue.exe",
+      "Search": "qla",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Tailscale : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2026-09-27T23:47:24.7344415Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\Tailscale.lnk",
+      "Title": "Tailscale",
+      "Search": "tails",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Windows Insider Program : \u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u66F4\u65B0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-16T11:52:51.6683472Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "Windows Insider Program",
+      "Search": "program",
+      "Score": 0,
+      "SubTitle": "\u30B7\u30B9\u30C6\u30E0\u8A2D\u5B9A  \u02C3  \u66F4\u65B0\u3068\u30BB\u30AD\u30E5\u30EA\u30C6\u30A3",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Affinity Publisher 2 : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-08-06T07:24:31.5077467Z",
+      "Title": "Affinity Publisher 2",
+      "Search": "publish",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Publisher : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-31T02:38:57.2708035Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Publisher.lnk",
+      "Title": "Publisher",
+      "Search": "publish",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "LM Studio : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2026-04-08T06:57:22.6530869Z",
+      "IconPath": "C:\\Users\\yutay\\Desktop\\LM Studio.lnk",
+      "Title": "LM Studio",
+      "Search": "lms",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Qt Designer : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-08-22T01:46:15.1711311Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Qt Designer.lnk",
+      "Title": "Qt Designer",
+      "Search": "Qt",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u8868\u793A\u30D7\u30ED\u30D1\u30C6\u30A3 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-08-21T01:09:03.5120982Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u8868\u793A\u30D7\u30ED\u30D1\u30C6\u30A3",
+      "Search": "des",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30CF\u30FC\u30C9\u30A6\u30A7\u30A2\u3068\u30B5\u30A6\u30F3\u30C9",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "111.5 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-09-05T09:08:28.9304199Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "111.5",
+      "Search": "178.4 /1.6",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "238.56 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-09-05T09:08:58.1127296Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "238.56",
+      "Search": "149.1 * 1.6",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "powerpoo : Prompt ChatGPT with Microsoft Edge": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-10-21T03:34:41.4410524Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Local\\Microsoft\\PowerToys\\PowerToys Run\\Plugins\\ChatGPT\\Images/ChatGPT.dark.png",
+      "Title": "powerpoo",
+      "Search": "powerpoo",
+      "Score": 0,
+      "SubTitle": "Prompt ChatGPT with Microsoft Edge",
+      "PluginID": "2FA48E560F1D45C09FB969D6C403AA13"
+    },
+    "71.5 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-10-30T03:55:57.3088007Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "71.5",
+      "Search": "26.5 \u002B 45",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "70.6 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-10-30T05:42:19.4661257Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "70.6",
+      "Search": "115.6-45",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "26.6 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-10-30T07:23:07.4442969Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "26.6",
+      "Search": "-18.4\u002B45",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "71.6- : Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-10-30T07:03:38.8386534Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WebSearch\\Images/WebSearch.dark.png",
+      "Title": "71.6-",
+      "Search": "71.6-",
+      "Score": 0,
+      "SubTitle": "Microsoft Edge \u3067 Web \u3092\u691C\u7D22\u3059\u308B",
+      "PluginID": "9F1B49201C3F4BF781CAAD5CD88EA4DC"
+    },
+    "-18.4 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-10-30T07:12:42.7438448Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "-18.4",
+      "Search": "26.6-45",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "116.6 : \u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-10-31T01:19:19.0217149Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\Calculator\\Images/calculator.dark.png",
+      "Title": "116.6",
+      "Search": "71.6 \u002B 45",
+      "Score": 0,
+      "SubTitle": "\u3053\u306E\u6570\u5024\u3092\u30AF\u30EA\u30C3\u30D7\u30DC\u30FC\u30C9\u306B\u30B3\u30D4\u30FC\u3057\u307E\u3059",
+      "PluginID": "CEA0FDFC6D3B4085823D60DC76F28855"
+    },
+    "powerpooin : Prompt ChatGPT with Microsoft Edge": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-11-17T05:00:33.7151246Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Local\\Microsoft\\PowerToys\\PowerToys Run\\Plugins\\ChatGPT\\Images/ChatGPT.dark.png",
+      "Title": "powerpooin",
+      "Search": "powerpooin",
+      "Score": 0,
+      "SubTitle": "Prompt ChatGPT with Microsoft Edge",
+      "PluginID": "2FA48E560F1D45C09FB969D6C403AA13"
+    },
+    "Hyper-V \u30DE\u30CD\u30FC\u30B8\u30E3\u30FC : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 8,
+      "LastSelected": "2026-10-19T04:10:19.243774Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Hyper-V Manager.lnk",
+      "Title": "Hyper-V \u30DE\u30CD\u30FC\u30B8\u30E3\u30FC",
+      "Search": "hyper",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "https://taskman/ : \u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F": {
+      "SelectedCount": 1,
+      "LastSelected": "2026-03-04T08:10:42.9853934Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://taskman/",
+      "Search": "taskman",
+      "Score": 0,
+      "SubTitle": "\u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "Pictures : \u691C\u7D22: C:\\Users\\yutay\\Pictures": {
+      "SelectedCount": 1,
+      "LastSelected": "2026-03-19T02:57:22.5746965Z",
+      "IconPath": "C:\\Users\\yutay\\Pictures",
+      "Title": "Pictures",
+      "Search": "picture",
+      "Score": 0,
+      "SubTitle": "\u691C\u7D22: C:\\Users\\yutay\\Pictures",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "\u30D1\u30B9\u30EF\u30FC\u30C9\u306E\u30D7\u30ED\u30D1\u30C6\u30A3 : \u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30E6\u30FC\u30B6\u30FC \u30A2\u30AB\u30A6\u30F3\u30C8": {
+      "SelectedCount": 2,
+      "LastSelected": "2026-04-13T08:56:35.8431953Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30D1\u30B9\u30EF\u30FC\u30C9\u306E\u30D7\u30ED\u30D1\u30C6\u30A3",
+      "Search": "word",
+      "Score": 0,
+      "SubTitle": "\u30B3\u30F3\u30C8\u30ED\u30FC\u30EB \u30D1\u30CD\u30EB  \u02C3  \u30E6\u30FC\u30B6\u30FC \u30A2\u30AB\u30A6\u30F3\u30C8",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Neovide : \u30D5\u30A1\u30A4\u30EB": {
+      "SelectedCount": 1,
+      "LastSelected": "2026-04-14T08:53:31.3026366Z",
+      "IconPath": "C:\\Users\\Public\\Desktop\\Neovide.lnk",
+      "Title": "Neovide",
+      "Search": "neovi",
+      "Score": 0,
+      "SubTitle": "\u30D5\u30A1\u30A4\u30EB",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Calendar : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2026-05-11T23:59:44.024167Z",
+      "Title": "Calendar",
+      "Search": "cal",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Hyper-V \u30AF\u30A4\u30C3\u30AF\u4F5C\u6210 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 3,
+      "LastSelected": "2026-08-25T04:34:11.6725688Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\VMCreate.lnk",
+      "Title": "Hyper-V \u30AF\u30A4\u30C3\u30AF\u4F5C\u6210",
+      "Search": "vm",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "https://hyper-b/ : \u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F": {
+      "SelectedCount": 1,
+      "LastSelected": "2026-06-22T03:43:35.9685604Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://hyper-b/",
+      "Search": "hyper-b",
+      "Score": 0,
+      "SubTitle": "\u65E2\u5B9A\u306E\u30D6\u30E9\u30A6\u30B6\u30FC\u3067\u958B\u304F",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "Obsidian : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 17,
+      "LastSelected": "2026-11-10T00:09:28.9353672Z",
+      "IconPath": "C:\\Users\\yutay\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Obsidian.lnk",
+      "Title": "Obsidian",
+      "Search": "obsi",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30B3\u30F3\u30DD\u30FC\u30CD\u30F3\u30C8 \u30B5\u30FC\u30D3\u30B9 : Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB": {
+      "SelectedCount": 2,
+      "LastSelected": "2026-07-09T06:53:42.6960788Z",
+      "IconPath": "C:\\Program Files\\PowerToys\\RunPlugins\\WindowsSettings\\Images/WindowsSettings.dark.png",
+      "Title": "\u30B3\u30F3\u30DD\u30FC\u30CD\u30F3\u30C8 \u30B5\u30FC\u30D3\u30B9",
+      "Search": "ob",
+      "Score": 0,
+      "SubTitle": "Microsoft \u7BA1\u7406\u30B3\u30F3\u30BD\u30FC\u30EB",
+      "PluginID": "5043CECEE6A748679CBE02D27D83747A"
+    },
+    "Claude : \u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 2,
+      "LastSelected": "2026-10-02T06:22:24.2360416Z",
+      "Title": "Claude",
+      "Search": "claude",
+      "Score": 0,
+      "SubTitle": "\u30D1\u30C3\u30B1\u30FC\u30B8 \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u30BF\u30B9\u30AF \u30B9\u30B1\u30B8\u30E5\u30FC\u30E9 2023 : \u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3": {
+      "SelectedCount": 1,
+      "LastSelected": "2026-10-21T06:20:42.6245957Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Autodesk Inventor 2023\\\u30C4\u30FC\u30EB\\\u30BF\u30B9\u30AF \u30B9\u30B1\u30B8\u30E5\u30FC\u30E9 2023.lnk",
+      "Title": "\u30BF\u30B9\u30AF \u30B9\u30B1\u30B8\u30E5\u30FC\u30E9 2023",
+      "Search": "task",
+      "Score": 0,
+      "SubTitle": "\u30A2\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Slack.exe : \u5B9F\u884C\u30B3\u30DE\u30F3\u30C9": {
+      "SelectedCount": 2,
+      "LastSelected": "2026-11-19T08:54:39.1774103Z",
+      "IconPath": "C:\\Program Files\\WindowsApps\\91750D7E.Slack_4.53.287.0_x64__8she8kybcnzg4\\app\\Slack.exe",
+      "Title": "Slack.exe",
+      "Search": "slack",
+      "Score": 0,
+      "SubTitle": "\u5B9F\u884C\u30B3\u30DE\u30F3\u30C9",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    }
+  }
+}

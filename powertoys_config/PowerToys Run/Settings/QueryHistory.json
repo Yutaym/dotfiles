@@ -1,0 +1,1204 @@
+{
+  "Items": [
+    {
+      "Query": "remote",
+      "ExecutedDateTime": "2025-06-03T17:07:14.5760798+09:00"
+    },
+    {
+      "Query": "\u30EA\u30E2\u30FC\u30C8",
+      "ExecutedDateTime": "2025-06-03T17:07:38.6182522+09:00"
+    },
+    {
+      "Query": "webex",
+      "ExecutedDateTime": "2025-06-04T09:57:53.9745865+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-06-04T10:00:16.645955+09:00"
+    },
+    {
+      "Query": "webex",
+      "ExecutedDateTime": "2025-06-04T10:03:12.093132+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-06-04T10:14:32.1506407+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-06-04T14:28:03.7892918+09:00"
+    },
+    {
+      "Query": "remoted",
+      "ExecutedDateTime": "2025-06-04T16:10:21.663961+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-06-05T13:59:35.0913567+09:00"
+    },
+    {
+      "Query": "ubu",
+      "ExecutedDateTime": "2025-06-06T16:02:57.7684046+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883",
+      "ExecutedDateTime": "2025-06-06T18:21:32.8368576+09:00"
+    },
+    {
+      "Query": "remoted",
+      "ExecutedDateTime": "2025-06-08T08:20:29.9108714+09:00"
+    },
+    {
+      "Query": "openv",
+      "ExecutedDateTime": "2025-06-08T08:23:59.6777673+09:00"
+    },
+    {
+      "Query": "\u8A3C\u660E\u66F8",
+      "ExecutedDateTime": "2025-06-08T11:37:41.0150789+09:00"
+    },
+    {
+      "Query": "teamvi",
+      "ExecutedDateTime": "2025-06-08T14:42:32.5628149+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-06-08T15:44:39.0899343+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-06-11T10:07:05.5015519+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883\u5909\u6570",
+      "ExecutedDateTime": "2025-06-11T10:08:00.2930564+09:00"
+    },
+    {
+      "Query": "powerpoint",
+      "ExecutedDateTime": "2025-06-11T10:47:00.0400072+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-06-11T10:50:50.5533525+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-06-11T10:50:59.7816393+09:00"
+    },
+    {
+      "Query": "powershell",
+      "ExecutedDateTime": "2025-06-11T11:14:49.164189+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883\u3078\u3093\u3059\u3046",
+      "ExecutedDateTime": "2025-06-12T20:13:12.697578+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883\u5909\u6570",
+      "ExecutedDateTime": "2025-06-12T20:15:50.0669389+09:00"
+    },
+    {
+      "Query": "teamvie",
+      "ExecutedDateTime": "2025-06-12T20:25:30.5441315+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883\u5909\u6570",
+      "ExecutedDateTime": "2025-06-12T20:56:24.451309+09:00"
+    },
+    {
+      "Query": "teamv",
+      "ExecutedDateTime": "2025-06-13T13:19:40.3864299+09:00"
+    },
+    {
+      "Query": "Teams",
+      "ExecutedDateTime": "2025-06-17T09:40:36.4395642+09:00"
+    },
+    {
+      "Query": "zotero",
+      "ExecutedDateTime": "2025-06-17T15:42:08.7199277+09:00"
+    },
+    {
+      "Query": "team",
+      "ExecutedDateTime": "2025-06-18T09:28:59.3420783+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-06-19T14:14:53.7029044+09:00"
+    },
+    {
+      "Query": "wo",
+      "ExecutedDateTime": "2025-06-19T16:48:18.4637058+09:00"
+    },
+    {
+      "Query": "webex",
+      "ExecutedDateTime": "2025-06-19T16:49:07.2951927+09:00"
+    },
+    {
+      "Query": "web",
+      "ExecutedDateTime": "2025-06-19T16:51:05.8100189+09:00"
+    },
+    {
+      "Query": "\u30AB\u30E1\u30E9",
+      "ExecutedDateTime": "2025-06-19T17:01:42.0866362+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-06-20T10:13:09.7298642+09:00"
+    },
+    {
+      "Query": "poweshell",
+      "ExecutedDateTime": "2025-06-20T11:26:31.7225423+09:00"
+    },
+    {
+      "Query": "powertoy",
+      "ExecutedDateTime": "2025-06-20T11:34:39.2476367+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-06-20T17:21:21.3931716+09:00"
+    },
+    {
+      "Query": "blue",
+      "ExecutedDateTime": "2025-06-23T10:47:12.7772118+09:00"
+    },
+    {
+      "Query": "3dair",
+      "ExecutedDateTime": "2025-06-24T10:14:09.0656187+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-06-24T10:25:26.4082816+09:00"
+    },
+    {
+      "Query": "teamvie",
+      "ExecutedDateTime": "2025-06-24T16:12:03.8828097+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-06-25T13:28:52.3990174+09:00"
+    },
+    {
+      "Query": "zotero",
+      "ExecutedDateTime": "2025-06-25T15:41:25.6855362+09:00"
+    },
+    {
+      "Query": "teamv",
+      "ExecutedDateTime": "2025-06-25T20:37:26.2356631+09:00"
+    },
+    {
+      "Query": "excel",
+      "ExecutedDateTime": "2025-06-26T13:27:04.2595737+09:00"
+    },
+    {
+      "Query": "teamvi",
+      "ExecutedDateTime": "2025-06-26T15:46:24.7095225+09:00"
+    },
+    {
+      "Query": "teamv",
+      "ExecutedDateTime": "2025-06-28T21:43:58.9807291+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-06-28T21:56:50.6058673+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-06-29T11:59:09.3550198+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883\u5909\u6570",
+      "ExecutedDateTime": "2025-06-30T17:46:36.6306152+09:00"
+    },
+    {
+      "Query": "teamview",
+      "ExecutedDateTime": "2025-06-30T18:05:54.6116943+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-06-30T18:08:46.9223154+09:00"
+    },
+    {
+      "Query": "\u74B0\u5883\u5909\u6570",
+      "ExecutedDateTime": "2025-06-30T18:20:42.9786089+09:00"
+    },
+    {
+      "Query": "teamvi",
+      "ExecutedDateTime": "2025-06-30T20:00:28.9373985+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-07-01T14:46:05.2982213+09:00"
+    },
+    {
+      "Query": "qla",
+      "ExecutedDateTime": "2025-07-02T21:41:46.2319252+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-07-07T10:39:47.5121859+09:00"
+    },
+    {
+      "Query": "team",
+      "ExecutedDateTime": "2025-07-08T09:20:50.7284146+09:00"
+    },
+    {
+      "Query": "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4",
+      "ExecutedDateTime": "2025-07-10T11:13:02.7026661+09:00"
+    },
+    {
+      "Query": "claus",
+      "ExecutedDateTime": "2025-07-11T10:03:19.9874607+09:00"
+    },
+    {
+      "Query": "clau",
+      "ExecutedDateTime": "2025-07-11T10:03:50.0524511+09:00"
+    },
+    {
+      "Query": "team",
+      "ExecutedDateTime": "2025-07-14T14:52:16.6053335+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2025-07-16T13:29:35.6705699+09:00"
+    },
+    {
+      "Query": "team",
+      "ExecutedDateTime": "2025-07-16T18:06:16.3188102+09:00"
+    },
+    {
+      "Query": "tail",
+      "ExecutedDateTime": "2025-07-16T20:21:50.544626+09:00"
+    },
+    {
+      "Query": "program",
+      "ExecutedDateTime": "2025-07-16T20:52:51.6698765+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-07-16T20:54:38.429622+09:00"
+    },
+    {
+      "Query": "vpn",
+      "ExecutedDateTime": "2025-07-16T21:49:19.481728+09:00"
+    },
+    {
+      "Query": "blen",
+      "ExecutedDateTime": "2025-07-16T22:10:46.8052414+09:00"
+    },
+    {
+      "Query": "blendr",
+      "ExecutedDateTime": "2025-07-16T22:44:29.1039695+09:00"
+    },
+    {
+      "Query": "powertoy",
+      "ExecutedDateTime": "2025-07-17T00:57:17.152186+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-07-17T01:05:03.6222832+09:00"
+    },
+    {
+      "Query": "claude",
+      "ExecutedDateTime": "2025-07-17T01:26:06.6042844+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-07-19T17:44:02.1607054+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-07-25T17:42:53.4577092+09:00"
+    },
+    {
+      "Query": "keybor",
+      "ExecutedDateTime": "2025-07-25T18:24:55.9243368+09:00"
+    },
+    {
+      "Query": "wer",
+      "ExecutedDateTime": "2025-07-29T14:57:52.1464775+09:00"
+    },
+    {
+      "Query": "claude",
+      "ExecutedDateTime": "2025-07-31T09:33:23.6203641+09:00"
+    },
+    {
+      "Query": "affinitpub",
+      "ExecutedDateTime": "2025-07-31T09:43:32.9743749+09:00"
+    },
+    {
+      "Query": "powerpoint",
+      "ExecutedDateTime": "2025-07-31T09:46:12.423262+09:00"
+    },
+    {
+      "Query": "affint",
+      "ExecutedDateTime": "2025-07-31T10:29:37.8525788+09:00"
+    },
+    {
+      "Query": "publish",
+      "ExecutedDateTime": "2025-07-31T11:39:54.2047075+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-07-31T15:52:33.2304439+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-08-01T18:43:57.5094169+09:00"
+    },
+    {
+      "Query": "chrome",
+      "ExecutedDateTime": "2025-08-04T16:03:32.2419585+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-08-06T14:49:37.3498704+09:00"
+    },
+    {
+      "Query": "publish",
+      "ExecutedDateTime": "2025-08-06T16:24:31.508425+09:00"
+    },
+    {
+      "Query": "lm stu",
+      "ExecutedDateTime": "2025-08-07T16:39:27.1682381+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-08-07T16:46:37.3972524+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-08-18T10:08:50.7808901+09:00"
+    },
+    {
+      "Query": "dee",
+      "ExecutedDateTime": "2025-08-20T09:40:15.9426745+09:00"
+    },
+    {
+      "Query": "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4",
+      "ExecutedDateTime": "2025-08-20T12:57:20.7595407+09:00"
+    },
+    {
+      "Query": "power",
+      "ExecutedDateTime": "2025-08-20T13:20:32.1490527+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-08-20T14:29:28.9934011+09:00"
+    },
+    {
+      "Query": "designe",
+      "ExecutedDateTime": "2025-08-21T10:08:49.6113435+09:00"
+    },
+    {
+      "Query": "des",
+      "ExecutedDateTime": "2025-08-21T10:09:03.512127+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-08-21T11:17:25.0010677+09:00"
+    },
+    {
+      "Query": "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4",
+      "ExecutedDateTime": "2025-08-22T10:11:54.8636793+09:00"
+    },
+    {
+      "Query": "Qt",
+      "ExecutedDateTime": "2025-08-22T10:46:15.1711705+09:00"
+    },
+    {
+      "Query": "designer",
+      "ExecutedDateTime": "2025-08-22T18:53:44.3067811+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-08-27T10:14:21.2526453+09:00"
+    },
+    {
+      "Query": "powerp",
+      "ExecutedDateTime": "2025-09-02T09:37:41.666935+09:00"
+    },
+    {
+      "Query": "178.4 /1.6",
+      "ExecutedDateTime": "2025-09-05T18:08:28.9305538+09:00"
+    },
+    {
+      "Query": "149.1 * 1.6",
+      "ExecutedDateTime": "2025-09-05T18:08:58.1127407+09:00"
+    },
+    {
+      "Query": "note",
+      "ExecutedDateTime": "2025-09-09T09:14:11.6839178+09:00"
+    },
+    {
+      "Query": "3da",
+      "ExecutedDateTime": "2025-09-09T09:19:24.8885861+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-09-09T09:40:20.8570516+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2025-09-10T11:33:23.6478643+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-09-10T11:54:24.4102151+09:00"
+    },
+    {
+      "Query": "powerpoin",
+      "ExecutedDateTime": "2025-09-10T17:07:28.8796976+09:00"
+    },
+    {
+      "Query": "word",
+      "ExecutedDateTime": "2025-09-12T13:27:54.4669407+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-09-12T14:13:24.8834554+09:00"
+    },
+    {
+      "Query": "word",
+      "ExecutedDateTime": "2025-09-16T17:43:57.4311544+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-09-17T13:42:52.9726744+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-09-19T10:47:29.3966124+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-09-22T15:38:34.5090437+09:00"
+    },
+    {
+      "Query": "otepad",
+      "ExecutedDateTime": "2025-09-24T11:49:51.0274394+09:00"
+    },
+    {
+      "Query": "toy",
+      "ExecutedDateTime": "2025-09-25T14:27:12.4800721+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-10-06T09:32:17.9910896+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-10-06T09:39:33.7918554+09:00"
+    },
+    {
+      "Query": "line",
+      "ExecutedDateTime": "2025-10-07T16:12:06.7835525+09:00"
+    },
+    {
+      "Query": "power",
+      "ExecutedDateTime": "2025-10-09T14:59:46.7556041+09:00"
+    },
+    {
+      "Query": "li",
+      "ExecutedDateTime": "2025-10-10T10:11:47.9198366+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-10-10T10:26:50.6223547+09:00"
+    },
+    {
+      "Query": "web",
+      "ExecutedDateTime": "2025-10-14T11:35:17.8732149+09:00"
+    },
+    {
+      "Query": "webex",
+      "ExecutedDateTime": "2025-10-14T11:35:52.5555506+09:00"
+    },
+    {
+      "Query": "lie",
+      "ExecutedDateTime": "2025-10-14T12:15:10.5176359+09:00"
+    },
+    {
+      "Query": "line",
+      "ExecutedDateTime": "2025-10-16T09:12:20.5017982+09:00"
+    },
+    {
+      "Query": "i",
+      "ExecutedDateTime": "2025-10-16T13:00:43.8068243+09:00"
+    },
+    {
+      "Query": "powerp",
+      "ExecutedDateTime": "2025-10-16T15:16:18.907227+09:00"
+    },
+    {
+      "Query": "po",
+      "ExecutedDateTime": "2025-10-16T15:17:00.6866317+09:00"
+    },
+    {
+      "Query": "poer",
+      "ExecutedDateTime": "2025-10-16T15:17:09.3688775+09:00"
+    },
+    {
+      "Query": "power",
+      "ExecutedDateTime": "2025-10-16T15:17:16.9805425+09:00"
+    },
+    {
+      "Query": "\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF",
+      "ExecutedDateTime": "2025-10-17T09:19:43.0068213+09:00"
+    },
+    {
+      "Query": "cont",
+      "ExecutedDateTime": "2025-10-17T09:21:52.5513129+09:00"
+    },
+    {
+      "Query": "control",
+      "ExecutedDateTime": "2025-10-20T17:10:49.008772+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2025-10-21T09:51:30.0499276+09:00"
+    },
+    {
+      "Query": "powerpoo",
+      "ExecutedDateTime": "2025-10-21T12:34:41.441733+09:00"
+    },
+    {
+      "Query": "pow",
+      "ExecutedDateTime": "2025-10-21T12:34:52.5982561+09:00"
+    },
+    {
+      "Query": "clau",
+      "ExecutedDateTime": "2025-10-23T09:33:29.7050603+09:00"
+    },
+    {
+      "Query": "powerpo",
+      "ExecutedDateTime": "2025-10-23T11:44:47.3049184+09:00"
+    },
+    {
+      "Query": "powershell",
+      "ExecutedDateTime": "2025-10-28T17:34:25.9102802+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-10-29T14:57:19.7546047+09:00"
+    },
+    {
+      "Query": "3d",
+      "ExecutedDateTime": "2025-10-30T08:39:29.2421501+09:00"
+    },
+    {
+      "Query": "26.5 \u002B 45",
+      "ExecutedDateTime": "2025-10-30T12:55:57.3092038+09:00"
+    },
+    {
+      "Query": "115.6-45",
+      "ExecutedDateTime": "2025-10-30T14:42:19.4661716+09:00"
+    },
+    {
+      "Query": "71.6-45",
+      "ExecutedDateTime": "2025-10-30T15:53:40.7355336+09:00"
+    },
+    {
+      "Query": "71.6-",
+      "ExecutedDateTime": "2025-10-30T16:03:38.8386777+09:00"
+    },
+    {
+      "Query": "71.6-45",
+      "ExecutedDateTime": "2025-10-30T16:03:54.9933333+09:00"
+    },
+    {
+      "Query": "26.6-45",
+      "ExecutedDateTime": "2025-10-30T16:12:42.7438705+09:00"
+    },
+    {
+      "Query": "-18.4\u002B45",
+      "ExecutedDateTime": "2025-10-30T16:23:07.444317+09:00"
+    },
+    {
+      "Query": "71.6 \u002B 45",
+      "ExecutedDateTime": "2025-10-31T10:19:19.0229138+09:00"
+    },
+    {
+      "Query": "powerp",
+      "ExecutedDateTime": "2025-11-06T15:13:16.582547+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-11-11T09:36:29.9714103+09:00"
+    },
+    {
+      "Query": "logi",
+      "ExecutedDateTime": "2025-11-11T10:29:27.6340483+09:00"
+    },
+    {
+      "Query": "notepa",
+      "ExecutedDateTime": "2025-11-11T11:19:04.0216285+09:00"
+    },
+    {
+      "Query": "powerpooin",
+      "ExecutedDateTime": "2025-11-17T14:00:33.7153858+09:00"
+    },
+    {
+      "Query": "powerpoint",
+      "ExecutedDateTime": "2025-11-17T14:00:41.4286979+09:00"
+    },
+    {
+      "Query": "powerto",
+      "ExecutedDateTime": "2025-11-17T15:56:59.6436063+09:00"
+    },
+    {
+      "Query": "line",
+      "ExecutedDateTime": "2025-11-19T15:24:22.2097085+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-11-25T14:18:36.3416302+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2025-11-25T14:19:44.7251899+09:00"
+    },
+    {
+      "Query": "claude",
+      "ExecutedDateTime": "2025-11-26T12:53:41.5350339+09:00"
+    },
+    {
+      "Query": "clau",
+      "ExecutedDateTime": "2025-11-26T12:57:18.1273948+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-11-27T12:06:40.9055855+09:00"
+    },
+    {
+      "Query": "word",
+      "ExecutedDateTime": "2025-12-02T09:16:44.4573729+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2025-12-03T10:34:23.82435+09:00"
+    },
+    {
+      "Query": "word",
+      "ExecutedDateTime": "2025-12-12T14:48:25.9707663+09:00"
+    },
+    {
+      "Query": "powerpoint",
+      "ExecutedDateTime": "2025-12-12T14:48:34.5231074+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-12-15T13:59:32.8371723+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-12-18T10:04:28.3969587+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-12-18T15:15:00.519132+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2025-12-19T11:34:59.0135565+09:00"
+    },
+    {
+      "Query": "blue",
+      "ExecutedDateTime": "2025-12-25T14:23:38.3952855+09:00"
+    },
+    {
+      "Query": "webex",
+      "ExecutedDateTime": "2025-12-25T14:52:52.8402926+09:00"
+    },
+    {
+      "Query": "taskman",
+      "ExecutedDateTime": "2025-12-25T14:53:51.3601439+09:00"
+    },
+    {
+      "Query": "explorer",
+      "ExecutedDateTime": "2025-12-25T14:55:41.3817089+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2025-12-25T14:56:07.8600395+09:00"
+    },
+    {
+      "Query": "teams",
+      "ExecutedDateTime": "2025-12-25T15:06:40.7578485+09:00"
+    },
+    {
+      "Query": "line",
+      "ExecutedDateTime": "2025-12-25T16:18:19.0631314+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2025-12-25T16:23:54.6784566+09:00"
+    },
+    {
+      "Query": "taskmana",
+      "ExecutedDateTime": "2025-12-26T09:27:36.3553513+09:00"
+    },
+    {
+      "Query": "spar",
+      "ExecutedDateTime": "2026-01-07T11:08:31.9251075+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2026-01-07T11:09:12.6742047+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-01-07T14:30:31.2629211+09:00"
+    },
+    {
+      "Query": "wor",
+      "ExecutedDateTime": "2026-01-08T16:06:36.5771478+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2026-01-15T09:21:52.4050373+09:00"
+    },
+    {
+      "Query": "hype",
+      "ExecutedDateTime": "2026-01-15T12:17:31.7520781+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-01-16T13:49:05.2885831+09:00"
+    },
+    {
+      "Query": "powerpoin",
+      "ExecutedDateTime": "2026-01-21T13:39:02.6772489+09:00"
+    },
+    {
+      "Query": "powe",
+      "ExecutedDateTime": "2026-01-22T16:39:53.9611098+09:00"
+    },
+    {
+      "Query": "powerp",
+      "ExecutedDateTime": "2026-01-22T16:40:03.6000885+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-01-23T14:36:58.6133571+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-02-27T16:36:28.5416759+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2026-03-03T10:33:54.0535029+09:00"
+    },
+    {
+      "Query": "clau",
+      "ExecutedDateTime": "2026-03-03T15:34:11.9194041+09:00"
+    },
+    {
+      "Query": "taskmana",
+      "ExecutedDateTime": "2026-03-03T15:38:11.9026542+09:00"
+    },
+    {
+      "Query": "claude",
+      "ExecutedDateTime": "2026-03-03T15:38:30.2400584+09:00"
+    },
+    {
+      "Query": "\u8CC7\u683C\u60C5\u5831",
+      "ExecutedDateTime": "2026-03-03T16:44:47.3982451+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2026-03-04T10:15:26.8449378+09:00"
+    },
+    {
+      "Query": "zotero",
+      "ExecutedDateTime": "2026-03-04T14:14:49.6865456+09:00"
+    },
+    {
+      "Query": "taskman",
+      "ExecutedDateTime": "2026-03-04T17:10:42.9854875+09:00"
+    },
+    {
+      "Query": "excel",
+      "ExecutedDateTime": "2026-03-05T15:06:26.5732105+09:00"
+    },
+    {
+      "Query": "powerpo",
+      "ExecutedDateTime": "2026-03-06T09:27:43.0461742+09:00"
+    },
+    {
+      "Query": "powerp",
+      "ExecutedDateTime": "2026-03-06T09:33:46.4311579+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-03-06T15:00:32.0652261+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-03-10T12:33:19.7615711+09:00"
+    },
+    {
+      "Query": "ollama",
+      "ExecutedDateTime": "2026-03-10T13:53:36.2744322+09:00"
+    },
+    {
+      "Query": "lms",
+      "ExecutedDateTime": "2026-03-10T13:53:53.8514866+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-03-11T09:46:38.84702+09:00"
+    },
+    {
+      "Query": "powerpo",
+      "ExecutedDateTime": "2026-03-17T14:57:33.8950813+09:00"
+    },
+    {
+      "Query": "taskman",
+      "ExecutedDateTime": "2026-03-18T14:53:48.3459253+09:00"
+    },
+    {
+      "Query": "picture",
+      "ExecutedDateTime": "2026-03-19T11:57:22.5748096+09:00"
+    },
+    {
+      "Query": "powe",
+      "ExecutedDateTime": "2026-03-19T15:12:54.8235465+09:00"
+    },
+    {
+      "Query": "zotero",
+      "ExecutedDateTime": "2026-03-25T14:02:29.4681931+09:00"
+    },
+    {
+      "Query": "zo",
+      "ExecutedDateTime": "2026-03-25T14:02:51.6710009+09:00"
+    },
+    {
+      "Query": "hyper",
+      "ExecutedDateTime": "2026-03-25T17:28:28.6890346+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2026-03-26T16:51:14.0347306+09:00"
+    },
+    {
+      "Query": "powershe",
+      "ExecutedDateTime": "2026-03-27T16:10:19.5023675+09:00"
+    },
+    {
+      "Query": "zotero",
+      "ExecutedDateTime": "2026-04-03T10:32:55.0440086+09:00"
+    },
+    {
+      "Query": "blu",
+      "ExecutedDateTime": "2026-04-03T14:06:39.1304508+09:00"
+    },
+    {
+      "Query": "taskmana",
+      "ExecutedDateTime": "2026-04-03T15:04:07.1042459+09:00"
+    },
+    {
+      "Query": "note",
+      "ExecutedDateTime": "2026-04-03T17:50:06.442789+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2026-04-06T09:43:40.9669065+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-04-06T12:39:07.9107412+09:00"
+    },
+    {
+      "Query": "note",
+      "ExecutedDateTime": "2026-04-08T11:49:57.0313373+09:00"
+    },
+    {
+      "Query": "lms",
+      "ExecutedDateTime": "2026-04-08T15:57:22.6531452+09:00"
+    },
+    {
+      "Query": "word",
+      "ExecutedDateTime": "2026-04-09T13:42:27.5487245+09:00"
+    },
+    {
+      "Query": "note",
+      "ExecutedDateTime": "2026-04-10T11:21:28.9823553+09:00"
+    },
+    {
+      "Query": "word",
+      "ExecutedDateTime": "2026-04-13T17:56:35.8435856+09:00"
+    },
+    {
+      "Query": "neovi",
+      "ExecutedDateTime": "2026-04-14T17:53:31.3026972+09:00"
+    },
+    {
+      "Query": "logi",
+      "ExecutedDateTime": "2026-04-20T12:59:13.3431125+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-04-20T18:21:55.3627827+09:00"
+    },
+    {
+      "Query": "excel",
+      "ExecutedDateTime": "2026-04-21T12:49:36.8662308+09:00"
+    },
+    {
+      "Query": "TASK",
+      "ExecutedDateTime": "2026-04-30T08:52:25.9208036+09:00"
+    },
+    {
+      "Query": "taskman",
+      "ExecutedDateTime": "2026-05-11T10:59:01.4899198+09:00"
+    },
+    {
+      "Query": "notepa",
+      "ExecutedDateTime": "2026-05-11T11:27:52.3388927+09:00"
+    },
+    {
+      "Query": "cal",
+      "ExecutedDateTime": "2026-05-12T08:59:44.0245887+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-05-15T17:33:21.1609934+09:00"
+    },
+    {
+      "Query": "powerp",
+      "ExecutedDateTime": "2026-05-22T10:49:13.523242+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-05-22T10:50:03.9006492+09:00"
+    },
+    {
+      "Query": "\u30EA\u30BD",
+      "ExecutedDateTime": "2026-06-08T09:13:30.366875+09:00"
+    },
+    {
+      "Query": "taa",
+      "ExecutedDateTime": "2026-06-09T09:23:22.3726432+09:00"
+    },
+    {
+      "Query": "hyper",
+      "ExecutedDateTime": "2026-06-09T11:09:03.4257978+09:00"
+    },
+    {
+      "Query": "vm",
+      "ExecutedDateTime": "2026-06-12T09:38:46.2350688+09:00"
+    },
+    {
+      "Query": "bluetooth",
+      "ExecutedDateTime": "2026-06-17T13:27:41.5311312+09:00"
+    },
+    {
+      "Query": "hyper-b",
+      "ExecutedDateTime": "2026-06-22T12:43:35.9691566+09:00"
+    },
+    {
+      "Query": "vm",
+      "ExecutedDateTime": "2026-06-22T12:43:38.7030962+09:00"
+    },
+    {
+      "Query": "hyperv",
+      "ExecutedDateTime": "2026-06-22T12:43:44.6354801+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-06-24T12:06:46.1916423+09:00"
+    },
+    {
+      "Query": "tas",
+      "ExecutedDateTime": "2026-06-25T15:43:52.2549978+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2026-07-02T10:01:51.2558722+09:00"
+    },
+    {
+      "Query": "obsidia",
+      "ExecutedDateTime": "2026-07-08T13:54:12.9941766+09:00"
+    },
+    {
+      "Query": "b",
+      "ExecutedDateTime": "2026-07-09T10:08:13.9692615+09:00"
+    },
+    {
+      "Query": "obsi",
+      "ExecutedDateTime": "2026-07-09T15:32:21.6531079+09:00"
+    },
+    {
+      "Query": "obsid",
+      "ExecutedDateTime": "2026-07-09T15:47:08.5960045+09:00"
+    },
+    {
+      "Query": "obsi",
+      "ExecutedDateTime": "2026-07-09T15:52:57.7569435+09:00"
+    },
+    {
+      "Query": "ob",
+      "ExecutedDateTime": "2026-07-09T15:53:42.6961683+09:00"
+    },
+    {
+      "Query": "obsi",
+      "ExecutedDateTime": "2026-07-09T16:00:36.8748024+09:00"
+    },
+    {
+      "Query": "reso",
+      "ExecutedDateTime": "2026-07-15T12:05:48.2714681+09:00"
+    },
+    {
+      "Query": "powershell",
+      "ExecutedDateTime": "2026-07-15T14:42:05.527255+09:00"
+    },
+    {
+      "Query": "control",
+      "ExecutedDateTime": "2026-07-16T11:02:09.9218355+09:00"
+    },
+    {
+      "Query": "obsidi",
+      "ExecutedDateTime": "2026-07-22T16:57:44.6668738+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-07-24T13:16:39.4268418+09:00"
+    },
+    {
+      "Query": "blu",
+      "ExecutedDateTime": "2026-07-28T18:15:10.3103535+09:00"
+    },
+    {
+      "Query": "vm",
+      "ExecutedDateTime": "2026-08-25T13:34:11.6735999+09:00"
+    },
+    {
+      "Query": "hyper",
+      "ExecutedDateTime": "2026-08-25T13:34:26.8077925+09:00"
+    },
+    {
+      "Query": "taskm",
+      "ExecutedDateTime": "2026-08-26T15:16:57.9307716+09:00"
+    },
+    {
+      "Query": "\u30C7\u30A3\u30B9\u30D7\u30EC\u30A4",
+      "ExecutedDateTime": "2026-08-27T08:49:35.8657384+09:00"
+    },
+    {
+      "Query": "hy",
+      "ExecutedDateTime": "2026-08-27T15:30:16.5011767+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-09-08T12:57:52.6230871+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-09-08T13:15:32.79097+09:00"
+    },
+    {
+      "Query": "blue",
+      "ExecutedDateTime": "2026-09-08T17:20:05.1852053+09:00"
+    },
+    {
+      "Query": "excel",
+      "ExecutedDateTime": "2026-09-09T16:49:46.3084694+09:00"
+    },
+    {
+      "Query": "hyper-v",
+      "ExecutedDateTime": "2026-09-11T14:37:14.4076627+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-09-11T15:13:55.3485614+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-09-14T13:00:04.1156976+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-09-14T14:17:07.3612467+09:00"
+    },
+    {
+      "Query": "power",
+      "ExecutedDateTime": "2026-09-16T10:16:23.7895933+09:00"
+    },
+    {
+      "Query": "obsid",
+      "ExecutedDateTime": "2026-09-16T13:45:04.6674334+09:00"
+    },
+    {
+      "Query": "notepad",
+      "ExecutedDateTime": "2026-09-18T14:24:22.4370709+09:00"
+    },
+    {
+      "Query": "tails",
+      "ExecutedDateTime": "2026-09-28T08:47:24.7348262+09:00"
+    },
+    {
+      "Query": "chrome",
+      "ExecutedDateTime": "2026-09-28T13:42:23.4998916+09:00"
+    },
+    {
+      "Query": "obsidi",
+      "ExecutedDateTime": "2026-09-28T14:33:37.236597+09:00"
+    },
+    {
+      "Query": "claude",
+      "ExecutedDateTime": "2026-10-02T12:35:51.244858+09:00"
+    },
+    {
+      "Query": "taskmana",
+      "ExecutedDateTime": "2026-10-02T15:21:17.7613288+09:00"
+    },
+    {
+      "Query": "claude",
+      "ExecutedDateTime": "2026-10-02T15:22:24.2360491+09:00"
+    },
+    {
+      "Query": "obsi",
+      "ExecutedDateTime": "2026-10-07T15:22:46.6842073+09:00"
+    },
+    {
+      "Query": "hyper",
+      "ExecutedDateTime": "2026-10-19T13:10:19.2441624+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2026-10-21T15:20:42.6250318+09:00"
+    },
+    {
+      "Query": "notepa",
+      "ExecutedDateTime": "2026-10-21T16:36:46.0093077+09:00"
+    },
+    {
+      "Query": "obsidi",
+      "ExecutedDateTime": "2026-11-02T16:00:12.1066026+09:00"
+    },
+    {
+      "Query": "obsi",
+      "ExecutedDateTime": "2026-11-06T09:10:03.6947805+09:00"
+    },
+    {
+      "Query": "taskma",
+      "ExecutedDateTime": "2026-11-10T08:48:49.5858799+09:00"
+    },
+    {
+      "Query": "obsi",
+      "ExecutedDateTime": "2026-11-10T09:09:28.9354039+09:00"
+    },
+    {
+      "Query": "note",
+      "ExecutedDateTime": "2026-11-17T08:44:14.5357692+09:00"
+    },
+    {
+      "Query": "task",
+      "ExecutedDateTime": "2026-11-17T09:02:57.0597525+09:00"
+    },
+    {
+      "Query": "slack",
+      "ExecutedDateTime": "2026-11-19T17:54:39.1774212+09:00"
+    }
+  ]
+}

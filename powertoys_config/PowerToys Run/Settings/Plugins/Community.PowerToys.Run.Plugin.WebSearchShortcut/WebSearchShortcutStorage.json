@@ -1,0 +1,31 @@
+{
+  "Google": {
+    "Url": "https://www.google.com/search?q=%s",
+    "SuggestionProvider": "Google",
+    "Keyword": "g"
+  },
+  "Bing": {
+    "Url": "https://www.bing.com/search?q=%s",
+    "SuggestionProvider": "Bing"
+  },
+  "GitHub": {
+    "Url": "https://www.github.com/search?q=%s",
+    "Keyword": "gh"
+  },
+  "YouTube": {
+    "Url": "https://www.youtube.com/results?search_query=%s",
+    "Keyword": "yt"
+  },
+  "ChatGPT": {
+    "Url": "https://chat.openai.com/?q=%s",
+    "Keyword": "gpt"
+  },
+  "GoogleScholra": {
+    "Url": "https://scholar.google.jp/scholar?hl=ja&q=%s",
+    "Keyword": "gs"
+  },
+  "GoogleCalender": {
+    "Url": "https://calendar.google.com/calendar/u/0/r/search?q=%s",
+    "Keyword": "gc"
+  }
+}
