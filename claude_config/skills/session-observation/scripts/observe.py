@@ -788,6 +788,19 @@ def main(mode="full", light_render=None):
     from rich.console import Console
     from rich.live import Live
 
+    # macOS の iTerm2 は、プロファイルの配色で 16 色の黄・水色などが淡く、ふつうの文字と見分けにくい (2026/11/24)。
+    # Mac だけ、色の名前を配色に左右されない 256 色の番号に置き換える (Windows は変えない)。
+    # rich.console を読み込んだときに既定のテーマが色の名前を読んで覚えているので、覚えた結果を消し、テーマの同じ名前のスタイルも作り直す
+    if sys.platform == "darwin":
+        import rich.color
+        import rich.style
+        import rich.themes
+        mac_colors = dict(red=196, yellow=220, green=41, cyan=45, magenta=170, white=231)
+        rich.color.ANSI_COLOR_NAMES.update(mac_colors)
+        rich.color.Color.parse.cache_clear()
+        rich.style.Style.parse.cache_clear()
+        rich.themes.DEFAULT.styles.update({name: rich.style.Style(color=name) for name in mac_colors})
+
     overview = load_module("session_overview", "session-overview.py")
     local = Local(overview)
     remote = None
