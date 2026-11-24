@@ -1,3 +1,7 @@
+# PWSH_SKIP_PROFILE があるときはプロファイルを読まない（Claude Code の Ctrl+G のラッパー claude-editor.ps1 が、
+# psmux の new-window で開く pwsh を速くするために付ける。psmux は -NoProfile を付けられないため）。
+if ($env:PWSH_SKIP_PROFILE) { return }
+
 if (-not $env:path.Split(';').Contains('.')) {
     $env:path += ";."
 }
@@ -71,7 +75,9 @@ function Update-CompletionCache {
 $condaPath = Join-Path $env:USERPROFILE "miniconda3\Scripts\conda.exe"
 #!! Contents within this block are managed by 'conda init' !!
 If (Test-Path $condaPath) {
-    Import-CachedCompletion -Name "conda-hook" -Generator { & (Join-Path $env:USERPROFILE "miniconda3\Scripts\conda.exe") "shell.powershell" "hook" }
+    ## hook の出力の `conda activate 'base'` は conda.exe を起動して約 1.6 秒かかるため除く（base は自動では有効にしない。
+    ## 使うときは `conda activate base` を手で打つ）。2026-11-24 にユーザーが選んだ。
+    Import-CachedCompletion -Name "conda-hook" -Generator { & (Join-Path $env:USERPROFILE "miniconda3\Scripts\conda.exe") "shell.powershell" "hook" | Where-Object { $_ -notmatch "^\s*conda activate 'base'\s*$" } }
 }
 
 # Remove-Item Env:ANTHROPIC_AUTH_TOKEN  -ErrorAction SilentlyContinue
