@@ -322,16 +322,15 @@ def place(item, host=None, windows=None):
     return f"{folder} / 不明"
 
 
-MAIN_MARK_DIR = os.path.join(os.path.expanduser("~"), ".claude", "state", "session-main-rules")
-
-
 def is_main(item, host=None):
-    """session-main (振り分け役) か。名前が session-main か、このマシンなら session-main の Hook が決まりを読み込ませた印
-    (~/.claude/state/session-main-rules/<sessionId>.json) があるもの (2026/11/20 にユーザーが決めた。context-clear-notice と同じ見分け方)。"""
-    if item.get("name") == "session-main":
-        return True
-    sid = item.get("sessionId")
-    return bool(host is None and sid and os.path.isfile(os.path.join(MAIN_MARK_DIR, f"{sid}.json")))
+    """session-main (振り分け役) か。判定は session-overview.py の is_main (session-overview の表と同じ基準にするため。
+    2026/11/20 にユーザーが決めた。context-clear-notice と同じ見分け方)。"""
+    return _OVERVIEW.is_main(item, host is None)
+
+
+def move_note(item):
+    """「最後の動き」に添える文 (idle = 残っている作業、返事待ち = 必要な返事)。判定は session-overview.py の move_note。"""
+    return _OVERVIEW.move_note(item)
 
 
 def row(item, host=None, windows=None):
@@ -364,6 +363,9 @@ def row(item, host=None, windows=None):
     if waiting and waiting[0] == "状態":
         group, state, style = 0, status, "bold red"
         move = Text(f"返事待ち（{ago(item.get('statusUpdatedAt'))}から）", style="bold red")
+        # 必要な返事を簡単に添える (返答の「❓ 返事待ち:」の行の文。なければ何の返事かは分からないので、そう出す。2026/11/20 にユーザーが決めた)
+        note = move_note(item)
+        move.append("\n" + one_line(note, 28) if note else "\n何の返事かは画面で確認", style="red")
     elif status in _OVERVIEW.BUSY:
         group, state, style = 1, status, "bold yellow"
         move = Text(f"作業中（{ago(item.get('statusUpdatedAt'))}から）", style="yellow")
@@ -377,19 +379,30 @@ def row(item, host=None, windows=None):
     elif waiting:
         group, state, style = 0.5, "idle", "red"
         move = Text(f"返事待ち? {hm(last)}（{ago(last)}）", style="red")
-    # 完了の報告で終わっていて、閉じてよいと推定したものは finish (緑の太字)。いちばん下に並べ、薄くしない
+        note = move_note(item)
+        if note:
+            move.append("\n" + one_line(note, 28), style="red")
+    # 完了の報告で終わっていて、閉じてよいと推定したものは finish (緑の太字)。いちばん下に並べ、薄くしない。
+    # 「最後の動き」は「完了」だけ (返答の抜粋は添えない。2026/11/20 にユーザーが決めた)
     elif judge_finish(item):
         group, state, style = 5, "finish", "bold green"
         move = Text(f"完了 {hm(last)}（{ago(last)}）", style="green")
     else:
         state, style = "idle", "cyan"
         move = Text(f"最後の返答 {hm(last)}（{ago(last)}）", style="cyan")
-    if reply:
+        # idle は、残っている作業 (返答の「⏳ 待機:」の行の文) を添える。行がなければ従来どおり返答の抜粋 (2026/11/20 にユーザーが決めた)
+        note = move_note(item)
+        if note:
+            move.append("\n残り: " + one_line(note, 24), style="cyan")
+        elif reply:
+            move.append("\n" + one_line(reply.get("text"), 28), style="dim")
+    # 作業中・そのほかの状態は、返答の抜粋を添える
+    if reply and group in (1, 2):
         move.append("\n" + one_line(reply.get("text"), 28), style="dim")
 
-    # 1 時間以上動きのない idle のセッションは、全体を薄くする
+    # 1 時間以上動きのない idle のセッションは、全体を薄くする。finish も同じ (2026/11/20 にユーザーが決めた。並びは finish の組のまま)
     t = to_epoch(last)
-    stale = status == "idle" and t and time.time() - t > 3600 and group != 5
+    stale = status == "idle" and t and time.time() - t > 3600
     if stale and group == 3:
         group = 4
     # session-main は、状態にかかわらず状態の欄を白の「main」にし、いちばん下に並べる。薄くしない (2026/11/20 にユーザーが決めた)

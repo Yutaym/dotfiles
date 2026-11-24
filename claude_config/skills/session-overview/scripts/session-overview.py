@@ -391,8 +391,11 @@ def main():
         w = judge_waiting(item)
         print(f"判定: {wait_label(item)}" + (f"（{w[1]}）" if w else "") + " ← 表の「最後の動き」の返事待ちは、この判定に従う")
         fin = judge_finish(item)
-        print(f"状態の表示: {'finish' if fin else item['status']}" + (f"（{fin}）" if fin else "")
-              + " ← 表の「状態」は、この値に従う (finish = 作業が終わって閉じてよい)")
+        main_mark = is_main({"name": s.get("name"), "sessionId": sid})
+        print(f"状態の表示: {'main' if main_mark else 'finish' if fin else item['status']}" + (f"（{fin}）" if fin and not main_mark else "")
+              + " ← 表の「状態」は、この値に従う (finish = 作業が終わって閉じてよい。main = session-main)")
+        note = move_note(item)
+        print(f"最後の動きの文: {note or '-'} ← 表の「最後の動き」に添える文 (idle = 残っている作業、返事待ち = 必要な返事。finish は添えない)")
         print()
     note = calendar_note(calendar_unread())
     if note:
@@ -448,9 +451,16 @@ def last_line(item):
 
 def last_lines(item):
     """last_line と同じ条件で、最後の返答の空でない行 (Hook の印の行を除く) のリストを返す。なければ []。"""
-    reply = item.get("lastReply")
     last = item.get("lastTime") or item.get("statusUpdatedAt")
-    if item.get("status") != "idle" or not reply or time.time() - (to_epoch(last) or 0) >= 86400:
+    if item.get("status") != "idle" or time.time() - (to_epoch(last) or 0) >= 86400:
+        return []
+    return reply_lines(item)
+
+
+def reply_lines(item):
+    """最後の返答の空でない行 (Hook の印の行を除く) のリスト。状態や時刻は問わない。返答がなければ []。"""
+    reply = item.get("lastReply")
+    if not reply:
         return []
     # ssh の接続先の返答は切り詰めてあるので、切り詰めていない最後の部分 (tail) で判断する
     tail = reply.get("tail") or tail_for_judging(reply.get("text") or "")
@@ -458,6 +468,41 @@ def last_lines(item):
     while lines and HOOK_MARK_RE.match(lines[-1]):
         lines.pop()
     return lines
+
+
+MARK_PREFIX_RE = re.compile(r"^[*_\s]*[✅❓⏳]\s*[^:：]*[:：]\s*")
+
+
+def move_note(item):
+    """表の「最後の動き」に添える、最後の行の「:」以降の文 (2026/11/20 にユーザーが決めた)。なければ None。
+    返事待ち (状態が waiting でも、idle で「❓ 返事待ち:」の行で終わるものでも) は、必要な返事の文 (❓ の行)。
+    finish は添えない (「完了」だけ)。idle は、残っている作業の文 (⏳ の行)。busy・shell などは添えない。"""
+    status = item.get("status")
+    if status in WAITING:
+        lines = reply_lines(item)      # waiting は確かな返事待ち。idle の 24 時間の条件は付けない
+        regex = WAIT_LINE_RE
+    elif status == "idle":
+        if judge_finish(item):
+            return None
+        lines = last_lines(item)
+        regex = WAIT_LINE_RE if judge_waiting(item) else IDLE_LINE_RE
+    else:
+        return None
+    if not lines or not regex.match(lines[-1]):
+        return None
+    return MARK_PREFIX_RE.sub("", lines[-1], count=1).strip() or None
+
+
+MAIN_MARK_DIR = os.path.join(os.path.expanduser("~"), ".claude", "state", "session-main-rules")
+
+
+def is_main(item, local=True):
+    """session-main (振り分け役) か。名前が session-main か、このマシン (local) なら session-main の Hook が
+    決まりを読み込ませた印 (~/.claude/state/session-main-rules/<sessionId>.json) があるもの (2026/11/20 にユーザーが決めた)。"""
+    if item.get("name") == "session-main":
+        return True
+    sid = item.get("sessionId")
+    return bool(local and sid and os.path.isfile(os.path.join(MAIN_MARK_DIR, f"{sid}.json")))
 
 
 def judge_waiting(item):
@@ -504,7 +549,14 @@ def tail_for_judging(text, n=5):
     while lines and (not lines[-1].strip() or lines[-1].lstrip().startswith("※")):
         lines.pop()
     lines = [ln for ln in lines if ln.strip()]
-    return "\n".join(" ".join(ln.split())[-160:] for ln in lines[-n:])
+
+    def clip(ln):
+        # 長い行は後ろの 160 字を残す。ただし「✅ 完了:」などの行は、行の形で判定し「:」以降の文も使うので、前の 160 字を残す
+        ln = " ".join(ln.split())
+        if len(ln) <= 160:
+            return ln
+        return ln[:160] if re.match(r"^[*_\s]*[✅❓⏳]\s*(?:完了|返事待ち|待機)[:：]", ln) else ln[-160:]
+    return "\n".join(clip(ln) for ln in lines[-n:])
 
 
 def print_json(sessions, procs, panes, n, chars, numbers):
@@ -535,6 +587,7 @@ def print_json(sessions, procs, panes, n, chars, numbers):
             })
         item["wait"] = wait_label(item)
         item["finish"] = bool(judge_finish(item))
+        item["note"] = move_note(item)
         out.append(item)
     print(json.dumps(out, ensure_ascii=False))
 
