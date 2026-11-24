@@ -52,17 +52,17 @@ plugins=(
     zsh-interactive-cd
 	git
     git-auto-fetch
-    git-extras
+    # git-extras  # 2026-11-24: Mac・Home_Desktop_PC_1・gpuMachine のどれにもコマンドがないため外した（起動を速くするため。使うときは戻す）
     # gitfast
-    git-flow
+    # git-flow  # 2026-11-24: Mac・Home_Desktop_PC_1・gpuMachine のどれにもコマンドがないため外した（起動を速くするため。使うときは戻す）
     # github は旧 hub CLI 用で非推奨(読み込むと警告が出る)。GitHub CLI の補完は gh プラグインで行う
     gitignore
     # git-prompt  # プロンプトは vcs_info で表示している。/mnt/c 上では cd のたびに git を実行して遅くなるため外した
-    gh
+    # gh  # 2026-11-24: Mac・Home_Desktop_PC_1・gpuMachine のどれにもコマンドがないため外した（起動を速くするため。使うときは戻す）
     python
     pip
     uv
-    gcloud
+    # gcloud  # 2026-11-24: Mac・Home_Desktop_PC_1・gpuMachine のどれにもコマンドがないため外した（起動を速くするため。使うときは戻す）
 	docker
 	docker-compose
 	node
@@ -75,10 +75,10 @@ plugins=(
     rsync
     ssh
     ssh-agent
-    mosh
+    # mosh  # 2026-11-24: Mac・Home_Desktop_PC_1・gpuMachine のどれにもコマンドがないため外した（起動を速くするため。使うときは戻す）
     tmux
     perms
-	yarn
+	# yarn  # 2026-11-24: 読み込みに約 2 秒かかっていた（Mac で計測）。Mac・Home_Desktop_PC_1・gpuMachine のどれにもコマンドがないため外した（起動を速くするため。使うときは戻す）
 	brew
 	macos
 	vscode
