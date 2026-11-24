@@ -18,8 +18,10 @@ if ($env:TMUX) {
     if ($env:TMUX_PANE) { $wid = (& tmux display-message -p -t $env:TMUX_PANE '#{window_id}' 2>$null) }
     $argStr = ($args | ForEach-Object { Quote-Ps $_ }) -join ' '
     # psmux の wait-for は合図を待たずに戻るため、エディタの終了時に書く終了コードのファイルを待つ。
-    $inner = "`$c = 1; try { & $(Quote-Ps $editor) $argStr; `$c = `$LASTEXITCODE } finally { Set-Content -LiteralPath $(Quote-Ps $codeFile) `$c }"
-    $nw = @('new-window', '-P', '-F', '#{window_id}', '-n', 'claude-edit', '-c', $cwd)
+    # psmux は new-window のコマンドを pwsh -Command（-NoProfile なし）で包むため、プロファイル（約 2.6 秒）を読んで遅くなる。
+    # -e で PWSH_SKIP_PROFILE=1 を渡し、powershell_main.ps1 の先頭で読み込みを飛ばす。nvim の中のシェルには引き継がないよう、起動前に消す。
+    $inner = "Remove-Item Env:PWSH_SKIP_PROFILE -ErrorAction SilentlyContinue; `$c = 1; try { & $(Quote-Ps $editor) $argStr; `$c = `$LASTEXITCODE } finally { Set-Content -LiteralPath $(Quote-Ps $codeFile) `$c }"
+    $nw = @('new-window', '-P', '-F', '#{window_id}', '-n', 'claude-edit', '-c', $cwd, '-e', 'PWSH_SKIP_PROFILE=1')
     if ($env:CLAUDE_EDITOR_DETACH) { $nw += '-d' }   # テスト用: 画面を切り替えない
     $newWid = (& tmux @nw $inner | Select-Object -First 1)
     $n = 0
