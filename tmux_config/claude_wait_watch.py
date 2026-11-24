@@ -115,7 +115,8 @@ def label(windows):
         return ""
     sessions = {t.rpartition(":")[0] for t, _ in windows}
     names = [t.rpartition(":")[2] if len(sessions) == 1 else t for t, _ in windows]
-    return "#[fg=#ffffff]#[bg=#e06c75]#[bold] ❓ " + "·".join(names) + " #[default] "
+    # 色と三角は .tmux.conf の @wait_seg で付ける（psmux は三角あり、tmux は四角）
+    return "❓ " + "·".join(names)
 
 
 def menu_conf(windows):
