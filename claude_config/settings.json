@@ -4,7 +4,6 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
   },
-  "crossSessionInbound": "accept",
   "permissions": {
     "allow": [],
     "additionalDirectories": []
@@ -228,9 +227,43 @@
     "jj": "<Esc>"
   },
   "teammateMode": "auto",
+  "crossSessionInbound": "accept",
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1756260069338
+  },
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: assume private unless the remote host and repo name indicate otherwise, or a visibility check in the transcript shows public",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: (unknown — origin/HEAD unset; repo has no remotes configured)",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
+      "**Source control**: The trusted repo (C:\\Users\\yutay\\claudeWS) only — no remotes are configured, no additional orgs configured",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development, including personal Claude Code tooling/configuration work (dotfiles, CLAUDE.md rules, hooks, session orchestration) — lean personal/hobby given subscription posture",
+      "**Trusted repo**: C:\\Users\\yutay\\claudeWS (the working directory this session started in) — no remotes are currently configured, so treat it as a local-only repo for now",
+      "**Org-specific CLiss**: None configured",
+      "Routine under `~/dotfiles/claude_config/` and `~/.claude/` prefixes: reading and editing personal Claude Code configuration files (CLAUDE.md, hooks, rules) is routine per the user's own global rules, but changes should still be backed up to `~/.claude/backups/` before editing as the user's own docs describe"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Bash(kubectl delete:*) — scoped to k8s test namespaces seen in this project (autoclear-test, claude-code-vim-mode, claudews-tmux-wname-cause, clear-test, rename-test, rename-test2, sendkeys-test, stackdump), given recent 'Interfere With Workloads' denials against these namespaces"
+    ]
   }
 }
