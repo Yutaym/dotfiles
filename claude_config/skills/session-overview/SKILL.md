@@ -14,7 +14,7 @@ argument-hint: "[セッション名 ...]（省略時はすべて）"
 
 `ListAgents` を実行する。一覧に出たセッションが、今動いているセッションである。
 - 生きているかどうかは、`ListAgents` に出るかで判断する。
-- 状態（`busy` / `shell` = 作業中、`idle` = 待機中、`waiting` / `requires_action` = 返事待ち）は、「2.」のスクリプトの `状態:` の行（`sessions/*.json` の `status`）を正とする。session-observation の監視画面と同じ値にするため（2026/10/26 にユーザーが決めた）。`ListAgents` の値とずれていても、表には `状態:` の行の値を書く。
+- 状態（`busy` / `shell` = 作業中、`idle` = 待機中、`waiting` / `requires_action` = 返事待ち）は、「2.」のスクリプトの `状態:` の行（`sessions/*.json` の `status`）を正とする。session-observation の監視画面と同じ値にするため（2026/10/26 にユーザーが決めた）。`ListAgents` の値とずれていても、表には `状態:` の行の値を書く。ただし `ダイアログ:` の行があるセッション（Claude Code 本体のダイアログが出ていて、status が idle のままのもの）は `waiting`（返事待ち）として書き、必要な返事にダイアログの見出しを添える（2026/11/25 にユーザーが決めた。`--json` では `status` が `waiting`、`dialog` に見出し、`rawStatus` に元の値）。
   - `状態:` の行がないとき（会話記録やファイルが読めないとき）だけ、`ListAgents` の値を書く。
   - このマシン以外のセッションが `offline` かどうかは、`ListAgents` で判断する（下の決まり）。
 - `~/.claude/sessions/` には終了したセッションの情報が残っていることがあるので、生きているかどうかの判断には使わない。

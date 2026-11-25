@@ -64,6 +64,7 @@ uv run --no-project python "<このスキルのフォルダ>/scripts/observe.py"
   - 「返事待ち」は 2 種類に分ける（2026/10/22 にユーザーが決めた）。
     - **返事待ち**（赤の太字）: `sessions/*.json` の `status` が `waiting` / `requires_action`。確かな返事待ち。
     - **返事待ち?**（赤）: idle で、最後の会話が 24 時間以内で、最後の返答の最後の行が「❓ 返事待ち: …」の行のもの（CLAUDE.md の「作業の終わり方」。末尾の「（90_Wiki: …）」の行は飛ばす）。返答の文から推し量ることはしない（2026/11/20 にユーザーが決めた。書き忘れは Stop の Hook `hooks/wiki-save-check.mjs` が止める）。
+    - **本体のダイアログ**（2026/11/25 にユーザーが決めた）: Claude Code 本体のダイアログ（「Teach auto mode about your environment?」など。許可のプロンプト以外）では `status` が idle のままになる。そこで、tmux の中の idle のセッションだけ、ペインの画面（`capture-pane`）の下 25 行に「Esc to cancel」と `❯` の付いた番号の選択肢があれば、`status` を `waiting` にして確かな **返事待ち** とし、finish より優先する。最後の動きの欄には「ダイアログ: 〈見出し〉」を出す（`session-overview.py` の `dialog`・`apply_dialog`。ssh の接続先でも、接続先の `--json` が同じに判定する）。
     - ssh の接続先の返答は切り詰めて送られるので、JSON の `lastReply.tail`（切り詰めていない最後の数行）の最後の行で判断する。
   - **返事待ちの記録:** 返事待ち・返事待ち? と判定したら、`~/.claude/session-observation/waiting.log` に 1 行書く（時刻・鍵・セッション・種類・判断の材料・最後の会話の時刻・返答の最後の 80 文字。タブ区切り）。同じセッションの同じ返答は 1 回だけ。ユーザーに「返事待ちの記録を見て」「また誤判定が出た」などと言われたら、このファイルを読み、いつ・どのセッションが・どんな終わり方で返事待ちになったかを表にして伝える。誤判定なら、最後の行の書き方か、`session-overview.py` の `WAIT_LINE_RE` などの行の形（判定は session-overview と共通。`observe.py` はそれを呼ぶ）の直し方を提案する。
   - **並びは優先度の高い順**（2026/10/22 にユーザーが決めた）: 返事待ち → 返事待ち? → busy・shell → そのほかの状態 → idle（最近動いたものから）→ 1 時間以上動きのない idle → finish（閉じてよい）→ session-main。同じ組の中は最近動いたものから並べる。

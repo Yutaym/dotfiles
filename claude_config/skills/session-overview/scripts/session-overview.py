@@ -249,18 +249,68 @@ def is_alive(s, procs):
     return "claude" in name or name == "node" or bool(VERSION_RE.match(name))
 
 
+PANE_IDS = {}  # {ペインの最初のプロセスの PID: ペインの ID (%12 など)}。tmux_panes が入れる。dialog が使う
+
+
 def tmux_panes():
     """{ペインの最初のプロセスの PID: 'セッション:ウィンドウ番号 ウィンドウ名'}。"""
     if not shutil.which("tmux"):
         return {}
-    r = subprocess.run(["tmux", "list-panes", "-a", "-F", "#{pane_pid}	#{session_name}:#{window_index} #{window_name}"],
+    r = subprocess.run(["tmux", "list-panes", "-a", "-F", "#{pane_pid}	#{pane_id}	#{session_name}:#{window_index} #{window_name}"],
                        capture_output=True, text=True, errors="replace")
     panes = {}
     for line in r.stdout.splitlines():
-        pid, _, where = line.partition("	")
+        pid, _, rest = line.partition("	")
+        pane_id, _, where = rest.partition("	")
         if pid.strip().isdigit():
             panes[int(pid)] = where
+            PANE_IDS[int(pid)] = pane_id.strip()
     return panes
+
+
+DIALOG_OPTION_RE = re.compile(r"^\s*(?:❯\s*)?\d+\.\s+\S")
+DIALOG_CURSOR_RE = re.compile(r"^\s*❯\s*\d+\.\s+\S")
+
+
+def dialog(pid, procs, status):
+    """Claude Code 本体のダイアログ (「Teach auto mode about your environment?」など。許可のプロンプト以外) が出ていれば、
+    その見出しを返す。なければ None。本体のダイアログでは status が idle のままなので、tmux の中の idle のセッションだけ、
+    ペインの画面の下 25 行に「Esc to cancel」と番号付きの選択肢 (❯ 1. …) があるかで見る (2026/11/25 にユーザーが決めた)。"""
+    if status != "idle":
+        return None
+    me = procs.get(pid)
+    pane = PANE_IDS.get(me[1]) if me else None
+    if not pane:
+        return None
+    try:
+        r = subprocess.run(["tmux", "capture-pane", "-p", "-t", pane], capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=5)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    lines = [ln.rstrip() for ln in r.stdout.splitlines()]
+    while lines and not lines[-1].strip():
+        lines.pop()
+    lines = lines[-25:]
+    end = max((i for i, ln in enumerate(lines) if "Esc to cancel" in ln), default=None)
+    # 選ばれている選択肢 (❯ の付いた番号の行)。返答の中の番号付きの行と取り違えないよう、❯ の付いた行から探す
+    cursor = max((i for i, ln in enumerate(lines[:end or 0]) if DIALOG_CURSOR_RE.match(ln)), default=None)
+    if end is None or cursor is None:
+        return None
+    first_opt = cursor
+    while first_opt > 0 and DIALOG_OPTION_RE.match(lines[first_opt - 1]):
+        first_opt -= 1
+    # 見出し: 選択肢より上で、いちばん近い区切りの線 (───) のすぐ下の、空でない行
+    sep = max((i for i, ln in enumerate(lines[:first_opt]) if ln.strip().startswith("─")), default=-1)
+    title = next((ln.strip() for ln in lines[sep + 1:first_opt] if ln.strip()), "")
+    return title or "ダイアログ"
+
+
+def apply_dialog(item, pid, procs):
+    """本体のダイアログが出ていれば、item の status を waiting にし、見出しを item["dialog"] に入れる (元の status は rawStatus)。"""
+    title = dialog(pid, procs, item.get("status"))
+    if title:
+        item.update({"rawStatus": item.get("status"), "status": "waiting", "dialog": title})
+    return item
 
 
 def location(pid, procs, panes):
@@ -411,6 +461,9 @@ def main():
             print(f"  最後の返答 [{local_time(last_reply[0])}] {shorten(last_reply[1], args.chars * 2)}")
         item = {"status": s.get("status"), "lastTime": last_time, "statusUpdatedAt": s.get("statusUpdatedAt") or s.get("updatedAt"),
                 "lastReply": {"time": last_reply[0], "text": last_reply[1]} if last_reply else None}
+        apply_dialog(item, int(s.get("pid") or 0), procs)
+        if item.get("dialog"):
+            print(f"ダイアログ: {item['dialog']} (status は {item['rawStatus']} だが、本体のダイアログが出ているので返事待ちとする)")
         w = judge_waiting(item)
         print(f"判定: {wait_label(item)}" + (f"（{w[1]}）" if w else "") + " ← 表の「最後の動き」の返事待ちは、この判定に従う")
         fin = judge_finish(item)
@@ -501,6 +554,8 @@ def move_note(item):
     返事待ち (状態が waiting でも、idle で「❓ 返事待ち:」の行で終わるものでも) は、必要な返事の文 (❓ の行)。
     finish は添えない (「完了」だけ)。idle は、残っている作業の文 (⏳ の行)。busy・shell などは添えない。"""
     status = item.get("status")
+    if item.get("dialog"):
+        return f"ダイアログ: {item['dialog']}"
     if status in WAITING:
         lines = reply_lines(item)      # waiting は確かな返事待ち。idle の 24 時間の条件は付けない
         regex = WAIT_LINE_RE
@@ -534,6 +589,8 @@ def judge_waiting(item):
     "推定" (idle で、24 時間以内の最後の返答が「❓ 返事待ち:」の行で終わる)。
     item は status・lastTime・statusUpdatedAt・lastReply ({time, text, tail}) を持つ辞書 (--json の 1 要素と同じ形)。"""
     status = item.get("status")
+    if item.get("dialog"):
+        return "状態", f"本体のダイアログ: {item['dialog']}"
     if status in WAITING:
         return "状態", f"status={status}"
     line = last_line(item)
@@ -550,7 +607,10 @@ def wait_label(item):
 
 def judge_finish(item):
     """finish (閉じてよい) かどうかを、判断の材料の文字列で返す。finish でなければ None。
-    idle で、24 時間以内の最後の返答が「✅ 完了:」の行で終わるもの。item は judge_waiting と同じ辞書。"""
+    idle で、24 時間以内の最後の返答が「✅ 完了:」の行で終わるもの。item は judge_waiting と同じ辞書。
+    本体のダイアログが出ているもの (item["dialog"]) は返事待ちなので、finish にしない。"""
+    if item.get("dialog"):
+        return None
     lines = last_lines(item)
     if not lines or not DONE_LINE_RE.match(lines[-1]):
         return None
@@ -610,6 +670,7 @@ def print_json(sessions, procs, panes, n, chars, numbers):
                 "lastReply": {"time": last_reply[0], "text": shorten(last_reply[1], chars * 2),
                               "tail": tail_for_judging(last_reply[1])} if last_reply else None,
             })
+        apply_dialog(item, int(s.get("pid") or 0), procs)
         item["wait"] = wait_label(item)
         item["finish"] = bool(judge_finish(item))
         item["note"] = move_note(item)

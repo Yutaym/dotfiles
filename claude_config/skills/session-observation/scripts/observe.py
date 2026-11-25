@@ -119,6 +119,8 @@ class Local:
                 "transcript": False, "title": None, "lastTime": None, "prompts": [], "lastReply": None,
                 "purpose": self.ov.read_purpose(s.get("sessionId", "")), "firstPrompt": None,
             }
+            # Claude Code 本体のダイアログが出ていれば返事待ちにする (status は idle のままなので画面で見る)
+            self.ov.apply_dialog(item, int(s.get("pid") or 0), procs)
             t = self.transcript(s.get("sessionId", ""))
             if t:
                 prompts, last_reply, title, last_time = t
