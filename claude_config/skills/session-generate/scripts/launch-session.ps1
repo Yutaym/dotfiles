@@ -105,6 +105,7 @@ if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
             & tmux split-window -d -t "${sname}:cc-sessions" -c $Dir $Shell @InnerArgs
             & tmux select-layout -t "${sname}:cc-sessions" tiled
             $target = "${sname}:cc-sessions"
+            $winNo = (& tmux display-message -p -t $target '#{window_index}')
             $how = 'tmux split-window (専用ウィンドウ)'
         }
         else {
@@ -118,6 +119,8 @@ if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
         $target = & tmux @tmuxArgs $Shell @InnerArgs
         $how = 'tmux new-window'
     }
+    # ウィンドウ番号 (WNo)。new-window -P の出力は「セッション名:ウィンドウ番号」。ListAgents の @ID は番号ではない
+    if (-not $winNo -and $target) { $winNo = ($target -split ':')[-1] }
     # ウィンドウは名前ではなく番号で指定する (psmux は名前を -t で取り違えることがある)
     if ($Switch -and $target) {
         & tmux select-window -t $target
@@ -137,5 +140,5 @@ else {
     $how = "$Shell の新しいウィンドウ"
 }
 
-Write-Output "launched: $how / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })$(if ($Worktree) { " / worktree=$Worktree" })$(if ($Ledger) { " / ledger=$Ledger / task=$TaskId" })"
+Write-Output "launched: $how$(if ($winNo) { " / window=WNo$winNo" }) / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })$(if ($Worktree) { " / worktree=$Worktree" })$(if ($Ledger) { " / ledger=$Ledger / task=$TaskId" })"
 if ($switched) { Write-Output "switched: $switched" }

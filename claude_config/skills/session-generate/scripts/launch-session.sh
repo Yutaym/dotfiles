@@ -110,7 +110,7 @@ chmod +x "$INNER"
 have() { command -v "$1" >/dev/null 2>&1; }
 
 launched() {
-    echo "launched: $1 / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}${WORKTREE:+ / worktree=$WORKTREE}${LEDGER:+ / ledger=$LEDGER / task=$TASKID}"
+    echo "launched: $1${WNO:+ / window=WNo$WNO} / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}${WORKTREE:+ / worktree=$WORKTREE}${LEDGER:+ / ledger=$LEDGER / task=$TASKID}"
     exit 0
 }
 
@@ -144,16 +144,19 @@ if [ -n "${TMUX:-}" ] && have tmux; then
         if tmux list-windows -t "$SNAME" -F '#{window_name}' | grep -qx cc-sessions; then
             tmux split-window -d -t "$SNAME:cc-sessions" -c "$DIR" "sh '$INNER'" || manual 'tmux split-window が失敗した'
             tmux select-layout -t "$SNAME:cc-sessions" tiled
+            WNO=$(tmux display-message -p -t "$SNAME:cc-sessions" '#{window_index}')
             switch_to "$SNAME:cc-sessions"
             launched 'tmux split-window (専用ウィンドウ)'
         fi
         W=$(tmux new-window -d -P -F '#{session_name}:#{window_index}' -t "$SNAME:" -c "$DIR" -n cc-sessions "sh '$INNER'") \
             || manual 'tmux new-window が失敗した'
+        WNO=${W##*:}
         switch_to "$W"
         launched 'tmux new-window (専用ウィンドウを作成)'
     fi
     W=$(tmux new-window -d -P -F '#{session_name}:#{window_index}' -c "$DIR" ${NAME:+-n "$NAME"} "sh '$INNER'") \
         || manual 'tmux new-window が失敗した'
+    WNO=${W##*:}
     switch_to "$W"
     launched 'tmux new-window'
 fi
