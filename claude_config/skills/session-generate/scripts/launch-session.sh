@@ -109,8 +109,21 @@ chmod +x "$INNER"
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# セッション番号 (SNo) を調べるとき、これより後に起動したセッションだけを見る
+SINCE=$(date +%s)
+OVERVIEW="$(dirname "$0")/../../session-overview/scripts/session-overview.py"
+
 launched() {
-    echo "launched: $1${WNO:+ / window=WNo$WNO} / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}${WORKTREE:+ / worktree=$WORKTREE}${LEDGER:+ / ledger=$LEDGER / task=$TASKID}"
+    # セッション番号 (SNo)。起動したセッションが登録されるのを最大 20 秒待つ。取れなくても起動は成功として扱う
+    SNO=''
+    if [ -n "$NAME" ] && have uv; then
+        SNO=$(uv run --no-project python "$OVERVIEW" "$NAME" --wait-number 20 --since "$SINCE" 2>/dev/null | tr -d '\r') || SNO=''
+    fi
+    case "$SNO" in
+        ''|*[!0-9]*) SNO='-' ;;
+        *) SNO="SNo$SNO" ;;
+    esac
+    echo "launched: $1${WNO:+ / window=WNo$WNO} / sno=$SNO / dir=$DIR / name=${NAME:-(自動)} / model=${MODEL:-(既定)} / effort=${EFFORT:-(既定)}${WORKTREE:+ / worktree=$WORKTREE}${LEDGER:+ / ledger=$LEDGER / task=$TASKID}"
     exit 0
 }
 

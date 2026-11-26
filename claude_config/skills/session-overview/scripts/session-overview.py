@@ -380,6 +380,22 @@ def local_numbers(procs):
     return session_numbers([s["sessionId"] for s in alive], scope="")
 
 
+def wait_number(name, since, wait):
+    """起動したばかりのセッションが登録されるのを最大 wait 秒待ち、番号を返す。取れなければ None。
+    since (エポック秒) より前に起動したセッションは、同じ名前の別のものとして数えない。"""
+    deadline = time.monotonic() + wait
+    while True:
+        found = [s for s in load_sessions({name})
+                 if s.get("sessionId") and s.get("startedAt", 0) / 1000 >= since - 1]
+        if found:
+            number = local_numbers(process_table()).get(found[-1]["sessionId"])
+            if number:
+                return number
+        if time.monotonic() >= deadline:
+            return None
+        time.sleep(0.5)
+
+
 CALENDAR_REL = ".local/state/vault-jobs/calendar-unread.txt"
 
 
@@ -419,7 +435,16 @@ def main():
     parser.add_argument("--json", action="store_true", help="材料を JSON で出す")
     parser.add_argument("--no-number", action="store_true",
                         help="番号を振らない (ssh の接続先で動かすとき。番号は ssh を開いた側のマシンで振る)")
+    parser.add_argument("--wait-number", type=float, metavar="秒",
+                        help="名前を 1 つ指定し、そのセッションが登録されるのを待って番号だけを出す (取れなければ -)。session-generate の起動スクリプト用")
+    parser.add_argument("--since", type=float, default=0, help="--wait-number で、このエポック秒より後に起動したセッションだけを見る")
     args = parser.parse_args()
+
+    if args.wait_number is not None:
+        if len(args.names) != 1:
+            parser.error("--wait-number にはセッション名を 1 つだけ指定する")
+        print(wait_number(args.names[0], args.since, args.wait_number) or "-")
+        return
 
     sessions = load_sessions(set(args.names))
     procs, panes = process_table(), tmux_panes()

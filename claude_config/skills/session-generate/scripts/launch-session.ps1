@@ -92,6 +92,9 @@ if ($Ledger) {
     if ($env:CLAUDE_CODE_MESSAGING_SOCKET) { $InnerArgs += @('-ParentAddr', "uds:$($env:CLAUDE_CODE_MESSAGING_SOCKET)") }
 }
 
+# セッション番号 (SNo) を調べるとき、これより後に起動したセッションだけを見る
+$Since = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+
 if ($env:TMUX -and (Get-Command tmux -ErrorAction SilentlyContinue)) {
     # 普段は new-window。どの場合も -d を付けて作り、-Switch のときだけ最後にそのウィンドウへ切り替える。-Split のときは専用ウィンドウ (名前が cc-sessions のもの) に並べる。
     # 呼び出し元と同じセッションに専用ウィンドウがなければ作り、あれば分割して均等に並べ直す。
@@ -140,5 +143,16 @@ else {
     $how = "$Shell の新しいウィンドウ"
 }
 
-Write-Output "launched: $how$(if ($winNo) { " / window=WNo$winNo" }) / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })$(if ($Worktree) { " / worktree=$Worktree" })$(if ($Ledger) { " / ledger=$Ledger / task=$TaskId" })"
+# セッション番号 (SNo)。起動したセッションが登録されるのを最大 20 秒待つ。取れなくても起動は成功として扱う
+$sno = ''
+if ($Name) {
+    $overview = Join-Path $PSScriptRoot '..\..\session-overview\scripts\session-overview.py'
+    try {
+        $out = & uv run --no-project python $overview $Name --wait-number 20 --since $Since 2>$null
+        if ("$out" -match '^\d+$') { $sno = "$out" }
+    }
+    catch {}
+}
+
+Write-Output "launched: $how$(if ($winNo) { " / window=WNo$winNo" }) / sno=$(if ($sno) { "SNo$sno" } else { '-' }) / dir=$Dir / name=$(if ($Name) { $Name } else { '(自動)' }) / model=$(if ($Model) { $Model } else { '(既定)' }) / effort=$(if ($Effort) { $Effort } else { '(既定)' })$(if ($Worktree) { " / worktree=$Worktree" })$(if ($Ledger) { " / ledger=$Ledger / task=$TaskId" })"
 if ($switched) { Write-Output "switched: $switched" }

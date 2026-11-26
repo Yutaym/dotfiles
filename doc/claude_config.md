@@ -282,6 +282,7 @@ vault（`VAULT_DIR`、既定 `~/vaults`）を同期するユーザースキル�
 | `scripts/launch-session.sh`  | macOS / Linux / WSL 用。tmux → WezTerm → kitty → iTerm2 → Ghostty → ターミナル → GNOME Terminal → Konsole → WSL の Windows Terminal の順に判断 |
 | `scripts/session-result.py`  | セッション名から会話の記録（`~/.claude/projects/*/<セッションID>.jsonl`）を探し、最後の返答を表示                                       |
 
+- 起動スクリプトは、session-overview の `session-overview.py --wait-number` でセッションの登録を最大 20 秒待ち、`launched:` の行に `sno=SNo<番号>`（取れなければ `sno=-`）を出す
 - Claude のツールから `claude` をそのまま起動すると、`CLAUDE_CODE_CHILD_SESSION` などを引き継いで子セッション扱いになり、会話の記録が保存されない。そのため、変数を消してから起動する
 - `wt` はコマンドの中の `;` を区切り記号として扱う（引用符の中でも分割される）ので、`-Command "...; claude"` ではなく `-File` でスクリプトを渡す
 - tmux の中では、頼む作業が指定されていないときだけ、起動したウィンドウに画面を切り替える（`-Switch`、sh は `-w`）。作業を頼むときは呼び出し元のウィンドウのまま
